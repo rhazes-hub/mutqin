@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUTQIN - Manajemen Unggul Tahfidz Qur'an Terintegrasi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- XLSX Library untuk Export Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- html2pdf.js untuk Generate PDF Rapi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Firebase App & Realtime Database (Compat SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <style>
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 9pt;
+        }
+        .pdf-table th, .pdf-table td {
+            border: 1px solid #333;
+            padding: 6px 8px;
+            text-align: left;
+        }
+        .pdf-table th {
+            background-color: #f0fdf4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- HEADER UTAMA -->
+    <header class="bg-emerald-700 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex flex-col text-center sm:text-left">
+                <div class="flex items-center justify-center sm:justify-start gap-2">
+                    <span class="bg-white text-emerald-800 font-black px-2.5 py-0.5 rounded text-sm shadow-sm tracking-widest">MUTQIN</span>
+                    <span class="text-xs bg-emerald-600 px-2 py-0.5 rounded-full border border-emerald-500">v1.0 Cloud</span>
+                </div>
+                <span class="text-[11px] text-emerald-100 tracking-wide font-medium mt-0.5">Manajemen Unggul Tahfidz Qur'an Terintegrasi</span>
+            </div>
+            <div id="navUser" class="text-xs sm:text-sm bg-emerald-800 px-3.5 py-1.5 rounded-full border border-emerald-600 hidden flex items-center gap-3">
+                <span id="labelUser" class="font-semibold"></span>
+                <button onclick="keluar()" class="bg-red-500 hover:bg-red-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full transition">Keluar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-3 sm:px-4 py-5 flex-grow w-full">
+
+        <!-- ========================================================= -->
+        <!-- 1. VIEW LOGIN (SPLIT-SCREEN MODERN ELEGAN)                -->
+        <!-- ========================================================= -->
+        <div id="viewLogin" class="py-4 sm:py-8 max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[520px]">
+                
+                <!-- BRANDING VISUAL -->
+                <div class="md:col-span-5 bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-900 p-8 text-white flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -top-12 -left-12 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-16 -right-16 w-56 h-56 bg-emerald-400/20 rounded-full blur-3xl"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-xs font-semibold mb-6">
+                            <span>📖 Portal Tahfidz Digital</span>
+                        </div>
+                        <h1 class="text-3xl font-black tracking-tight text-white leading-tight mb-2">MUTQIN</h1>
+                        <p class="text-xs text-emerald-100 leading-relaxed font-light">Manajemen Unggul Tahfidz Qur'an Terintegrasi. Pantau setoran hafalan santri secara real-time dan transparan.</p>
+                    </div>
+
+                    <div class="relative z-10 space-y-3 my-6">
+                        <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
+                            <span class="text-lg">🕌</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-emerald-50">114 Surah & Auto-Predikat</h4>
+                                <p class="text-[10px] text-emerald-200">Input setoran Ziyadah & Muroja'ah cepat dan terstandar.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
+                            <span class="text-lg">✅</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-emerald-50">Validasi Orang Tua Real-Time</h4>
+                                <p class="text-[10px] text-emerald-200">Sinergi pemantauan hafalan antara madrasah dan rumah.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 text-[10px] text-emerald-200 border-t border-emerald-600/50 pt-4 flex justify-between items-center">
+                        <span>Realtime Cloud Sync</span>
+                        <span id="statusKoneksiDb">🟢 Terhubung</span>
+                    </div>
+                </div>
+
+                <!-- FORM LOGIN -->
+                <div class="md:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-white">
+                    <div class="mb-6 space-y-1">
+                        <span class="text-xs font-bold tracking-wider text-emerald-600 uppercase">Assalamu'alaikum</span>
+                        <h2 class="text-2xl font-black text-slate-800">Masuk ke Aplikasi</h2>
+                        <p class="text-xs text-slate-500">Pilih peran Anda dan masukkan kredensial akses.</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Masuk Sebagai</label>
+                            <select id="pilihPeran" onchange="gantiFormLogin()"
+                                class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-slate-50 font-bold text-emerald-800 transition">
+                                <option value="siswa">🎓 Siswa / Orang Tua</option>
+                                <option value="guru">👨‍🏫 Guru Pembimbing (Ustadz/Ustadzah)</option>
+                                <option value="admin">🔑 Administrator</option>
+                            </select>
+                        </div>
+
+                        <!-- FORM LOGIN SISWA -->
+                        <div id="formSiswaContainer" class="space-y-3.5">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Kelompok Halaqah</label>
+                                <select id="loginHalaqahSiswa" onchange="updateDropdownSiswaLogin()" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Nama Santri</label>
+                                <select id="loginNamaSiswa" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <option value="">-- Pilih Halaqah Dahulu --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">PIN / Kode Akses Siswa</label>
+                                <input type="password" id="loginPinSiswa" placeholder="Masukkan PIN Siswa..."
+                                    class="w-full border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
+                            </div>
+                        </div>
+
+                        <!-- FORM LOGIN GURU -->
+                        <div id="formGuruContainer" class="space-y-3.5 hidden">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Nama Guru Pembimbing</label>
+                                <select id="loginNamaGuru" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-medium text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Password / PIN Guru</label>
+                                <input type="password" id="loginPinGuru" placeholder="Masukkan Password Guru..." 
+                                    class="w-full border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
+                            </div>
+                        </div>
+
+                        <!-- FORM LOGIN ADMIN -->
+                        <div id="formAdminContainer" class="space-y-3.5 hidden">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Password Administrator</label>
+                                <input type="password" id="loginPinAdmin" placeholder="Masukkan Password Admin..." 
+                                    class="w-full border border-slate-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
+                            </div>
+                        </div>
+
+                        <button onclick="prosesLogin()" 
+                            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-2">
+                            <span>Masuk ke Aplikasi</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- 2. VIEW SISWA & ORANG TUA (FASE C: MONITORING & VALIDASI) -->
+        <!-- ========================================================= -->
+        <div id="viewSiswa" class="hidden space-y-5">
+            <!-- KARTU PROFIL SANTRI -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xl">🎓</div>
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Kartu Kendali Tahfidz Santri</span>
+                        <h2 id="profilSiswaNama" class="text-xl font-black text-slate-800">-</h2>
+                        <p class="text-xs text-slate-500">Halaqah: <strong id="profilSiswaHalaqah" class="text-slate-700">-</strong> | Pembimbing: <strong id="profilSiswaGuru" class="text-slate-700">-</strong></p>
+                    </div>
+                </div>
+                <div class="flex gap-3 w-full sm:w-auto">
+                    <div class="bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-center flex-1 sm:flex-initial">
+                        <span class="text-[10px] text-emerald-700 font-bold uppercase block">Total Setoran</span>
+                        <span id="siswaTotalSetoran" class="text-lg font-black text-emerald-800">0</span>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl text-center flex-1 sm:flex-initial">
+                        <span class="text-[10px] text-amber-700 font-bold uppercase block">Perlu Validasi</span>
+                        <span id="siswaBelumValidasi" class="text-lg font-black text-amber-700">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIWAYAT SETORAN & TOMBOL VALIDASI ORANG TUA -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="border-b pb-3">
+                    <h3 class="font-bold text-slate-800 text-base">📖 Riwayat Setoran Hafalan Harian</h3>
+                    <p class="text-xs text-slate-500">Orang tua dimohon memeriksa hasil setoran dan menekan tombol <strong>"Validasi Orang Tua"</strong> sebagai tanda telah diketahui di rumah.</p>
+                </div>
+                <div id="listSetoranSiswa" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- 3. VIEW GURU PEMBIMBING (FASE B: KELOLA SANTRI & SETORAN)  -->
+        <!-- ========================================================= -->
+        <div id="viewGuru" class="hidden space-y-5">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
+                    <h2 class="text-lg font-bold text-emerald-800">Panel Guru Pembimbing</h2>
+                    <p class="text-xs text-slate-500">Selamat bertugas, <strong id="guruNamaHeader" class="text-slate-700"></strong>. Kelola santri bimbingan dan input setoran harian.</p>
+                </div>
+            </div>
+
+            <!-- MENU NAVIGASI GURU -->
+            <nav class="bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-1.5 overflow-x-auto">
+                <button onclick="switchTabGuru('input')" id="tabGuruBtnInput" class="px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition">📝 Input Setoran Harian</button>
+                <button onclick="switchTabGuru('riwayat')" id="tabGuruBtnRiwayat" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📊 Rekap & Status Validasi</button>
+                <button onclick="switchTabGuru('santri')" id="tabGuruBtnSantri" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🎓 Santri Bimbingan Saya</button>
+            </nav>
+
+            <!-- TAB GURU 1: INPUT SETORAN HARIAN -->
+            <div id="panelGuruInput" class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-base border-b pb-2">Form Input Setoran Tahfidz</h3>
+                <form id="formInputSetoran" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Santri Bimbingan</label>
+                            <select id="setoranSiswaId" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Setoran</label>
+                            <select id="setoranJenis" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-semibold text-emerald-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <option value="Ziyadah">🌱 Ziyadah (Hafalan Baru)</option>
+                                <option value="Muroja'ah">🔄 Muroja'ah (Pengulangan)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Surah (114 Surah)</label>
+                            <select id="setoranSurah" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Dari Ayat</label>
+                            <input type="number" id="setoranAyatDari" min="1" required placeholder="Contoh: 1" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Sampai Ayat</label>
+                            <input type="number" id="setoranAyatSampai" min="1" required placeholder="Contoh: 15" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Input Nilai Angka (0 - 100)</label>
+                            <input type="number" id="setoranNilai" min="0" max="100" required oninput="hitungAutoPredikat()" placeholder="Ketik angka 0 - 100..." class="w-full border border-slate-300 rounded-xl p-2.5 text-base font-bold text-slate-800 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-slate-500 mb-1">Auto-Predikat Otomatis:</span>
+                            <div id="previewPredikat" class="p-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-400">
+                                Menunggu input nilai...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Catatan Tambahan untuk Orang Tua</label>
+                        <textarea id="setoranCatatan" rows="2" placeholder="Contoh: Alhamdulillah lancar, tajwid mad wajib diperhatikan dan ditingkatkan lagi muroja'ahnya di rumah." class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">
+                        💾 Simpan & Kirim Setoran ke Orang Tua
+                    </button>
+                </form>
+            </div>
+
+            <!-- TAB GURU 2: RIWAYAT & MONITORING VALIDASI -->
+            <div id="panelGuruRiwayat" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-3">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">Rekap Setoran & Validasi Orang Tua</h3>
+                        <p class="text-xs text-slate-500">Indikator centang hijau menandakan orang tua sudah memeriksa hafalan anak di rumah.</p>
+                    </div>
+                    <button onclick="exportExcel('guru')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3.5 py-2 rounded-lg text-xs">📊 Export Excel</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 border-b">
+                                <th class="p-3">Tanggal</th>
+                                <th class="p-3">Nama Santri</th>
+                                <th class="p-3">Jenis</th>
+                                <th class="p-3">Surah & Ayat</th>
+                                <th class="p-3">Nilai & Predikat</th>
+                                <th class="p-3">Catatan</th>
+                                <th class="p-3 text-center">Validasi Ortu</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodySetoranGuru" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB GURU 3: KELOLA SANTRI BIMBINGAN -->
+            <div id="panelGuruSantri" class="hidden space-y-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-sm">Daftarkan Santri Baru ke Halaqah Saya</h3>
+                    <form id="formGuruTambahSantri" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap Santri</label>
+                            <input type="text" id="guruInputNamaSantri" required placeholder="Contoh: Muhammad Fatih" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">PIN Akses Santri / Ortu</label>
+                            <input type="text" id="guruInputPinSantri" required placeholder="Contoh: 12345" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                        </div>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm">+ Tambah Santri</button>
+                    </form>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm">Daftar Santri Bimbingan Saya</h3>
+                    <div id="listSantriGuru" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- 4. VIEW ADMINISTRATOR (FASE A & D: MONITORING FULL)       -->
+        <!-- ========================================================= -->
+        <div id="viewAdmin" class="hidden space-y-5">
+            <!-- METRIK RINGKASAN -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">🕌</div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Halaqah</span>
+                        <span id="adminStatHalaqah" class="text-lg font-black text-slate-800">0</span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg">👨‍🏫</div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 uppercase font-bold block">Guru Pembimbing</span>
+                        <span id="adminStatGuru" class="text-lg font-black text-slate-800">0</span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg">🎓</div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Santri</span>
+                        <span id="adminStatSantri" class="text-lg font-black text-slate-800">0</span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg">📖</div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Setoran</span>
+                        <span id="adminStatSetoran" class="text-lg font-black text-slate-800">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MENU NAVIGASI ADMIN -->
+            <nav class="bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-1.5 overflow-x-auto">
+                <button onclick="switchTabAdmin('monitoring')" id="tabAdminBtnMonitoring" class="px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition">📊 Monitoring Setoran</button>
+                <button onclick="switchTabAdmin('halaqah')" id="tabAdminBtnHalaqah" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🕌 Kelompok Halaqah</button>
+                <button onclick="switchTabAdmin('guru')" id="tabAdminBtnGuru" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">👨‍🏫 Akun Guru</button>
+                <button onclick="switchTabAdmin('santri')" id="tabAdminBtnSantri" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🎓 Data Santri</button>
+                <button onclick="switchTabAdmin('akun')" id="tabAdminBtnAkun" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🔒 Keamanan Admin</button>
+            </nav>
+
+            <!-- TAB ADMIN 1: MONITORING SEMUA SETORAN -->
+            <div id="panelAdminMonitoring" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">Monitoring Setoran Seluruh Halaqah</h3>
+                        <p class="text-xs text-slate-500">Pantau aktivitas setoran harian dan validasi orang tua secara real-time.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <select id="adminFilterHalaqah" onchange="renderAdminMonitoring()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white">
+                            <option value="SEMUA">-- Semua Halaqah --</option>
+                        </select>
+                        <button onclick="exportExcel('admin')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded-lg text-xs">📊 Excel</button>
+                        <button onclick="exportPDF()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg text-xs">📄 PDF</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table id="tabelAdminMonitoring" class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 border-b">
+                                <th class="p-3">Tanggal</th>
+                                <th class="p-3">Halaqah</th>
+                                <th class="p-3">Nama Santri</th>
+                                <th class="p-3">Guru Pembimbing</th>
+                                <th class="p-3">Jenis</th>
+                                <th class="p-3">Surah & Ayat</th>
+                                <th class="p-3">Nilai & Predikat</th>
+                                <th class="p-3 text-center">Validasi Ortu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyAdminMonitoring" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB ADMIN 2: KELOMPOK HALAQAH -->
+            <div id="panelAdminHalaqah" class="hidden space-y-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm">Tambah Kelompok Halaqah Baru</h3>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="adminInputHalaqah" placeholder="Contoh: Halaqah Abu Bakar, Halaqah Kelas 4A..." class="border border-slate-300 rounded-xl p-2.5 text-sm flex-grow bg-white">
+                        <button onclick="adminTambahHalaqah()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm">+ Tambah Halaqah</button>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm">Daftar Kelompok Halaqah Aktif</h3>
+                    <div id="adminListHalaqah" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+                </div>
+            </div>
+
+            <!-- TAB ADMIN 3: AKUN GURU -->
+            <div id="panelAdminGuru" class="hidden space-y-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-sm">Buat Akun Guru Pembimbing</h3>
+                    <form id="formAdminTambahGuru" class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Ustadz / Ustadzah</label>
+                            <input type="text" id="adminNamaGuru" required placeholder="Contoh: Ustadz Ahmad" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kelompok Halaqah</label>
+                            <select id="adminHalaqahGuru" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Password / PIN Guru</label>
+                            <input type="text" id="adminPinGuru" required placeholder="Contoh: guru123" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                        </div>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm">+ Simpan Guru</button>
+                    </form>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm">Daftar Akun Guru Pembimbing</h3>
+                    <div id="adminListGuru" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                </div>
+            </div>
+
+            <!-- TAB ADMIN 4: DATA SANTRI -->
+            <div id="panelAdminSantri" class="hidden space-y-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-sm">Daftarkan Santri Baru</h3>
+                    <form id="formAdminTambahSantri" class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap Santri</label>
+                            <input type="text" id="adminNamaSantri" required placeholder="Nama Santri" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kelompok Halaqah</label>
+                            <select id="adminHalaqahSantri" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">PIN Akses Santri / Ortu</label>
+                            <input type="text" id="adminPinSantri" required placeholder="Contoh: 12345" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                        </div>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm">+ Simpan Santri</button>
+                    </form>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm">Daftar Seluruh Santri</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 border-b">
+                                    <th class="p-2.5">No</th>
+                                    <th class="p-2.5">Nama Santri</th>
+                                    <th class="p-2.5">Halaqah</th>
+                                    <th class="p-2.5">PIN Akses</th>
+                                    <th class="p-2.5 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyAdminSantri" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB ADMIN 5: KEAMANAN AKUN ADMIN -->
+            <div id="panelAdminAkun" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm max-w-md space-y-4">
+                <h3 class="font-bold text-slate-800 text-sm">🔒 Ubah Password Administrator</h3>
+                <form id="formGantiPasswordAdmin" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Password Baru Admin</label>
+                        <input type="password" id="inputPasswordBaruAdmin" required placeholder="Masukkan password baru..." class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm">Simpan Password Baru</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- WADAH RENDERING PDF TERSEMBUNYI -->
+        <div id="pdfContainer" style="display: none; background: #fff; padding: 20px; color: #000; font-family: sans-serif;">
+            <div style="text-align: center; border-bottom: 2px solid #065f46; padding-bottom: 8px; margin-bottom: 15px;">
+                <h2 style="font-size: 14pt; font-weight: bold; margin: 0; color: #065f46;">MUTQIN - LAPORAN REKAPITULASI SETORAN TAHFIDZ</h2>
+                <p style="font-size: 9pt; margin: 4px 0 0 0; color: #444;">Manajemen Unggul Tahfidz Qur'an Terintegrasi</p>
+            </div>
+            <div style="margin-bottom: 12px; font-size: 9pt; display: flex; justify-content: space-between;">
+                <span><strong>Filter Halaqah:</strong> <span id="pdfFilterHalaqah">Semua Halaqah</span></span>
+                <span><strong>Tanggal Cetak:</strong> <span id="pdfTanggalCetak"></span></span>
+            </div>
+            <table class="pdf-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%; text-align: center;">No</th>
+                        <th style="width: 15%;">Tanggal</th>
+                        <th style="width: 18%;">Nama Santri</th>
+                        <th style="width: 14%;">Halaqah</th>
+                        <th style="width: 10%;">Jenis</th>
+                        <th style="width: 18%;">Surah & Ayat</th>
+                        <th style="width: 10%; text-align: center;">Nilai</th>
+                        <th style="width: 10%; text-align: center;">Validasi</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyPdfRekap"></tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <footer class="text-center text-[11px] text-slate-400 py-4 border-t border-slate-200 bg-white mt-auto">
+        MUTQIN — Manajemen Unggul Tahfidz Qur'an Terintegrasi &copy; 2026
+    </footer>
+
+    <script>
+        // =========================================================================
+        // 1. KONFIGURASI FIREBASE REALTIME DATABASE (LINK RESMI ANDA)
+        // =========================================================================
+        const firebaseConfig = {
+            databaseURL: "https://mutqin-6c6c9-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // =========================================================================
+        // 2. DAFTAR LENGKAP 114 SURAH AL-QUR'AN
+        // =========================================================================
+        const DAFTAR_114_SURAH = [
+            "1. Al-Fatihah", "2. Al-Baqarah", "3. Ali 'Imran", "4. An-Nisa'", "5. Al-Ma'idah",
+            "6. Al-An'am", "7. Al-A'raf", "8. Al-Anfal", "9. At-Taubah", "10. Yunus",
+            "11. Hud", "12. Yusuf", "13. Ar-Ra'd", "14. Ibrahim", "15. Al-Hijr",
+            "16. An-Nahl", "17. Al-Isra'", "18. Al-Kahf", "19. Maryam", "20. Taha",
+            "21. Al-Anbiya'", "22. Al-Hajj", "23. Al-Mu'minun", "24. An-Nur", "25. Al-Furqan",
+            "26. Asy-Syu'ara'", "27. An-Naml", "28. Al-Qasas", "29. Al-'Ankabut", "30. Ar-Rum",
+            "31. Luqman", "32. As-Sajdah", "33. Al-Ahzab", "34. Saba'", "35. Fatir",
+            "36. Yasin", "37. As-Saffat", "38. Sad", "39. Az-Zumar", "40. Ghafir",
+            "41. Fussilat", "42. Asy-Syura", "43. Az-Zukhruf", "44. Ad-Dukhan", "45. Al-Jasiyah",
+            "46. Al-Ahqaf", "47. Muhammad", "48. Al-Fath", "49. Al-Hujurat", "50. Qaf",
+            "51. Az-Zariyat", "52. At-Tur", "53. An-Najm", "54. Al-Qamar", "55. Ar-Rahman",
+            "56. Al-Waqi'ah", "57. Al-Hadid", "58. Al-Mujadilah", "59. Al-Hasyr", "60. Al-Mumtahanah",
+            "61. As-Saff", "62. Al-Jumu'ah", "63. Al-Munafiqun", "64. At-Taghabun", "65. At-Talaq",
+            "66. At-Tahrim", "67. Al-Mulk", "68. Al-Qalam", "69. Al-Haqqah", "70. Al-Ma'arij",
+            "71. Nuh", "72. Al-Jinn", "73. Al-Muzzammil", "74. Al-Muddassir", "75. Al-Qiyamah",
+            "76. Al-Insan", "77. Al-Mursalat", "78. An-Naba'", "79. An-Nazi'at", "80. 'Abasa",
+            "81. At-Takwir", "82. Al-Infitar", "83. Al-Mutaffifin", "84. Al-Insyiqaq", "85. Al-Buruj",
+            "86. At-Tariq", "87. Al-A'la", "88. Al-Ghasyiyah", "89. Al-Fajr", "90. Al-Balad",
+            "91. Asy-Syams", "92. Al-Lail", "93. Ad-Duha", "94. Asy-Syarh", "95. At-Tin",
+            "96. Al-'Alaq", "97. Al-Qadr", "98. Al-Bayyinah", "99. Az-Zalzalah", "100. Al-'Adiyat",
+            "101. Al-Qari'ah", "102. At-Takasur", "103. Al-'Asr", "104. Al-Humazah", "105. Al-Fil",
+            "106. Quraisy", "107. Al-Ma'un", "108. Al-Kausar", "109. Al-Kafirun", "110. An-Nasr",
+            "111. Al-Lahab", "112. Al-Ikhlas", "113. Al-Falaq", "114. An-Nas"
+        ];
+
+        // =========================================================================
+        // 3. STATE APLIKASI & SINKRONISASI REALTIME DATABASE
+        // =========================================================================
+        let dataHalaqah = [];
+        let dataGuru = [];
+        let dataSantri = [];
+        let dataSetoran = [];
+        let passwordAdmin = '@123456'; // Default sesuai permintaan Anda
+
+        let currentUser = null; // { role: 'admin' | 'guru' | 'siswa', data: ... }
+
+        // Muat dropdown 114 surah saat startup
+        window.onload = function() {
+            const selectSurah = document.getElementById('setoranSurah');
+            if (selectSurah) {
+                selectSurah.innerHTML = DAFTAR_114_SURAH.map(s => `<option value="${s}">${s}</option>`).join('');
+            }
+        };
+
+        // Listener Real-time ke path 'mutqin_data'
+        db.ref('mutqin_data').on('value', (snapshot) => {
+            const val = snapshot.val();
+            if (val) {
+                dataHalaqah = val.halaqah || ['Halaqah Juz 30', 'Halaqah Juz 29'];
+                dataGuru = val.guru || [];
+                dataSantri = val.santri || [];
+                dataSetoran = val.setoran || [];
+                passwordAdmin = val.password_admin || '@123456';
+            } else {
+                // Data awal otomatis agar aplikasi siap uji coba
+                dataHalaqah = ['Halaqah Abu Bakar', 'Halaqah Umar Bin Khattab'];
+                dataGuru = [
+                    { id: 'g1', nama: 'Ustadz Abdullah', halaqah: 'Halaqah Abu Bakar', pin: '123456' }
+                ];
+                dataSantri = [
+                    { id: 's1', nama: 'Ahmad Zaki', halaqah: 'Halaqah Abu Bakar', pin: '12345' }
+                ];
+                dataSetoran = [];
+                passwordAdmin = '@123456';
+                simpanKeFirebase();
+            }
+
+            // Perbarui semua tampilan UI secara real-time
+            renderDropdownLogin();
+            if (currentUser) {
+                if (currentUser.role === 'admin') renderSemuaAdmin();
+                if (currentUser.role === 'guru') renderSemuaGuru();
+                if (currentUser.role === 'siswa') renderDashboardSiswa();
+            }
+        });
+
+        function simpanKeFirebase() {
+            db.ref('mutqin_data').set({
+                halaqah: dataHalaqah,
+                guru: dataGuru,
+                santri: dataSantri,
+                setoran: dataSetoran,
+                password_admin: passwordAdmin
+            });
+        }
+
+        // =========================================================================
+        // 4. LOGIKA AUTENTIKASI & LOGIN MULTI-ROLE
+        // =========================================================================
+        function gantiFormLogin() {
+            const peran = document.getElementById('pilihPeran').value;
+            document.getElementById('formSiswaContainer').classList.add('hidden');
+            document.getElementById('formGuruContainer').classList.add('hidden');
+            document.getElementById('formAdminContainer').classList.add('hidden');
+
+            if (peran === 'siswa') document.getElementById('formSiswaContainer').classList.remove('hidden');
+            else if (peran === 'guru') document.getElementById('formGuruContainer').classList.remove('hidden');
+            else if (peran === 'admin') document.getElementById('formAdminContainer').classList.remove('hidden');
+        }
+
+        function renderDropdownLogin() {
+            // Dropdown Halaqah untuk Siswa
+            const selHalaqah = document.getElementById('loginHalaqahSiswa');
+            if (selHalaqah) {
+                const cur = selHalaqah.value;
+                selHalaqah.innerHTML = dataHalaqah.map(h => `<option value="${h}">${h}</option>`).join('');
+                if (cur && dataHalaqah.includes(cur)) selHalaqah.value = cur;
+                updateDropdownSiswaLogin();
+            }
+
+            // Dropdown Nama Guru
+            const selGuru = document.getElementById('loginNamaGuru');
+            if (selGuru) {
+                const curG = selGuru.value;
+                selGuru.innerHTML = dataGuru.length
+                    ? dataGuru.map(g => `<option value="${g.id}">${g.nama} (${g.halaqah})</option>`).join('')
+                    : `<option value="">-- Belum ada akun guru --</option>`;
+                if (curG) selGuru.value = curG;
+            }
+        }
+
+        function updateDropdownSiswaLogin() {
+            const halaqah = document.getElementById('loginHalaqahSiswa').value;
+            const selSantri = document.getElementById('loginNamaSiswa');
+            const filtered = dataSantri.filter(s => s.halaqah === halaqah);
+            selSantri.innerHTML = filtered.length
+                ? filtered.map(s => `<option value="${s.id}">${s.nama}</option>`).join('')
+                : `<option value="">-- Belum ada santri di halaqah ini --</option>`;
+        }
+
+        function prosesLogin() {
+            const peran = document.getElementById('pilihPeran').value;
+
+            if (peran === 'admin') {
+                const pass = document.getElementById('loginPinAdmin').value;
+                if (pass === passwordAdmin) {
+                    currentUser = { role: 'admin' };
+                    tampilkanView('viewAdmin', 'Administrator');
+                    renderSemuaAdmin();
+                } else {
+                    alert('Password Administrator salah! (Default: @123456)');
+                }
+            } else if (peran === 'guru') {
+                const guruId = document.getElementById('loginNamaGuru').value;
+                const pin = document.getElementById('loginPinGuru').value;
+                const guru = dataGuru.find(g => g.id === guruId);
+                if (!guru) return alert('Pilih nama guru terlebih dahulu.');
+                if (guru.pin === pin) {
+                    currentUser = { role: 'guru', data: guru };
+                    tampilkanView('viewGuru', `${guru.nama} (${guru.halaqah})`);
+                    renderSemuaGuru();
+                } else {
+                    alert('Password / PIN Guru salah!');
+                }
+            } else if (peran === 'siswa') {
+                const santriId = document.getElementById('loginNamaSiswa').value;
+                const pin = document.getElementById('loginPinSiswa').value;
+                const santri = dataSantri.find(s => s.id === santriId);
+                if (!santri) return alert('Pilih nama santri terlebih dahulu.');
+                if (santri.pin === pin) {
+                    currentUser = { role: 'siswa', data: santri };
+                    tampilkanView('viewSiswa', `${santri.nama} (${santri.halaqah})`);
+                    renderDashboardSiswa();
+                } else {
+                    alert('PIN / Kode Akses Siswa salah!');
+                }
+            }
+        }
+
+        function tampilkanView(viewId, labelUser) {
+            document.getElementById('viewLogin').classList.add('hidden');
+            document.getElementById('viewAdmin').classList.add('hidden');
+            document.getElementById('viewGuru').classList.add('hidden');
+            document.getElementById('viewSiswa').classList.add('hidden');
+
+            document.getElementById(viewId).classList.remove('hidden');
+            document.getElementById('navUser').classList.remove('hidden');
+            document.getElementById('labelUser').innerText = labelUser;
+        }
+
+        function keluar() {
+            currentUser = null;
+            document.getElementById('loginPinAdmin').value = '';
+            document.getElementById('loginPinGuru').value = '';
+            document.getElementById('loginPinSiswa').value = '';
+            document.getElementById('navUser').classList.add('hidden');
+            document.getElementById('viewAdmin').classList.add('hidden');
+            document.getElementById('viewGuru').classList.add('hidden');
+            document.getElementById('viewSiswa').classList.add('hidden');
+            document.getElementById('viewLogin').classList.remove('hidden');
+        }
+
+        // =========================================================================
+        // 5. LOGIKA AUTO-PREDIKAT SESUAI STANDAR TAHFIDZ
+        // =========================================================================
+        function dapatkanPredikat(nilai) {
+            const n = Number(nilai);
+            if (n >= 95 && n <= 100) return { label: "Mumtaz (Sangat Istimewa)", warna: "text-emerald-700 bg-emerald-50 border-emerald-300" };
+            if (n >= 90 && n <= 94) return { label: "Jayyid Jiddan (Sangat Baik)", warna: "text-teal-700 bg-teal-50 border-teal-300" };
+            if (n >= 80 && n <= 89) return { label: "Jayyid (Baik)", warna: "text-blue-700 bg-blue-50 border-blue-300" };
+            if (n >= 75 && n <= 79) return { label: "Maqbul (Cukup)", warna: "text-amber-700 bg-amber-50 border-amber-300" };
+            if (n >= 60 && n <= 74) return { label: "Naqis (Kurang)", warna: "text-orange-700 bg-orange-50 border-orange-300" };
+            return { label: "Mardud (Ditolak / Mengulang)", warna: "text-red-700 bg-red-50 border-red-300" };
+        }
+
+        function hitungAutoPredikat() {
+            const val = document.getElementById('setoranNilai').value;
+            const box = document.getElementById('previewPredikat');
+            if (val === '' || isNaN(val)) {
+                box.className = "p-2.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-400";
+                box.innerText = "Menunggu input nilai...";
+                return;
+            }
+            const hasil = dapatkanPredikat(val);
+            box.className = `p-2.5 rounded-xl border text-sm font-bold ${hasil.warna}`;
+            box.innerText = `${val} — ${hasil.label}`;
+        }
+
+        // =========================================================================
+        // 6. PANEL GURU PEMBIMBING (FASE B)
+        // =========================================================================
+        function switchTabGuru(tab) {
+            ['panelGuruInput', 'panelGuruRiwayat', 'panelGuruSantri'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['tabGuruBtnInput', 'tabGuruBtnRiwayat', 'tabGuruBtnSantri'].forEach(id => {
+                document.getElementById(id).className = "px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition";
+            });
+            document.getElementById('panelGuru' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            document.getElementById('tabGuruBtn' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition";
+        }
+
+        function renderSemuaGuru() {
+            if (!currentUser || currentUser.role !== 'guru') return;
+            const guru = currentUser.data;
+            document.getElementById('guruNamaHeader').innerText = `${guru.nama} (${guru.halaqah})`;
+
+            // Filter santri di halaqah guru ini
+            const santriBimbingan = dataSantri.filter(s => s.halaqah === guru.halaqah);
+            
+            // Populate dropdown santri di form input setoran
+            const selSantri = document.getElementById('setoranSiswaId');
+            selSantri.innerHTML = santriBimbingan.length
+                ? santriBimbingan.map(s => `<option value="${s.id}">${s.nama}</option>`).join('')
+                : `<option value="">-- Daftarkan santri dulu di tab Santri Bimbingan --</option>`;
+
+            // Render daftar santri di tab Kelola Santri
+            const listSantriDiv = document.getElementById('listSantriGuru');
+            listSantriDiv.innerHTML = santriBimbingan.length
+                ? santriBimbingan.map(s => `
+                    <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center text-xs">
+                        <div>
+                            <strong class="text-slate-800 text-sm block">${s.nama}</strong>
+                            <span class="text-slate-500">PIN Akses: <code class="bg-white px-1.5 py-0.5 rounded border font-bold text-emerald-700">${s.pin}</code></span>
+                        </div>
+                        <button onclick="hapusSantri('${s.id}')" class="text-red-500 font-bold hover:underline">Hapus</button>
+                    </div>
+                `).join('')
+                : `<p class="text-xs text-slate-400 italic">Belum ada santri di kelompok halaqah ini.</p>`;
+
+            // Render tabel riwayat setoran halaqah guru ini
+            const setoranHalaqah = dataSetoran.filter(st => st.halaqah === guru.halaqah);
+            const tbody = document.getElementById('tbodySetoranGuru');
+            tbody.innerHTML = setoranHalaqah.length
+                ? setoranHalaqah.map(st => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 text-slate-500 whitespace-nowrap">${st.tanggal}</td>
+                        <td class="p-3 font-bold text-slate-800">${st.santriNama}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${st.jenis === 'Ziyadah' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">${st.jenis}</span></td>
+                        <td class="p-3 font-semibold text-slate-700">${st.surah} : Ayat ${st.ayatDari}-${st.ayatSampai}</td>
+                        <td class="p-3"><strong>${st.nilai}</strong> <span class="text-[11px] text-slate-500">(${st.predikat})</span></td>
+                        <td class="p-3 text-slate-600 italic">${st.catatan || '-'}</td>
+                        <td class="p-3 text-center">
+                            ${st.validasi_ortu
+                                ? `<span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-[11px]">✅ Sudah Divalidasi</span>`
+                                : `<span class="inline-flex items-center gap-1 bg-amber-100 text-amber-800 font-semibold px-2.5 py-1 rounded-full text-[11px]">⏳ Menunggu Ortu</span>`
+                            }
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="hapusSetoran('${st.id}')" class="text-red-500 hover:underline font-semibold">Hapus</button>
+                        </td>
+                    </tr>
+                `).join('')
+                : `<tr><td colspan="8" class="p-4 text-center text-slate-400 italic">Belum ada data setoran hafalan.</td></tr>`;
+        }
+
+        // Submit Setoran Baru oleh Guru
+        document.getElementById('formInputSetoran').onsubmit = function(e) {
+            e.preventDefault();
+            const guru = currentUser.data;
+            const santriId = document.getElementById('setoranSiswaId').value;
+            const santri = dataSantri.find(s => s.id === santriId);
+            if (!santri) return alert('Pilih santri terlebih dahulu!');
+
+            const jenis = document.getElementById('setoranJenis').value;
+            const surah = document.getElementById('setoranSurah').value;
+            const ayatDari = document.getElementById('setoranAyatDari').value;
+            const ayatSampai = document.getElementById('setoranAyatSampai').value;
+            const nilai = Number(document.getElementById('setoranNilai').value);
+            const predikatObj = dapatkanPredikat(nilai);
+            const catatan = document.getElementById('setoranCatatan').value.trim();
+
+            const setoranBaru = {
+                id: 'st_' + Date.now(),
+                tanggal: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                santriId: santri.id,
+                santriNama: santri.nama,
+                halaqah: guru.halaqah,
+                guruNama: guru.nama,
+                jenis: jenis,
+                surah: surah,
+                ayatDari: ayatDari,
+                ayatSampai: ayatSampai,
+                nilai: nilai,
+                predikat: predikatObj.label,
+                catatan: catatan,
+                validasi_ortu: false // Status awal sesuai Fase B
+            };
+
+            dataSetoran.unshift(setoranBaru);
+            simpanKeFirebase();
+            this.reset();
+            hitungAutoPredikat();
+            alert('✅ Alhamdulillah, setoran berhasil disimpan dan terkirim ke akun Orang Tua!');
+            switchTabGuru('riwayat');
+        };
+
+        // Guru Tambah Santri
+        document.getElementById('formGuruTambahSantri').onsubmit = function(e) {
+            e.preventDefault();
+            const guru = currentUser.data;
+            const nama = document.getElementById('guruInputNamaSantri').value.trim();
+            const pin = document.getElementById('guruInputPinSantri').value.trim();
+
+            dataSantri.push({
+                id: 's_' + Date.now(),
+                nama: nama,
+                halaqah: guru.halaqah,
+                pin: pin
+            });
+            simpanKeFirebase();
+            this.reset();
+            alert('Santri berhasil ditambahkan ke halaqah Anda!');
+        };
+
+        function hapusSantri(id) {
+            if (confirm('Hapus data santri ini?')) {
+                dataSantri = dataSantri.filter(s => s.id !== id);
+                simpanKeFirebase();
+            }
+        }
+
+        function hapusSetoran(id) {
+            if (confirm('Hapus catatan setoran ini?')) {
+                dataSetoran = dataSetoran.filter(st => st.id !== id);
+                simpanKeFirebase();
+            }
+        }
+
+        // =========================================================================
+        // 7. PANEL SISWA & VALIDASI ORANG TUA (FASE C)
+        // =========================================================================
+        function renderDashboardSiswa() {
+            if (!currentUser || currentUser.role !== 'siswa') return;
+            const santri = currentUser.data;
+            const guruObj = dataGuru.find(g => g.halaqah === santri.halaqah);
+
+            document.getElementById('profilSiswaNama').innerText = santri.nama;
+            document.getElementById('profilSiswaHalaqah').innerText = santri.halaqah;
+            document.getElementById('profilSiswaGuru').innerText = guruObj ? guruObj.nama : '-';
+
+            const riwayat = dataSetoran.filter(st => st.santriId === santri.id);
+            const belumValidasi = riwayat.filter(st => !st.validasi_ortu).length;
+
+            document.getElementById('siswaTotalSetoran').innerText = riwayat.length;
+            document.getElementById('siswaBelumValidasi').innerText = belumValidasi;
+
+            const container = document.getElementById('listSetoranSiswa');
+            if (!riwayat.length) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6 bg-slate-50 rounded-xl">Belum ada riwayat setoran hafalan untuk ananda ${santri.nama}.</p>`;
+                return;
+            }
+
+            container.innerHTML = riwayat.map(st => `
+                <div class="p-4 rounded-2xl border ${st.validasi_ortu ? 'border-emerald-200 bg-emerald-50/30' : 'border-amber-300 bg-amber-50/40'} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="space-y-1.5">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[11px] text-slate-500 font-medium">📅 ${st.tanggal}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${st.jenis === 'Ziyadah' ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'}">${st.jenis}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white border border-slate-200 text-slate-800">Nilai: ${st.nilai} (${st.predikat})</span>
+                        </div>
+                        <h4 class="text-base font-black text-slate-800">${st.surah} — Ayat ${st.ayatDari} s/d ${st.ayatSampai}</h4>
+                        <p class="text-xs text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100">
+                            <strong class="text-emerald-700">Catatan Ustadz/Ustadzah:</strong> "${st.catatan || 'Alhamdulillah, terus istiqomah muroja\'ah di rumah.'}"
+                        </p>
+                    </div>
+
+                    <div class="w-full sm:w-auto flex-shrink-0">
+                        ${st.validasi_ortu
+                            ? `<div class="bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold text-center shadow-sm flex items-center justify-center gap-1.5">
+                                <span>✅ Sudah Divalidasi Orang Tua</span>
+                               </div>`
+                            : `<button onclick="validasiSetoranOrtu('${st.id}')" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition flex items-center justify-center gap-1.5">
+                                <span>☑️ Klik Validasi Orang Tua</span>
+                               </button>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function validasiSetoranOrtu(setoranId) {
+            const idx = dataSetoran.findIndex(st => st.id === setoranId);
+            if (idx !== -1) {
+                dataSetoran[idx].validasi_ortu = true;
+                simpanKeFirebase();
+                alert('✅ Terima kasih Ayah/Bunda! Status validasi telah terkirim secara real-time ke Guru Pembimbing.');
+            }
+        }
+
+        // =========================================================================
+        // 8. PANEL ADMINISTRATOR (FASE A & D)
+        // =========================================================================
+        function switchTabAdmin(tab) {
+            ['panelAdminMonitoring', 'panelAdminHalaqah', 'panelAdminGuru', 'panelAdminSantri', 'panelAdminAkun'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['tabAdminBtnMonitoring', 'tabAdminBtnHalaqah', 'tabAdminBtnGuru', 'tabAdminBtnSantri', 'tabAdminBtnAkun'].forEach(id => {
+                document.getElementById(id).className = "px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition";
+            });
+            document.getElementById('panelAdmin' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            document.getElementById('tabAdminBtn' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition";
+        }
+
+        function renderSemuaAdmin() {
+            if (!currentUser || currentUser.role !== 'admin') return;
+
+            // Update statistik
+            document.getElementById('adminStatHalaqah').innerText = dataHalaqah.length;
+            document.getElementById('adminStatGuru').innerText = dataGuru.length;
+            document.getElementById('adminStatSantri').innerText = dataSantri.length;
+            document.getElementById('adminStatSetoran').innerText = dataSetoran.length;
+
+            // Populate dropdown halaqah di admin
+            const opsiHalaqah = dataHalaqah.map(h => `<option value="${h}">${h}</option>`).join('');
+            document.getElementById('adminHalaqahGuru').innerHTML = opsiHalaqah;
+            document.getElementById('adminHalaqahSantri').innerHTML = opsiHalaqah;
+
+            const filterSel = document.getElementById('adminFilterHalaqah');
+            const curFilter = filterSel.value;
+            filterSel.innerHTML = `<option value="SEMUA">-- Semua Halaqah --</option>` + opsiHalaqah;
+            if (curFilter) filterSel.value = curFilter;
+
+            // Render List Halaqah
+            document.getElementById('adminListHalaqah').innerHTML = dataHalaqah.map(h => `
+                <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center text-xs">
+                    <strong class="text-slate-800 text-sm">${h}</strong>
+                    <button onclick="adminHapusHalaqah('${h}')" class="text-red-500 font-bold hover:underline">Hapus</button>
+                </div>
+            `).join('');
+
+            // Render List Guru
+            document.getElementById('adminListGuru').innerHTML = dataGuru.map(g => `
+                <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center text-xs">
+                    <div>
+                        <strong class="text-slate-800 text-sm block">${g.nama}</strong>
+                        <span class="text-emerald-700 font-semibold">${g.halaqah}</span> | 
+                        <span class="text-slate-500">Password: <code class="bg-white px-1.5 py-0.5 rounded border font-bold">${g.pin}</code></span>
+                    </div>
+                    <button onclick="adminHapusGuru('${g.id}')" class="text-red-500 font-bold hover:underline">Hapus</button>
+                </div>
+            `).join('');
+
+            // Render Tabel Santri
+            document.getElementById('tbodyAdminSantri').innerHTML = dataSantri.map((s, idx) => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-2.5">${idx + 1}</td>
+                    <td class="p-2.5 font-bold text-slate-800">${s.nama}</td>
+                    <td class="p-2.5">${s.halaqah}</td>
+                    <td class="p-2.5"><code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-emerald-700">${s.pin}</code></td>
+                    <td class="p-2.5 text-center"><button onclick="hapusSantri('${s.id}')" class="text-red-500 font-semibold hover:underline">Hapus</button></td>
+                </tr>
+            `).join('');
+
+            renderAdminMonitoring();
+        }
+
+        function renderAdminMonitoring() {
+            const filterVal = document.getElementById('adminFilterHalaqah').value;
+            const filtered = filterVal === 'SEMUA' ? dataSetoran : dataSetoran.filter(st => st.halaqah === filterVal);
+            const tbody = document.getElementById('tbodyAdminMonitoring');
+
+            tbody.innerHTML = filtered.length
+                ? filtered.map(st => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 text-slate-500 whitespace-nowrap">${st.tanggal}</td>
+                        <td class="p-3 font-semibold text-emerald-700">${st.halaqah}</td>
+                        <td class="p-3 font-bold text-slate-800">${st.santriNama}</td>
+                        <td class="p-3 text-slate-600">${st.guruNama}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${st.jenis === 'Ziyadah' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">${st.jenis}</span></td>
+                        <td class="p-3 font-semibold">${st.surah} : ${st.ayatDari}-${st.ayatSampai}</td>
+                        <td class="p-3"><strong>${st.nilai}</strong> <span class="text-[11px] text-slate-500">(${st.predikat})</span></td>
+                        <td class="p-3 text-center">
+                            ${st.validasi_ortu
+                                ? `<span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-[11px]">✅ Tervalidasi</span>`
+                                : `<span class="bg-amber-100 text-amber-800 font-semibold px-2.5 py-1 rounded-full text-[11px]">⏳ Belum</span>`
+                            }
+                        </td>
+                    </tr>
+                `).join('')
+                : `<tr><td colspan="8" class="p-4 text-center text-slate-400 italic">Belum ada data setoran hafalan.</td></tr>`;
+        }
+
+        function adminTambahHalaqah() {
+            const val = document.getElementById('adminInputHalaqah').value.trim();
+            if (val && !dataHalaqah.includes(val)) {
+                dataHalaqah.push(val);
+                simpanKeFirebase();
+                document.getElementById('adminInputHalaqah').value = '';
+            }
+        }
+
+        function adminHapusHalaqah(nama) {
+            if (confirm(`Hapus ${nama}?`)) {
+                dataHalaqah = dataHalaqah.filter(h => h !== nama);
+                simpanKeFirebase();
+            }
+        }
+
+        document.getElementById('formAdminTambahGuru').onsubmit = function(e) {
+            e.preventDefault();
+            dataGuru.push({
+                id: 'g_' + Date.now(),
+                nama: document.getElementById('adminNamaGuru').value.trim(),
+                halaqah: document.getElementById('adminHalaqahGuru').value,
+                pin: document.getElementById('adminPinGuru').value.trim()
+            });
+            simpanKeFirebase();
+            this.reset();
+            alert('Akun Guru Pembimbing berhasil dibuat!');
+        };
+
+        function adminHapusGuru(id) {
+            if (confirm('Hapus akun guru ini?')) {
+                dataGuru = dataGuru.filter(g => g.id !== id);
+                simpanKeFirebase();
+            }
+        }
+
+        document.getElementById('formAdminTambahSantri').onsubmit = function(e) {
+            e.preventDefault();
+            dataSantri.push({
+                id: 's_' + Date.now(),
+                nama: document.getElementById('adminNamaSantri').value.trim(),
+                halaqah: document.getElementById('adminHalaqahSantri').value,
+                pin: document.getElementById('adminPinSantri').value.trim()
+            });
+            simpanKeFirebase();
+            this.reset();
+            alert('Data Santri berhasil ditambahkan!');
+        };
+
+        document.getElementById('formGantiPasswordAdmin').onsubmit = function(e) {
+            e.preventDefault();
+            passwordAdmin = document.getElementById('inputPasswordBaruAdmin').value.trim();
+            simpanKeFirebase();
+            this.reset();
+            alert('Password Administrator berhasil diperbarui!');
+        };
+
+        // =========================================================================
+        // 9. EXPORT LAPORAN KE EXCEL & PDF
+        // =========================================================================
+        function exportExcel(role) {
+            const sumberData = (role === 'guru' && currentUser.data)
+                ? dataSetoran.filter(st => st.halaqah === currentUser.data.halaqah)
+                : dataSetoran;
+
+            const rows = sumberData.map((st, i) => ({
+                "No": i + 1,
+                "Tanggal": st.tanggal,
+                "Halaqah": st.halaqah,
+                "Nama Santri": st.santriNama,
+                "Guru Pembimbing": st.guruNama,
+                "Jenis Setoran": st.jenis,
+                "Surah": st.surah,
+                "Dari Ayat": st.ayatDari,
+                "Sampai Ayat": st.ayatSampai,
+                "Nilai": st.nilai,
+                "Predikat": st.predikat,
+                "Catatan Guru": st.catatan || '-',
+                "Validasi Orang Tua": st.validasi_ortu ? 'Sudah Divalidasi' : 'Menunggu Validasi'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(rows);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Rekap_Tahfidz");
+            XLSX.writeFile(wb, `Rekap_Tahfidz_MUTQIN.xlsx`);
+        }
+
+        function exportPDF() {
+            const filterVal = document.getElementById('adminFilterHalaqah').value;
+            const filtered = filterVal === 'SEMUA' ? dataSetoran : dataSetoran.filter(st => st.halaqah === filterVal);
+
+            document.getElementById('pdfFilterHalaqah').innerText = filterVal === 'SEMUA' ? 'Semua Halaqah' : filterVal;
+            document.getElementById('pdfTanggalCetak').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            const tbodyPdf = document.getElementById('tbodyPdfRekap');
+            tbodyPdf.innerHTML = filtered.length
+                ? filtered.map((st, i) => `
+                    <tr>
+                        <td style="text-align: center;">${i + 1}</td>
+                        <td>${st.tanggal}</td>
+                        <td><strong>${st.santriNama}</strong></td>
+                        <td>${st.halaqah}</td>
+                        <td>${st.jenis}</td>
+                        <td>${st.surah} (${st.ayatDari}-${st.ayatSampai})</td>
+                        <td style="text-align: center;"><strong>${st.nilai}</strong><br><small>${st.predikat}</small></td>
+                        <td style="text-align: center;">${st.validasi_ortu ? 'Tervalidasi' : 'Belum'}</td>
+                    </tr>
+                `).join('')
+                : `<tr><td colspan="8" style="text-align:center; padding:15px;">Belum ada data setoran.</td></tr>`;
+
+            const element = document.getElementById('pdfContainer');
+            element.style.display = 'block';
+
+            html2pdf().set({
+                margin: 10,
+                filename: `Laporan_Tahfidz_MUTQIN.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            }).from(element).save().then(() => {
+                element.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
