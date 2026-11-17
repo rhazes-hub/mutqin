@@ -1559,16 +1559,21 @@
             if (!container) return;
             const q = keyword.trim().toLowerCase();
 
+            // Saring nama halaqah murni yang tidak tercampur teks guru di dalamnya (seperti "SYAHADAH 3 (ABI ANTO)")
+            const halaqahMurni = dataHalaqah.filter(h => !h.toUpperCase().includes('(') || h.trim() === 'SYAHADAH 3');
+
             const semuaHalaqah = Array.from(new Set([
-                ...dataHalaqah,
+                ...halaqahMurni,
                 ...dataGuru.map(g => g.halaqah),
                 ...dataSantri.map(s => s.halaqah)
             ]));
 
             const cardsHtml = semuaHalaqah.map((h, idx) => {
-                const guruList = dataGuru.filter(g => g.halaqah === h).map(g => g.nama);
+                // Bersihkan nama halaqah jika tidak sengaja mengandung teks guru di database lama
+                const hBersih = h.split('(')[0].trim();
+                const guruList = dataGuru.filter(g => g.halaqah === h || g.halaqah.toLowerCase() === hBersih.toLowerCase()).map(g => g.nama);
                 const guruText = guruList.length ? guruList.join(', ') : 'Belum ditentukan';
-                const siswaDiHalaqah = dataSantri.filter(s => s.halaqah === h);
+                const siswaDiHalaqah = dataSantri.filter(s => s.halaqah === h || s.halaqah.toLowerCase() === hBersih.toLowerCase());
 
                 const matchHeader = h.toLowerCase().includes(q) || guruText.toLowerCase().includes(q);
                 const siswaTampil = matchHeader
@@ -1578,10 +1583,11 @@
                 if (q && !matchHeader && siswaTampil.length === 0) return '';
 
                 return `
-                    <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-sm flex flex-col">
-                        <div class="bg-slate-200 px-3 py-2 text-center border-b border-slate-300">
-                            <div class="font-black text-slate-800 text-xs uppercase tracking-wide">${h}</div>
+                    <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-sm flex flex-col relative group">
+                        <div class="bg-slate-200 px-3 py-2 text-center border-b border-slate-300 relative">
+                            <div class="font-black text-slate-800 text-xs uppercase tracking-wide">${hBersih}</div>
                             <div class="text-[10px] text-slate-600 font-semibold">Kelompok ${idx + 1} • ${siswaDiHalaqah.length} Siswa</div>
+                            <button onclick="adminHapusHalaqah('${h}')" title="Hapus Kelompok Ini" class="absolute top-1.5 right-2 text-rose-500 hover:text-rose-700 text-xs font-bold px-1.5 py-0.5 rounded bg-white/80 shadow-xs">&times;</button>
                         </div>
                         <div class="bg-emerald-50 px-3 py-2 border-b border-slate-300 text-[11px] space-y-0.5">
                             <div><span class="font-bold text-slate-600">GURU :</span> <strong class="text-emerald-800">${guruText}</strong></div>
