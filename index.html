@@ -276,8 +276,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Catatan Tambahan untuk Orang Tua</label>
-                        <textarea id="setoranCatatan" rows="2" placeholder="Contoh: Alhamdulillah lancar, tajwid mad wajib diperhatikan dan ditingkatkan lagi muroja'ahnya di rumah." class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Catatan Tambahan untuk Orang Tua / Siswa</label>
+                        <textarea id="setoranCatatan" rows="2" placeholder="Alhamdulillah tetap semangat setoran dan jangan lupa murojaah di rumah ya." class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none">Alhamdulillah tetap semangat setoran dan jangan lupa murojaah di rumah ya.</textarea>
                     </div>
 
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">
@@ -351,8 +351,13 @@
             <div id="panelGuruKelompok" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b pb-3">
                     <div>
-                        <h3 class="font-bold text-slate-800 text-base">📋 Pembagian Kelompok Tahfidz (Semua Siswa & Guru)</h3>
-                        <p class="text-xs text-slate-500">Daftar seluruh siswa beserta kelompok halaqah dan guru pembimbingnya.</p>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-slate-800 text-base">📋 Pembagian Kelompok Tahfidz (Semua Siswa & Guru)</h3>
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span> Real-Time
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500">Daftar seluruh siswa beserta kelompok halaqah dan guru pembimbingnya (sinkron otomatis secara real-time).</p>
                     </div>
                     <input type="text" id="guruCariKelompok" oninput="renderTabelPembagianKelompok('guruKelompokContainer', this.value)" placeholder="🔍 Cari siswa / guru / halaqah..." class="border border-slate-300 rounded-xl p-2 text-xs bg-white w-full sm:w-64">
                 </div>
@@ -550,8 +555,13 @@
             <div id="panelAdminKelompok" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
-                        <h3 class="font-bold text-slate-800 text-base">📋 Pembagian Kelompok Tahfidz</h3>
-                        <p class="text-xs text-slate-500">Ringkasan pembagian seluruh siswa berdasarkan kelompok halaqah dan guru pembimbing.</p>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-slate-800 text-base">📋 Pembagian Kelompok Tahfidz</h3>
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span> Real-Time
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500">Ringkasan pembagian seluruh siswa berdasarkan kelompok halaqah dan guru pembimbing (otomatis terbarui saat data diubah/dihapus).</p>
                     </div>
                     <div class="flex flex-wrap gap-2 w-full sm:w-auto">
                         <input type="text" id="adminCariKelompok" oninput="renderTabelPembagianKelompok('adminKelompokContainer', this.value)" placeholder="🔍 Cari siswa / guru / halaqah..." class="border border-slate-300 rounded-xl p-2 text-xs bg-white flex-grow sm:w-64">
@@ -676,6 +686,8 @@
             "111. Al-Lahab", "112. Al-Ikhlas", "113. Al-Falaq", "114. An-Nas"
         ];
 
+        const TEMPLATE_CATATAN_SETORAN = "Alhamdulillah tetap semangat setoran dan jangan lupa murojaah di rumah ya.";
+
         // =========================================================================
         // 3. STATE APLIKASI & SINKRONISASI REALTIME DATABASE
         // =========================================================================
@@ -694,6 +706,18 @@
                 selectSurah.innerHTML = DAFTAR_114_SURAH.map(s => `<option value="${s}">${s}</option>`).join('');
             }
         };
+
+        // Fungsi sinkronisasi khusus tampilan Pembagian Kelompok secara Real-Time
+        function sinkronkanPembagianKelompokRealtime() {
+            const adminContainer = document.getElementById('adminKelompokContainer');
+            if (adminContainer) {
+                renderTabelPembagianKelompok('adminKelompokContainer', document.getElementById('adminCariKelompok')?.value || '');
+            }
+            const guruContainer = document.getElementById('guruKelompokContainer');
+            if (guruContainer) {
+                renderTabelPembagianKelompok('guruKelompokContainer', document.getElementById('guruCariKelompok')?.value || '');
+            }
+        }
 
         // Listener Real-time ke path 'mutqin_data'
         db.ref('mutqin_data').on('value', (snapshot) => {
@@ -720,6 +744,7 @@
 
             // Perbarui semua tampilan UI secara real-time
             renderDropdownLogin();
+            sinkronkanPembagianKelompokRealtime();
             if (currentUser) {
                 if (currentUser.role === 'admin') renderSemuaAdmin();
                 if (currentUser.role === 'guru') renderSemuaGuru();
@@ -728,6 +753,8 @@
         });
 
         function simpanKeFirebase() {
+            // Langsung perbarui tampilan pembagian kelompok sebelum & sesudah write ke cloud
+            sinkronkanPembagianKelompokRealtime();
             db.ref('mutqin_data').set({
                 halaqah: dataHalaqah,
                 guru: dataGuru,
@@ -1014,7 +1041,8 @@
             const ayatSampai = document.getElementById('setoranAyatSampai').value;
             const nilai = Number(document.getElementById('setoranNilai').value);
             const predikatObj = dapatkanPredikat(nilai);
-            const catatan = document.getElementById('setoranCatatan').value.trim();
+            const catatanInput = document.getElementById('setoranCatatan').value.trim();
+            const catatan = catatanInput || TEMPLATE_CATATAN_SETORAN;
 
             const setoranBaru = {
                 id: 'st_' + Date.now(),
@@ -1036,6 +1064,7 @@
             dataSetoran.unshift(setoranBaru);
             simpanKeFirebase();
             this.reset();
+            document.getElementById('setoranCatatan').value = TEMPLATE_CATATAN_SETORAN;
             hitungAutoPredikat();
             alert('✅ Alhamdulillah, setoran berhasil disimpan dan terkirim ke akun Orang Tua!');
             switchTabGuru('riwayat');
@@ -1121,7 +1150,7 @@
                                     </div>`;
                         })()}
                         <p class="text-xs text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100">
-                            <strong class="text-emerald-700">Catatan Ustadz/Ustadzah:</strong> "${st.catatan || 'Alhamdulillah, terus istiqomah muroja\'ah di rumah.'}"
+                            <strong class="text-emerald-700">Catatan Ustadz/Ustadzah:</strong> "${st.catatan || TEMPLATE_CATATAN_SETORAN}"
                         </p>
                     </div>
 
@@ -1477,9 +1506,8 @@
             reader.readAsArrayBuffer(fileInput.files[0]);
         }
 
-
         // =========================================================================
-        // 8C. EDIT DATA SISWA & TABEL PEMBAGIAN KELOMPOK TAHFIDZ
+        // 8C. EDIT DATA SISWA & TABEL PEMBAGIAN KELOMPOK TAHFIDZ (REAL-TIME)
         // =========================================================================
         function bukaModalEditSiswa(id) {
             const s = dataSantri.find(item => item.id === id);
