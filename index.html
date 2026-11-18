@@ -51,9 +51,6 @@
         img { pointer-events: none; }
         @media print { body { display: none !important; } }
         #mutqinToast { transition: opacity .25s ease, transform .25s ease; }
-        .kartu-masuk { animation: kartuMasuk .28s ease both; }
-        @keyframes kartuMasuk { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-        .modal-scroll { max-height: 82vh; overflow-y: auto; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
@@ -109,13 +106,6 @@
                             <div>
                                 <h4 class="text-xs font-bold text-emerald-50">Validasi Orang Tua Real-Time</h4>
                                 <p class="text-[10px] text-emerald-200">Sinergi pemantauan hafalan antara madrasah dan rumah.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
-                            <span class="text-lg">🎙️</span>
-                            <div>
-                                <h4 class="text-xs font-bold text-emerald-50">Antrian Tasmi' & Syahadah 1–8</h4>
-                                <p class="text-[10px] text-emerald-200">Ujian sekali duduk per juz dengan predikat otomatis.</p>
                             </div>
                         </div>
                     </div>
@@ -208,7 +198,6 @@
                         <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Kartu Kendali Tahfidz Siswa</span>
                         <h2 id="profilSiswaNama" class="text-xl font-black text-slate-800">-</h2>
                         <p class="text-xs text-slate-500">Halaqah: <strong id="profilSiswaHalaqah" class="text-slate-700">-</strong> | Pembimbing: <strong id="profilSiswaGuru" class="text-slate-700">-</strong></p>
-                        <p class="text-xs text-slate-500 mt-0.5">Tingkatan: <strong id="profilSiswaSyahadah" class="text-emerald-700">-</strong></p>
                     </div>
                 </div>
                 <div class="flex gap-3 w-full sm:w-auto">
@@ -240,16 +229,6 @@
                 </div>
                 <div id="listSetoranSiswa" class="space-y-3"></div>
             </div>
-
-            <!-- RIWAYAT UJIAN & TASMI SISWA -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <div class="border-b pb-3">
-                    <h3 class="font-bold text-slate-800 text-base">📜 Riwayat Ujian Kenaikan &amp; Tasmi'</h3>
-                    <p class="text-xs text-slate-500">Catatan resmi hasil ujian kenaikan syahadah dan tasmi' sekali duduk ananda.</p>
-                </div>
-                <div id="listRiwayatUjianSiswa" class="space-y-3"></div>
-                <div id="listRiwayatTasmiSiswa" class="space-y-3"></div>
-            </div>
         </div>
 
         <!-- ========================================================= -->
@@ -270,7 +249,6 @@
                 <button onclick="switchTabGuru('santri')" id="tabGuruBtnSantri" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🎓 Siswa Bimbingan Saya</button>
                 <button onclick="switchTabGuru('kelompok')" id="tabGuruBtnKelompok" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📋 Pembagian Kelompok</button>
                 <button onclick="switchTabGuru('ujian')" id="tabGuruBtnUjian" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📜 Ujian Kenaikan</button>
-                <button onclick="switchTabGuru('tasmi')" id="tabGuruBtnTasmi" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🎙️ Tasmi'</button>
                 <button onclick="switchTabGuru('pengumuman')" id="tabGuruBtnPengumuman" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📢 Pengumuman</button>
             </nav>
 
@@ -373,14 +351,10 @@
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-sm">Daftarkan Siswa Baru ke Halaqah Saya</h3>
-                    <form id="formGuruTambahSantri" class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+                    <form id="formGuruTambahSantri" class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap Siswa</label>
                             <input type="text" id="guruInputNamaSantri" required placeholder="Contoh: Muhammad Fatih" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Tingkatan Syahadah</label>
-                            <select id="guruInputSyahadahSantri" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-semibold text-emerald-800"></select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">PIN Akses Siswa / Ortu</label>
@@ -391,10 +365,7 @@
                 </div>
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <h3 class="font-bold text-slate-800 text-sm">Daftar Siswa Bimbingan Saya</h3>
-                        <input type="text" id="guruCariSantri" oninput="renderSemuaGuru()" placeholder="🔍 Cari nama siswa..." class="border border-slate-300 rounded-lg p-2 text-xs bg-white sm:w-56">
-                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Daftar Siswa Bimbingan Saya</h3>
                     <div id="listSantriGuru" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
                 </div>
             </div>
@@ -416,15 +387,6 @@
                         <button onclick="exportPDFPembagianKelompok()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-xl text-xs">📄 Cetak / PDF Landscape</button>
                     </div>
                 </div>
-                <div class="flex flex-wrap items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl p-2.5">
-                    <span class="text-[11px] font-bold text-slate-600 uppercase">Mode Kelompok:</span>
-                    <select id="guruModeKelompok" onchange="ubahModeKelompok(this.value)" class="border border-slate-300 rounded-lg p-2 text-xs bg-white font-semibold text-emerald-800">
-                        <option value="halaqah">Halaqah (seperti biasa)</option>
-                        <option value="syahadah">Per Tingkatan Syahadah</option>
-                        <option value="gabungan">Gabungan Beda Syahadah</option>
-                    </select>
-                    <span class="text-[11px] text-slate-500 italic">Mode gabungan menyatukan siswa beda tingkatan dalam satu kelompok.</span>
-                </div>
                 <div id="guruKelompokContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
@@ -433,11 +395,10 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="font-bold text-slate-800 text-base">📜 Lembar Penilaian Ujian Kenaikan</h3>
-                        <p class="text-xs text-slate-500">Isi daftar siswa, surat yang diujikan, dan hasil (Naik / Menetap), lalu simpan ke database atau cetak PDF untuk ditandatangani pengampu & penguji.</p>
+                        <p class="text-xs text-slate-500">Isi daftar siswa, surat yang diujikan, dan hasil (Naik / Menetap), lalu cetak / download PDF untuk ditandatangani pengampu & penguji.</p>
                     </div>
                     <div class="grid grid-cols-1 sm:flex sm:flex-wrap gap-2 w-full sm:w-auto">
                         <button type="button" onclick="muatSiswaKeLembarUjian()" class="bg-slate-700 hover:bg-slate-800 text-white font-semibold px-3.5 py-2.5 rounded-xl text-xs">🔄 Isi Otomatis Siswa Saya</button>
-                        <button type="button" onclick="simpanUjianKeDatabase()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-sm">💾 Simpan ke Database</button>
                         <button type="button" onclick="exportPDFUjianKenaikan()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-sm">📄 Download / Cetak PDF</button>
                     </div>
                 </div>
@@ -462,24 +423,6 @@
                     </div>
                 </div>
 
-                <!-- OPSI RATA-RATA & PENAIKAN SYAHADAH -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label class="flex items-start gap-2.5 bg-white border border-slate-200 rounded-xl p-3 cursor-pointer hover:border-emerald-300 transition">
-                        <input type="checkbox" id="ujianTampilRata" onchange="ubahOpsiRataUjian(this.checked)" class="mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
-                        <span>
-                            <span class="block text-xs font-bold text-slate-700">Hitung &amp; Tampilkan Rata-rata</span>
-                            <span class="block text-[11px] text-slate-500">Default: tidak dihitung / tidak ditampilkan (layar &amp; PDF).</span>
-                        </span>
-                    </label>
-                    <label class="flex items-start gap-2.5 bg-white border border-slate-200 rounded-xl p-3 cursor-pointer hover:border-emerald-300 transition">
-                        <input type="checkbox" id="ujianAutoSyahadah" checked onchange="simpanDraftUjianGuru()" class="mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
-                        <span>
-                            <span class="block text-xs font-bold text-slate-700">Naikkan Syahadah Otomatis saat Disimpan</span>
-                            <span class="block text-[11px] text-slate-500">Status "Naik" → syahadah berikutnya, "Menetap" → tetap.</span>
-                        </span>
-                    </label>
-                </div>
-
                 <!-- RINGKASAN & PENCARIAN LEMBAR UJIAN -->
                 <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
                     <div class="flex flex-wrap gap-2 text-[11px] font-bold">
@@ -497,86 +440,9 @@
                     <button type="button" onclick="tambahBarisUjianKenaikan()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-3.5 py-2.5 rounded-xl text-xs">+ Tambah Baris Siswa</button>
                     <span class="text-[11px] text-slate-500 italic">* Setiap siswa dapat diisi 11–12 surat (atau ditambah/dikurangi) beserta nilai angkanya, lalu siap dicetak ke PDF.</span>
                 </div>
-
-                <!-- ARSIP UJIAN TERSIMPAN DI DATABASE -->
-                <div class="border-t border-slate-200 pt-4 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <h4 class="font-bold text-slate-800 text-sm">🗄️ Arsip Ujian Kenaikan Tersimpan (Database)</h4>
-                        <input type="text" id="ujianCariArsip" oninput="renderArsipUjian('guru')" placeholder="🔍 Cari siswa / level / penguji..." class="border border-slate-300 rounded-lg p-2 text-xs bg-white sm:w-64">
-                    </div>
-                    <div id="listArsipUjianGuru" class="space-y-2.5"></div>
-                </div>
             </div>
 
-            <!-- TAB GURU 6: TASMI' SEKALI DUDUK -->
-            <div id="panelGuruTasmi" class="hidden space-y-5">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="border-b pb-3">
-                        <h3 class="font-bold text-slate-800 text-base">🎙️ Antrian Tasmi' Sekali Duduk</h3>
-                        <p class="text-xs text-slate-500">Cari siswa dari <strong>seluruh data siswa</strong> (tidak terbatas kelompok), masukkan ke antrian, lalu uji setoran sekali duduk per juz.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3.5">
-                        <div class="lg:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Cari Siswa (Semua Halaqah &amp; Syahadah)</label>
-                            <input type="text" id="tasmiCariSiswaGuru" oninput="renderPencarianTasmi('guru')" placeholder="🔍 Ketik nama siswa / halaqah / syahadah..." class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
-                            <div id="hasilCariTasmiGuru" class="mt-2 space-y-1.5 max-h-56 overflow-y-auto"></div>
-                        </div>
-                        <div class="space-y-2.5">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Juz yang Diujikan</label>
-                                <select id="tasmiJuzDefaultGuru" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-bold text-emerald-800"></select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Atau Juz Lainnya (opsional)</label>
-                                <input type="text" id="tasmiJuzCustomGuru" placeholder="Contoh: Juz 28 / Juz 1-2" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
-                            </div>
-                            <p class="text-[11px] text-slate-500 italic">Kolom "Juz Lainnya" akan menggantikan pilihan di atas bila diisi.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
-                        <div class="flex flex-wrap gap-2 text-[11px] font-bold">
-                            <span class="bg-amber-50 border border-amber-200 text-amber-800 px-2.5 py-1.5 rounded-lg">⏳ Antri: <span id="tasmiStatAntriGuru">0</span></span>
-                            <span class="bg-blue-50 border border-blue-200 text-blue-800 px-2.5 py-1.5 rounded-lg">🎧 Diuji: <span id="tasmiStatProsesGuru">0</span></span>
-                            <span class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-2.5 py-1.5 rounded-lg">✅ Selesai: <span id="tasmiStatSelesaiGuru">0</span></span>
-                        </div>
-                        <div class="flex flex-wrap gap-2 sm:ml-auto">
-                            <select id="tasmiFilterStatusGuru" onchange="renderTasmi('guru')" class="border border-slate-300 rounded-lg p-2 text-xs bg-white">
-                                <option value="SEMUA">-- Semua Status --</option>
-                                <option value="Antri">Antri</option>
-                                <option value="Diuji">Sedang Diuji</option>
-                                <option value="Selesai">Selesai</option>
-                            </select>
-                            <input type="text" id="tasmiFilterNamaGuru" oninput="renderTasmi('guru')" placeholder="🔍 Cari di antrian..." class="border border-slate-300 rounded-lg p-2 text-xs bg-white sm:w-44">
-                            <button onclick="exportExcelTasmi()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded-lg text-xs">📊 Excel</button>
-                            <button onclick="exportPDFTasmi()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg text-xs">📄 PDF</button>
-                        </div>
-                    </div>
-
-                    <div id="listTasmiGuru" class="space-y-3"></div>
-                </div>
-
-                <!-- KRITERIA PENILAIAN TASMI -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <h3 class="font-bold text-slate-800 text-sm">📐 Kriteria Penilaian Tasmi' (Standar Lembaga)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
-                            <thead>
-                                <tr class="bg-emerald-50 text-emerald-900 border-b border-emerald-200">
-                                    <th class="p-2.5">Rentang Nilai</th>
-                                    <th class="p-2.5">Predikat</th>
-                                    <th class="p-2.5">Keterangan</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyKriteriaTasmiGuru" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
-                    <p class="text-[11px] text-slate-500 italic">Nilai akhir tasmi' = rata-rata nilai seluruh aspek (Kelancaran, Tajwid, Makhraj, Fashohah, Adab). Predikat muncul otomatis sebagaimana setoran harian.</p>
-                </div>
-            </div>
-
-            <!-- TAB GURU 7: PENGUMUMAN UNTUK SISWA -->
+            <!-- TAB GURU 6: PENGUMUMAN UNTUK SISWA -->
             <div id="panelGuruPengumuman" class="hidden space-y-5">
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <div>
@@ -655,8 +521,6 @@
                 <button onclick="switchTabAdmin('guru')" id="tabAdminBtnGuru" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">👤 Akun Guru</button>
                 <button onclick="switchTabAdmin('santri')" id="tabAdminBtnSantri" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🎓 Data Siswa</button>
                 <button onclick="switchTabAdmin('kelompok')" id="tabAdminBtnKelompok" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📋 Pembagian Kelompok</button>
-                <button onclick="switchTabAdmin('tasmi')" id="tabAdminBtnTasmi" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🎙️ Tasmi'</button>
-                <button onclick="switchTabAdmin('ujian')" id="tabAdminBtnUjian" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📜 Arsip Ujian</button>
                 <button onclick="switchTabAdmin('pengumuman')" id="tabAdminBtnPengumuman" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📢 Pengumuman</button>
                 <button onclick="switchTabAdmin('akun')" id="tabAdminBtnAkun" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🔒 Keamanan Admin</button>
             </nav>
@@ -714,7 +578,7 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <h3 class="font-bold text-slate-800 text-sm">Daftar Kelompok Halaqah Aktif</h3>
-                        <span class="text-[11px] text-slate-500">✏️ Nomor kelompok & ruang dapat diedit langsung di sini (tersimpan real-time).</span>
+                        <span class="text-[11px] text-slate-500">✏️ Nomor kelompok otomatis berurutan; jika diubah, kelompok lain otomatis bergeser mengikuti.</span>
                     </div>
                     <div id="adminListHalaqah" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
                 </div>
@@ -770,7 +634,7 @@
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-sm">Daftarkan Siswa Baru</h3>
-                    <form id="formAdminTambahSantri" class="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
+                    <form id="formAdminTambahSantri" class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap Siswa</label>
                             <input type="text" id="adminNamaSantri" required placeholder="Nama Siswa" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
@@ -778,10 +642,6 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Kelompok Halaqah</label>
                             <select id="adminHalaqahSantri" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white"></select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Tingkatan Syahadah</label>
-                            <select id="adminSyahadahSantri" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-semibold text-emerald-800"></select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">PIN Akses Siswa / Ortu</label>
@@ -795,20 +655,16 @@
                     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
                         <div>
                             <h3 class="font-bold text-slate-800 text-sm">Daftar Seluruh Siswa</h3>
-                            <p class="text-[11px] text-slate-500">Gunakan pencarian & filter halaqah/syahadah, centang untuk hapus massal, atau klik <strong>Info</strong> untuk rincian riwayat.</p>
+                            <p class="text-[11px] text-slate-500">Gunakan pencarian & filter halaqah, lalu centang beberapa siswa untuk menghapus sekaligus.</p>
                         </div>
                         <div class="flex flex-wrap gap-2 items-center w-full lg:w-auto">
-                            <input type="text" id="adminCariSantri" oninput="renderTabelAdminSantri()" placeholder="🔍 Cari nama siswa..." class="border border-slate-300 rounded-lg p-2 text-xs bg-white focus:ring-2 focus:ring-emerald-500 outline-none flex-grow sm:flex-grow-0 sm:w-44">
+                            <input type="text" id="adminCariSantri" oninput="renderTabelAdminSantri()" placeholder="🔍 Cari nama siswa..." class="border border-slate-300 rounded-lg p-2 text-xs bg-white focus:ring-2 focus:ring-emerald-500 outline-none flex-grow sm:flex-grow-0 sm:w-48">
                             <select id="adminFilterSantriHalaqah" onchange="renderTabelAdminSantri()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white">
                                 <option value="SEMUA">-- Semua Halaqah --</option>
-                            </select>
-                            <select id="adminFilterSantriSyahadah" onchange="renderTabelAdminSantri()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white">
-                                <option value="SEMUA">-- Semua Syahadah --</option>
                             </select>
                             <select id="adminUrutSantri" onchange="renderTabelAdminSantri()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white">
                                 <option value="nama">Urut: Nama (A-Z)</option>
                                 <option value="halaqah">Urut: Halaqah</option>
-                                <option value="syahadah">Urut: Syahadah</option>
                                 <option value="baru">Urut: Terbaru</option>
                             </select>
                             <button onclick="hapusSantriTerpilihAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white font-semibold px-3 py-2 rounded-lg text-xs">🗑️ Hapus Terpilih (<span id="jumlahTerpilihSantri">0</span>)</button>
@@ -824,7 +680,6 @@
                                     <th class="p-2.5">No</th>
                                     <th class="p-2.5">Nama Siswa</th>
                                     <th class="p-2.5">Halaqah</th>
-                                    <th class="p-2.5">Syahadah</th>
                                     <th class="p-2.5">PIN Akses</th>
                                     <th class="p-2.5 text-center">Aksi</th>
                                 </tr>
@@ -854,128 +709,7 @@
                         <button onclick="exportPDFPembagianKelompok()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-xl text-xs">📄 Cetak / PDF Landscape</button>
                     </div>
                 </div>
-
-                <!-- MODE PENGELOMPOKAN: HALAQAH / SYAHADAH / GABUNGAN -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                        <span class="text-[11px] font-bold text-slate-600 uppercase">Mode Pengelompokan:</span>
-                        <select id="adminModeKelompok" onchange="ubahModeKelompok(this.value)" class="border border-slate-300 rounded-lg p-2 text-xs bg-white font-semibold text-emerald-800">
-                            <option value="halaqah">Halaqah (seperti biasa)</option>
-                            <option value="syahadah">Per Tingkatan Syahadah (hasil ujian)</option>
-                            <option value="gabungan">Gabungan Beda Syahadah / Tingkatan</option>
-                        </select>
-                        <span class="text-[11px] text-slate-500 italic sm:ml-auto">Tersimpan real-time untuk admin &amp; guru.</span>
-                    </div>
-                    <div id="opsiGabunganKelompok" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Jumlah Kelompok Gabungan</label>
-                            <input type="number" min="1" max="12" id="adminJumlahGabungan" value="3" onchange="ubahJumlahGabungan(this.value)" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-white font-bold text-emerald-700">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Cara Pembagian</label>
-                            <select id="adminMetodeGabungan" onchange="ubahMetodeGabungan(this.value)" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-white">
-                                <option value="acak">Acak Merata (beda tingkatan bercampur)</option>
-                                <option value="urut">Berurutan Sesuai Syahadah</option>
-                            </select>
-                        </div>
-                        <div>
-                            <button onclick="acakUlangGabungan()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-lg text-xs">🔀 Acak Ulang Pembagian</button>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="adminKelompokContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </div>
-
-            <!-- TAB ADMIN: TASMI' SEKALI DUDUK -->
-            <div id="panelAdminTasmi" class="hidden space-y-5">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="border-b pb-3">
-                        <h3 class="font-bold text-slate-800 text-base">🎙️ Manajemen Tasmi' Sekali Duduk (Seluruh Siswa)</h3>
-                        <p class="text-xs text-slate-500">Admin & guru dapat mencari siswa dari semua halaqah, menambahkan ke antrian, memilih juz, lalu menilai ujian sekali duduk.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 bg-slate-50 border border-slate-200 rounded-xl p-3.5">
-                        <div class="lg:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Cari Siswa (Semua Data Siswa)</label>
-                            <input type="text" id="tasmiCariSiswaAdmin" oninput="renderPencarianTasmi('admin')" placeholder="🔍 Ketik nama siswa / halaqah / syahadah..." class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
-                            <div id="hasilCariTasmiAdmin" class="mt-2 space-y-1.5 max-h-56 overflow-y-auto"></div>
-                        </div>
-                        <div class="space-y-2.5">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Juz yang Diujikan</label>
-                                <select id="tasmiJuzDefaultAdmin" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-bold text-emerald-800"></select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Atau Juz Lainnya (opsional)</label>
-                                <input type="text" id="tasmiJuzCustomAdmin" placeholder="Contoh: Juz 28 / Juz 1-2" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Penguji (opsional)</label>
-                                <input type="text" id="tasmiPengujiAdmin" placeholder="Nama ustadz penguji" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
-                        <div class="flex flex-wrap gap-2 text-[11px] font-bold">
-                            <span class="bg-amber-50 border border-amber-200 text-amber-800 px-2.5 py-1.5 rounded-lg">⏳ Antri: <span id="tasmiStatAntriAdmin">0</span></span>
-                            <span class="bg-blue-50 border border-blue-200 text-blue-800 px-2.5 py-1.5 rounded-lg">🎧 Diuji: <span id="tasmiStatProsesAdmin">0</span></span>
-                            <span class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-2.5 py-1.5 rounded-lg">✅ Selesai: <span id="tasmiStatSelesaiAdmin">0</span></span>
-                        </div>
-                        <div class="flex flex-wrap gap-2 sm:ml-auto">
-                            <select id="tasmiFilterStatusAdmin" onchange="renderTasmi('admin')" class="border border-slate-300 rounded-lg p-2 text-xs bg-white">
-                                <option value="SEMUA">-- Semua Status --</option>
-                                <option value="Antri">Antri</option>
-                                <option value="Diuji">Sedang Diuji</option>
-                                <option value="Selesai">Selesai</option>
-                            </select>
-                            <input type="text" id="tasmiFilterNamaAdmin" oninput="renderTasmi('admin')" placeholder="🔍 Cari di antrian..." class="border border-slate-300 rounded-lg p-2 text-xs bg-white sm:w-44">
-                            <button onclick="hapusTasmiTerpilih()" class="bg-rose-600 hover:bg-rose-700 text-white font-semibold px-3 py-2 rounded-lg text-xs">🗑️ Hapus Terpilih (<span id="jumlahTerpilihTasmi">0</span>)</button>
-                            <button onclick="exportExcelTasmi()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded-lg text-xs">📊 Excel</button>
-                            <button onclick="exportPDFTasmi()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-lg text-xs">📄 PDF</button>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2 text-[11px] text-slate-500">
-                        <input type="checkbox" id="checkAllTasmi" onchange="toggleSemuaTasmi(this)" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
-                        <label for="checkAllTasmi" class="cursor-pointer font-semibold">Pilih semua antrian yang tampil</label>
-                    </div>
-
-                    <div id="listTasmiAdmin" class="space-y-3"></div>
-                </div>
-
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <h3 class="font-bold text-slate-800 text-sm">📐 Kriteria Penilaian Tasmi' (Standar Lembaga)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
-                            <thead>
-                                <tr class="bg-emerald-50 text-emerald-900 border-b border-emerald-200">
-                                    <th class="p-2.5">Rentang Nilai</th>
-                                    <th class="p-2.5">Predikat</th>
-                                    <th class="p-2.5">Keterangan</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyKriteriaTasmiAdmin" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
-                    <p class="text-[11px] text-slate-500 italic">Nilai akhir tasmi' = rata-rata nilai seluruh aspek (Kelancaran, Tajwid, Makhraj, Fashohah, Adab). Predikat muncul otomatis sebagaimana setoran harian.</p>
-                </div>
-            </div>
-
-            <!-- TAB ADMIN: ARSIP UJIAN KENAIKAN -->
-            <div id="panelAdminUjian" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-base">🗄️ Arsip Hasil Ujian Kenaikan (Database)</h3>
-                        <p class="text-xs text-slate-500">Seluruh lembar ujian yang disimpan guru tersimpan di sini lengkap dengan nilai, predikat, dan perubahan syahadah.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                        <input type="text" id="adminCariArsipUjian" oninput="renderArsipUjian('admin')" placeholder="🔍 Cari siswa / level / penguji..." class="border border-slate-300 rounded-xl p-2 text-xs bg-white flex-grow sm:w-64">
-                        <button onclick="exportExcelArsipUjian()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded-xl text-xs">📊 Export Excel</button>
-                    </div>
-                </div>
-                <div id="listArsipUjianAdmin" class="space-y-2.5"></div>
             </div>
 
             <!-- TAB ADMIN 4C: PENGUMUMAN UNTUK GURU & SISWA -->
@@ -1058,7 +792,7 @@
         <div id="pdfKelompokContainer" style="display: none; background: #fff; padding: 10px; color: #000; font-family: sans-serif;">
             <div style="text-align: center; border-bottom: 2px solid #065f46; padding-bottom: 6px; margin-bottom: 10px;">
                 <h2 style="font-size: 13pt; font-weight: bold; margin: 0; color: #065f46;">MUTQIN - DAFTAR PEMBAGIAN KELOMPOK TAHFIDZ</h2>
-                <p style="font-size: 8.5pt; margin: 3px 0 0 0; color: #444;"><span id="pdfKelompokMode"></span> • Dicetak pada: <span id="pdfKelompokTanggal"></span></p>
+                <p style="font-size: 8.5pt; margin: 3px 0 0 0; color: #444;">Dicetak pada: <span id="pdfKelompokTanggal"></span></p>
             </div>
             <div id="pdfKelompokContent"></div>
         </div>
@@ -1085,36 +819,40 @@
             </div>
         </div>
 
-        <!-- WADAH RENDERING PDF TASMI' -->
-        <div id="pdfTasmiContainer" style="display: none; background: #fff; padding: 14px; color: #000; font-family: sans-serif;">
-            <div style="text-align: center; border-bottom: 2px solid #065f46; padding-bottom: 8px; margin-bottom: 12px;">
-                <h2 style="font-size: 14pt; font-weight: bold; margin: 0; color: #065f46;">MUTQIN - BERITA ACARA TASMI' SEKALI DUDUK</h2>
-                <p style="font-size: 9pt; margin: 4px 0 0 0; color: #444;">Dicetak pada: <span id="pdfTasmiTanggal"></span></p>
-            </div>
-            <table class="pdf-table" style="font-size: 8.5pt;">
-                <thead>
-                    <tr>
-                        <th style="width: 4%; text-align:center;">No</th>
-                        <th style="width: 17%;">Nama Siswa</th>
-                        <th style="width: 12%;">Syahadah</th>
-                        <th style="width: 12%;">Halaqah</th>
-                        <th style="width: 8%;">Juz</th>
-                        <th style="width: 10%;">Tanggal</th>
-                        <th style="width: 13%;">Penguji</th>
-                        <th style="width: 7%; text-align:center;">Nilai</th>
-                        <th style="width: 17%;">Predikat &amp; Status</th>
-                    </tr>
-                </thead>
-                <tbody id="tbodyPdfTasmi"></tbody>
-            </table>
-            <div id="pdfTasmiRincian" style="margin-top: 12px;"></div>
-        </div>
-
     </main>
+
+    <!-- MODAL EDIT DATA GURU -->
+    <div id="modalEditGuru" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-slate-800 text-base">✏️ Edit Akun Guru Pembimbing</h3>
+                <button type="button" onclick="tutupModalEditGuru()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+            </div>
+            <form id="formEditGuru" class="space-y-3.5">
+                <input type="hidden" id="editGuruId">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Ustadz / Ustadzah</label>
+                    <input type="text" id="editGuruNama" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Kelompok Halaqah</label>
+                    <select id="editGuruHalaqah" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Password / PIN Guru</label>
+                    <input type="text" id="editGuruPin" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="tutupModalEditGuru()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-xs font-semibold hover:bg-slate-50">Batal</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm">💾 Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- MODAL EDIT DATA SISWA -->
     <div id="modalEditSiswa" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4 modal-scroll">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="font-bold text-slate-800 text-base">✏️ Edit Data Siswa</h3>
                 <button onclick="tutupModalEditSiswa()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
@@ -1130,10 +868,6 @@
                     <select id="editSiswaHalaqah" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none"></select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tingkatan Syahadah</label>
-                    <select id="editSiswaSyahadah" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-semibold text-emerald-800 focus:ring-2 focus:ring-emerald-500 outline-none"></select>
-                </div>
-                <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">PIN / Kode Akses Siswa</label>
                     <input type="text" id="editSiswaPin" required class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
@@ -1142,23 +876,6 @@
                     <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm">💾 Simpan Perubahan</button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- MODAL INFO / RINCIAN RIWAYAT SISWA -->
-    <div id="modalInfoSiswa" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-3xl w-full p-5 sm:p-6 space-y-4 modal-scroll">
-            <div class="flex justify-between items-start gap-3 border-b pb-3">
-                <div>
-                    <h3 class="font-bold text-slate-800 text-base">ℹ️ Info &amp; Rincian Riwayat Siswa</h3>
-                    <p id="infoSiswaSub" class="text-xs text-slate-500 mt-0.5"></p>
-                </div>
-                <button onclick="tutupModalInfoSiswa()" class="text-slate-400 hover:text-slate-600 font-bold text-lg leading-none">&times;</button>
-            </div>
-            <div id="isiInfoSiswa" class="space-y-4"></div>
-            <div class="flex justify-end pt-1">
-                <button onclick="tutupModalInfoSiswa()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-xs font-semibold hover:bg-slate-50">Tutup</button>
-            </div>
         </div>
     </div>
 
@@ -1280,59 +997,6 @@
         const TEMPLATE_CATATAN_SETORAN = "Alhamdulillah tetap semangat setoran dan jangan lupa murojaah di rumah ya.";
 
         // =========================================================================
-        // 2B. TINGKATAN SYAHADAH (9 TINGKATAN) & ASPEK PENILAIAN TASMI'
-        // =========================================================================
-        const DAFTAR_SYAHADAH = [
-            'Syahadah 1', 'Syahadah 2', 'Syahadah 3', 'Syahadah 4', 'Syahadah 5',
-            'Syahadah 6', 'Syahadah 7', 'Syahadah 8', 'Ziyadah'
-        ];
-
-        function normalisasiSyahadah(nilai) {
-            const teks = String(nilai === undefined || nilai === null ? '' : nilai).trim();
-            if (!teks) return DAFTAR_SYAHADAH[0];
-            const cocok = DAFTAR_SYAHADAH.find(s => s.toLowerCase() === teks.toLowerCase());
-            if (cocok) return cocok;
-            if (/ziyadah/i.test(teks)) return 'Ziyadah';
-            const angka = teks.match(/([1-8])/);
-            if (angka) return 'Syahadah ' + angka[1];
-            return DAFTAR_SYAHADAH[0];
-        }
-
-        function syahadahSiswa(s) {
-            return normalisasiSyahadah(s && s.syahadah);
-        }
-
-        function syahadahBerikutnya(nilai) {
-            const sekarang = normalisasiSyahadah(nilai);
-            const idx = DAFTAR_SYAHADAH.indexOf(sekarang);
-            if (idx === -1 || idx >= DAFTAR_SYAHADAH.length - 1) return DAFTAR_SYAHADAH[DAFTAR_SYAHADAH.length - 1];
-            return DAFTAR_SYAHADAH[idx + 1];
-        }
-
-        function badgeSyahadahHtml(nilai) {
-            const s = normalisasiSyahadah(nilai);
-            const warna = s === 'Ziyadah'
-                ? 'bg-purple-100 text-purple-800 border-purple-300'
-                : 'bg-emerald-100 text-emerald-800 border-emerald-300';
-            return `<span class="inline-block px-2 py-0.5 rounded-full border text-[10px] font-bold ${warna}">${escapeHtmlMutqin(s)}</span>`;
-        }
-
-        function opsiSyahadahHtml(terpilih) {
-            const aktif = normalisasiSyahadah(terpilih);
-            return DAFTAR_SYAHADAH.map(s => `<option value="${s}" ${s === aktif ? 'selected' : ''}>${s}</option>`).join('');
-        }
-
-        const ASPEK_TASMI = [
-            { key: 'kelancaran', label: 'Kelancaran / Tahfidz', bobot: 'Kemampuan menyelesaikan satu juz sekali duduk tanpa terputus.' },
-            { key: 'tajwid', label: 'Tajwid', bobot: 'Ketepatan hukum bacaan: mad, ghunnah, idgham, waqaf & ibtida\'.' },
-            { key: 'makhraj', label: 'Makhrajul Huruf', bobot: 'Kejelasan tempat keluarnya huruf dan sifat-sifatnya.' },
-            { key: 'fashohah', label: 'Fashohah & Tartil', bobot: 'Ke fasihan lafazh, irama tartil, dan keindahan bacaan.' },
-            { key: 'adab', label: 'Adab & Kesiapan', bobot: 'Adab tilawah, ketenangan, dan kesiapan mental saat tasmi\'.' }
-        ];
-
-        const DAFTAR_JUZ_TASMI = Array.from({ length: 30 }, (_, i) => 'Juz ' + (30 - i));
-
-        // =========================================================================
         // 3. STATE APLIKASI & SINKRONISASI REALTIME DATABASE
         // =========================================================================
         let dataHalaqah = [];
@@ -1341,14 +1005,10 @@
         let dataSantri = [];
         let dataSetoran = [];
         let dataPengumuman = [];
-        let dataTasmi = [];      // Antrian & hasil tasmi' sekali duduk
-        let dataUjian = [];      // Arsip lembar ujian kenaikan tersimpan
-        let pengaturanKelompok = { mode: 'halaqah', jumlahGabungan: 3, metodeGabungan: 'acak', seedGabungan: 1 };
         let passwordAdmin = '@123456'; // Default sesuai permintaan Anda
 
         let currentUser = null; // { role: 'admin' | 'guru' | 'siswa', data: ... }
         let barisUjianKenaikan = []; // State baris lembar ujian kenaikan
-        let opsiRataUjian = false;   // Default: rata-rata TIDAK dihitung / ditampilkan
 
         // Muat dropdown 114 surah saat startup
         window.onload = function() {
@@ -1356,53 +1016,7 @@
             if (selectSurah) {
                 selectSurah.innerHTML = DAFTAR_114_SURAH.map(namaSurah => `<option value="${namaSurah}">${namaSurah}</option>`).join('');
             }
-            isiDropdownSyahadahStatis();
-            isiDropdownJuzTasmi();
-            renderKriteriaTasmi();
         };
-
-        function isiDropdownSyahadahStatis() {
-            ['guruInputSyahadahSantri', 'adminSyahadahSantri', 'editSiswaSyahadah'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = opsiSyahadahHtml(DAFTAR_SYAHADAH[0]);
-            });
-            const filter = document.getElementById('adminFilterSantriSyahadah');
-            if (filter) {
-                filter.innerHTML = `<option value="SEMUA">-- Semua Syahadah --</option>` + DAFTAR_SYAHADAH.map(s => `<option value="${s}">${s}</option>`).join('');
-            }
-        }
-
-        function isiDropdownJuzTasmi() {
-            ['tasmiJuzDefaultGuru', 'tasmiJuzDefaultAdmin'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = DAFTAR_JUZ_TASMI.map(j => `<option value="${j}">${j}</option>`).join('');
-            });
-        }
-
-        function renderKriteriaTasmi() {
-            const rentang = [
-                { min: 95, max: 100 }, { min: 90, max: 94 }, { min: 80, max: 89 },
-                { min: 75, max: 79 }, { min: 60, max: 74 }, { min: 0, max: 59 }
-            ];
-            const html = rentang.map(r => {
-                const p = dapatkanPredikat(r.min === 0 ? 50 : r.min);
-                return `
-                    <tr>
-                        <td class="p-2.5 font-bold text-slate-700 whitespace-nowrap">${r.min} – ${r.max}</td>
-                        <td class="p-2.5">
-                            <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] font-bold ${p.badge}">
-                                <span class="font-arab text-sm leading-none">${p.arab}</span><span>${p.latin}</span>
-                            </span>
-                        </td>
-                        <td class="p-2.5 text-slate-600">${p.keterangan}</td>
-                    </tr>
-                `;
-            }).join('');
-            ['tbodyKriteriaTasmiGuru', 'tbodyKriteriaTasmiAdmin'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = html;
-            });
-        }
 
         // Fungsi sinkronisasi khusus tampilan Pembagian Kelompok secara Real-Time
         function sinkronkanPembagianKelompokRealtime() {
@@ -1423,13 +1037,11 @@
                 dataHalaqah = val.halaqah || ['Halaqah Juz 30', 'Halaqah Juz 29'];
                 dataInfoHalaqah = val.info_halaqah || {};
                 dataGuru = val.guru || [];
-                dataSantri = (val.santri || []).map(s => ({ ...s, syahadah: normalisasiSyahadah(s.syahadah) }));
+                dataSantri = val.santri || [];
                 dataSetoran = (val.setoran || []).map(st => ({ ...st, surah: bersihNomorSurah(st.surah) }));
                 dataPengumuman = val.pengumuman || [];
-                dataTasmi = val.tasmi || [];
-                dataUjian = val.ujian || [];
-                pengaturanKelompok = Object.assign({ mode: 'halaqah', jumlahGabungan: 3, metodeGabungan: 'acak', seedGabungan: 1 }, val.pengaturan_kelompok || {});
                 passwordAdmin = val.password_admin || '@123456';
+                rapikanNomorSemuaHalaqah();
             } else {
                 // Data awal otomatis agar aplikasi siap uji coba
                 dataHalaqah = ['Halaqah Abu Bakar', 'Halaqah Umar Bin Khattab'];
@@ -1441,13 +1053,10 @@
                     { id: 'g1', nama: 'Ustadz Abdullah', halaqah: 'Halaqah Abu Bakar', pin: '123456' }
                 ];
                 dataSantri = [
-                    { id: 's1', nama: 'Ahmad Zaki', halaqah: 'Halaqah Abu Bakar', pin: '12345', syahadah: 'Syahadah 1' }
+                    { id: 's1', nama: 'Ahmad Zaki', halaqah: 'Halaqah Abu Bakar', pin: '12345' }
                 ];
                 dataSetoran = [];
                 dataPengumuman = [];
-                dataTasmi = [];
-                dataUjian = [];
-                pengaturanKelompok = { mode: 'halaqah', jumlahGabungan: 3, metodeGabungan: 'acak', seedGabungan: 1 };
                 passwordAdmin = '@123456';
                 simpanKeFirebase();
             }
@@ -1455,7 +1064,6 @@
             // Perbarui semua tampilan UI secara real-time
             renderDropdownLogin();
             sinkronkanPembagianKelompokRealtime();
-            sinkronkanModeKelompokUi();
             if (currentUser) {
                 if (currentUser.role === 'admin') renderSemuaAdmin();
                 if (currentUser.role === 'guru') renderSemuaGuru();
@@ -1473,9 +1081,6 @@
                 santri: dataSantri,
                 setoran: dataSetoran,
                 pengumuman: dataPengumuman,
-                tasmi: dataTasmi,
-                ujian: dataUjian,
-                pengaturan_kelompok: pengaturanKelompok,
                 password_admin: passwordAdmin
             });
         }
@@ -1520,7 +1125,7 @@
             const selSantri = document.getElementById('loginNamaSiswa');
             const filtered = dataSantri.filter(s => s.halaqah === halaqah);
             selSantri.innerHTML = filtered.length
-                ? filtered.map(s => `<option value="${s.id}">${escapeHtmlMutqin(s.nama)} — ${escapeHtmlMutqin(syahadahSiswa(s))}</option>`).join('')
+                ? filtered.map(s => `<option value="${s.id}">${escapeHtmlMutqin(s.nama)}</option>`).join('')
                 : `<option value="">-- Belum ada siswa di halaqah ini --</option>`;
         }
 
@@ -1674,15 +1279,14 @@
         // 6. PANEL GURU PEMBIMBING (FASE B)
         // =========================================================================
         function switchTabGuru(tab) {
-            ['panelGuruInput', 'panelGuruRiwayat', 'panelGuruSantri', 'panelGuruKelompok', 'panelGuruUjian', 'panelGuruTasmi', 'panelGuruPengumuman'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            ['tabGuruBtnInput', 'tabGuruBtnRiwayat', 'tabGuruBtnSantri', 'tabGuruBtnKelompok', 'tabGuruBtnUjian', 'tabGuruBtnTasmi', 'tabGuruBtnPengumuman'].forEach(id => {
+            ['panelGuruInput', 'panelGuruRiwayat', 'panelGuruSantri', 'panelGuruKelompok', 'panelGuruUjian', 'panelGuruPengumuman'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['tabGuruBtnInput', 'tabGuruBtnRiwayat', 'tabGuruBtnSantri', 'tabGuruBtnKelompok', 'tabGuruBtnUjian', 'tabGuruBtnPengumuman'].forEach(id => {
                 document.getElementById(id).className = "px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition";
             });
             document.getElementById('panelGuru' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
             document.getElementById('tabGuruBtn' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition";
             if (tab === 'kelompok') renderTabelPembagianKelompok('guruKelompokContainer', document.getElementById('guruCariKelompok')?.value || '');
-            if (tab === 'ujian') { renderTabelUjianKenaikan(); renderArsipUjian('guru'); }
-            if (tab === 'tasmi') { renderPencarianTasmi('guru'); renderTasmi('guru'); renderKriteriaTasmi(); }
+            if (tab === 'ujian') renderTabelUjianKenaikan();
             if (tab === 'pengumuman') renderPengumumanGuru();
         }
 
@@ -1697,34 +1301,28 @@
             // Populate dropdown santri di form input setoran
             const selSantri = document.getElementById('setoranSiswaId');
             selSantri.innerHTML = santriBimbingan.length
-                ? santriBimbingan.map(s => `<option value="${s.id}">${escapeHtmlMutqin(s.nama)} — ${escapeHtmlMutqin(syahadahSiswa(s))}</option>`).join('')
+                ? santriBimbingan.map(s => `<option value="${s.id}">${escapeHtmlMutqin(s.nama)}</option>`).join('')
                 : `<option value="">-- Daftarkan siswa dulu di tab Siswa Bimbingan --</option>`;
 
             // Render daftar santri di tab Kelola Santri
-            const kataSantri = (document.getElementById('guruCariSantri')?.value || '').trim().toLowerCase();
-            const santriTampil = santriBimbingan.filter(s => !kataSantri || (s.nama || '').toLowerCase().includes(kataSantri));
             const listSantriDiv = document.getElementById('listSantriGuru');
-            listSantriDiv.innerHTML = santriTampil.length
-                ? santriTampil.map(s => `
-                    <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 space-y-2 text-xs kartu-masuk">
+            listSantriDiv.innerHTML = santriBimbingan.length
+                ? santriBimbingan.map(s => `
+                    <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center text-xs">
                         <div>
                             <strong class="text-slate-800 text-sm block">${escapeHtmlMutqin(s.nama)}</strong>
-                            <div class="mt-1">${badgeSyahadahHtml(syahadahSiswa(s))}</div>
-                            <span class="text-slate-500 block mt-1">PIN Akses: <code class="bg-white px-1.5 py-0.5 rounded border font-bold text-emerald-700">${escapeHtmlMutqin(s.pin)}</code></span>
+                            <span class="text-slate-500">PIN Akses: <code class="bg-white px-1.5 py-0.5 rounded border font-bold text-emerald-700">${escapeHtmlMutqin(s.pin)}</code></span>
                         </div>
-                        <div class="flex items-center flex-wrap gap-2 border-t border-slate-200 pt-2">
-                            <button onclick="bukaModalInfoSiswa('${s.id}')" class="text-emerald-700 font-bold hover:underline">Info</button>
+                        <div class="flex items-center gap-2">
                             <button onclick="bukaModalEditSiswa('${s.id}')" class="text-blue-600 font-bold hover:underline">Edit</button>
                             <button onclick="hapusSantri('${s.id}')" class="text-red-500 font-bold hover:underline">Hapus</button>
                         </div>
                     </div>
                 `).join('')
-                : `<p class="text-xs text-slate-400 italic">${santriBimbingan.length ? 'Nama siswa yang dicari tidak ditemukan.' : 'Belum ada siswa di kelompok halaqah ini.'}</p>`;
+                : `<p class="text-xs text-slate-400 italic">Belum ada siswa di kelompok halaqah ini.</p>`;
 
             renderTabelPembagianKelompok('guruKelompokContainer', document.getElementById('guruCariKelompok')?.value || '');
             renderPengumumanGuru();
-            renderTasmi('guru');
-            renderArsipUjian('guru');
             // Render tabel riwayat setoran halaqah guru ini
             const setoranHalaqah = dataSetoran.filter(st => st.halaqah === guru.halaqah);
             const tbody = document.getElementById('tbodySetoranGuru');
@@ -1803,18 +1401,15 @@
             const guru = currentUser.data;
             const nama = document.getElementById('guruInputNamaSantri').value.trim();
             const pin = document.getElementById('guruInputPinSantri').value.trim();
-            const syahadah = normalisasiSyahadah(document.getElementById('guruInputSyahadahSantri').value);
 
             dataSantri.push({
                 id: 's_' + Date.now(),
                 nama: nama,
                 halaqah: guru.halaqah,
-                pin: pin,
-                syahadah: syahadah
+                pin: pin
             });
             simpanKeFirebase();
             this.reset();
-            isiDropdownSyahadahStatis();
             alert('Siswa berhasil ditambahkan ke halaqah Anda!');
         };
 
@@ -1837,18 +1432,14 @@
         // =========================================================================
         function renderDashboardSiswa() {
             if (!currentUser || currentUser.role !== 'siswa') return;
-            const santriTerbaru = dataSantri.find(s => s.id === currentUser.data.id) || currentUser.data;
-            currentUser.data = santriTerbaru;
-            const santri = santriTerbaru;
+            const santri = currentUser.data;
             const guruObj = dataGuru.find(g => g.halaqah === santri.halaqah);
 
             document.getElementById('profilSiswaNama').innerText = santri.nama;
             document.getElementById('profilSiswaHalaqah').innerText = santri.halaqah;
             document.getElementById('profilSiswaGuru').innerText = guruObj ? guruObj.nama : '-';
-            document.getElementById('profilSiswaSyahadah').innerText = syahadahSiswa(santri);
 
             renderPengumumanSiswa();
-            renderRiwayatUjianSiswa(santri.id);
 
             const riwayat = dataSetoran.filter(st => st.santriId === santri.id);
             const belumValidasi = riwayat.filter(st => !st.validasi_ortu).length;
@@ -1904,60 +1495,6 @@
             `).join('');
         }
 
-        function renderRiwayatUjianSiswa(santriId) {
-            const wadahUjian = document.getElementById('listRiwayatUjianSiswa');
-            const wadahTasmi = document.getElementById('listRiwayatTasmiSiswa');
-            if (!wadahUjian || !wadahTasmi) return;
-
-            const ujianSiswa = [];
-            dataUjian.forEach(lembar => {
-                (lembar.baris || []).forEach(b => {
-                    if (b.santriId === santriId) ujianSiswa.push({ lembar: lembar, baris: b });
-                });
-            });
-
-            wadahUjian.innerHTML = ujianSiswa.length
-                ? `<h4 class="text-xs font-bold text-slate-600 uppercase">Hasil Ujian Kenaikan</h4>` + ujianSiswa.map(item => {
-                    const b = item.baris;
-                    const rata = hitungRataUjianSiswa(b.daftarSurat);
-                    return `
-                        <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-1.5">
-                            <div class="flex flex-wrap items-center gap-2 text-[11px]">
-                                <span class="font-bold text-slate-700">📅 ${escapeHtmlMutqin(item.lembar.tempatTanggal || item.lembar.tanggalSimpan || '-')}</span>
-                                ${badgeSyahadahHtml(b.syahadahAwal)}
-                                <span class="text-slate-400">→</span>
-                                ${badgeSyahadahHtml(b.syahadahBaru || b.syahadahAwal)}
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${b.status === 'Naik' ? 'bg-emerald-600 text-white' : b.status === 'Menetap' ? 'bg-amber-500 text-white' : 'bg-slate-300 text-slate-700'}">${escapeHtmlMutqin(b.status || 'Belum ditentukan')}</span>
-                            </div>
-                            <p class="text-[11px] text-slate-600">Penguji: <strong>${escapeHtmlMutqin(item.lembar.penguji || '-')}</strong> • Pengampu: <strong>${escapeHtmlMutqin(item.lembar.pengampu || '-')}</strong>${item.lembar.tampilRata && rata !== null ? ` • Rata-rata: <strong>${rata}</strong>` : ''}</p>
-                            <div class="flex flex-wrap gap-1.5">
-                                ${(b.daftarSurat || []).filter(x => x.surat || x.nilai !== '').map(x => `<span class="text-[10px] bg-white border border-slate-200 rounded-lg px-2 py-0.5">${escapeHtmlMutqin(bersihNomorSurah(x.surat) || '-')} : <strong>${escapeHtmlMutqin(x.nilai === '' ? '-' : x.nilai)}</strong></span>`).join('')}
-                            </div>
-                        </div>
-                    `;
-                }).join('')
-                : `<p class="text-xs text-slate-400 italic">Belum ada arsip hasil ujian kenaikan.</p>`;
-
-            const tasmiSiswa = dataTasmi.filter(t => t.santriId === santriId);
-            wadahTasmi.innerHTML = tasmiSiswa.length
-                ? `<h4 class="text-xs font-bold text-slate-600 uppercase pt-2">Riwayat Tasmi' Sekali Duduk</h4>` + tasmiSiswa.map(t => {
-                    const nilaiAkhir = hitungNilaiTasmi(t);
-                    const p = nilaiAkhir !== null ? dapatkanPredikat(nilaiAkhir) : null;
-                    return `
-                        <div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1.5">
-                            <div class="flex flex-wrap items-center gap-2 text-[11px]">
-                                <span class="font-bold text-emerald-800">🎙️ ${escapeHtmlMutqin(t.juz || '-')}</span>
-                                <span class="text-slate-500">📅 ${escapeHtmlMutqin(t.tanggalUji || t.tanggalDaftar || '-')}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${t.status === 'Selesai' ? 'bg-emerald-600 text-white' : t.status === 'Diuji' ? 'bg-blue-600 text-white' : 'bg-amber-500 text-white'}">${escapeHtmlMutqin(t.status)}</span>
-                            </div>
-                            ${p ? `<div class="text-xs">Nilai Akhir: <strong>${nilaiAkhir}</strong> — <span class="font-arab text-sm">${p.arab}</span> (${p.latin})</div>` : `<div class="text-xs text-slate-500 italic">Menunggu penilaian penguji.</div>`}
-                            ${t.catatan ? `<p class="text-[11px] text-slate-600">Catatan: ${escapeHtmlMutqin(t.catatan)}</p>` : ''}
-                        </div>
-                    `;
-                }).join('')
-                : `<p class="text-xs text-slate-400 italic">Belum ada riwayat tasmi'.</p>`;
-        }
-
         function validasiSetoranOrtu(setoranId) {
             const idx = dataSetoran.findIndex(st => st.id === setoranId);
             if (idx !== -1) {
@@ -1971,16 +1508,14 @@
         // 8. PANEL ADMINISTRATOR (FASE A & D)
         // =========================================================================
         function switchTabAdmin(tab) {
-            ['panelAdminMonitoring', 'panelAdminHalaqah', 'panelAdminGuru', 'panelAdminSantri', 'panelAdminKelompok', 'panelAdminTasmi', 'panelAdminUjian', 'panelAdminPengumuman', 'panelAdminAkun'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            ['tabAdminBtnMonitoring', 'tabAdminBtnHalaqah', 'tabAdminBtnGuru', 'tabAdminBtnSantri', 'tabAdminBtnKelompok', 'tabAdminBtnTasmi', 'tabAdminBtnUjian', 'tabAdminBtnPengumuman', 'tabAdminBtnAkun'].forEach(id => {
+            ['panelAdminMonitoring', 'panelAdminHalaqah', 'panelAdminGuru', 'panelAdminSantri', 'panelAdminKelompok', 'panelAdminPengumuman', 'panelAdminAkun'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['tabAdminBtnMonitoring', 'tabAdminBtnHalaqah', 'tabAdminBtnGuru', 'tabAdminBtnSantri', 'tabAdminBtnKelompok', 'tabAdminBtnPengumuman', 'tabAdminBtnAkun'].forEach(id => {
                 document.getElementById(id).className = "px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition";
             });
             document.getElementById('panelAdmin' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
             document.getElementById('tabAdminBtn' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition";
             if (tab === 'kelompok') renderTabelPembagianKelompok('adminKelompokContainer', document.getElementById('adminCariKelompok')?.value || '');
             if (tab === 'santri') renderTabelAdminSantri();
-            if (tab === 'tasmi') { renderPencarianTasmi('admin'); renderTasmi('admin'); renderKriteriaTasmi(); }
-            if (tab === 'ujian') renderArsipUjian('admin');
             if (tab === 'pengumuman') renderPengumumanAdmin();
         }
 
@@ -2010,35 +1545,31 @@
                 if (curFilterSantri) filterSantriSel.value = curFilterSantri;
             }
 
-            const filterSyahadahSel = document.getElementById('adminFilterSantriSyahadah');
-            if (filterSyahadahSel) {
-                const curSyahadah = filterSyahadahSel.value;
-                filterSyahadahSel.innerHTML = `<option value="SEMUA">-- Semua Syahadah --</option>` + DAFTAR_SYAHADAH.map(s => `<option value="${s}">${s}</option>`).join('');
-                if (curSyahadah) filterSyahadahSel.value = curSyahadah;
-            }
-
             // Render List Halaqah (nomor kelompok & ruang bisa diedit)
             renderDaftarHalaqahAdmin();
 
-            // Render List Guru
-            document.getElementById('adminListGuru').innerHTML = dataGuru.map(g => `
-                <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center text-xs">
-                    <div>
-                        <strong class="text-slate-800 text-sm block">${escapeHtmlMutqin(g.nama)}</strong>
-                        <span class="text-emerald-700 font-semibold">${escapeHtmlMutqin(g.halaqah)}</span> | 
-                        <span class="text-slate-500">Password: <code class="bg-white px-1.5 py-0.5 rounded border font-bold">${escapeHtmlMutqin(g.pin)}</code></span>
+            // Render List Guru (dilengkapi tombol Edit & Hapus)
+            document.getElementById('adminListGuru').innerHTML = dataGuru.length
+                ? dataGuru.map(g => `
+                    <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center gap-2 text-xs">
+                        <div class="min-w-0">
+                            <strong class="text-slate-800 text-sm block truncate">${escapeHtmlMutqin(g.nama)}</strong>
+                            <span class="text-emerald-700 font-semibold">${escapeHtmlMutqin(g.halaqah)}</span> | 
+                            <span class="text-slate-500">Password: <code class="bg-white px-1.5 py-0.5 rounded border font-bold">${escapeHtmlMutqin(g.pin)}</code></span>
+                        </div>
+                        <div class="flex items-center gap-2.5 flex-shrink-0">
+                            <button type="button" onclick="bukaModalEditGuru('${g.id}')" class="text-blue-600 font-bold hover:underline">Edit</button>
+                            <button type="button" onclick="adminHapusGuru('${g.id}')" class="text-red-500 font-bold hover:underline">Hapus</button>
+                        </div>
                     </div>
-                    <button onclick="adminHapusGuru('${g.id}')" class="text-red-500 font-bold hover:underline">Hapus</button>
-                </div>
-            `).join('');
+                `).join('')
+                : `<p class="text-xs text-slate-400 italic col-span-full">Belum ada akun guru pembimbing terdaftar.</p>`;
 
             // Render Tabel Santri (dengan filter, pencarian & ceklis massal)
             renderTabelAdminSantri();
 
             renderAdminMonitoring();
             renderTabelPembagianKelompok('adminKelompokContainer', document.getElementById('adminCariKelompok')?.value || '');
-            renderTasmi('admin');
-            renderArsipUjian('admin');
             renderPengumumanAdmin();
         }
 
@@ -2046,19 +1577,16 @@
         function daftarSantriTerfilterAdmin() {
             const kata = (document.getElementById('adminCariSantri')?.value || '').trim().toLowerCase();
             const halaqah = document.getElementById('adminFilterSantriHalaqah')?.value || 'SEMUA';
-            const syahadah = document.getElementById('adminFilterSantriSyahadah')?.value || 'SEMUA';
             const urut = document.getElementById('adminUrutSantri')?.value || 'nama';
 
             let hasil = dataSantri.filter(s => {
                 const cocokNama = !kata || (s.nama || '').toLowerCase().includes(kata) || String(s.pin || '').toLowerCase().includes(kata);
                 const cocokHalaqah = halaqah === 'SEMUA' || s.halaqah === halaqah;
-                const cocokSyahadah = syahadah === 'SEMUA' || syahadahSiswa(s) === syahadah;
-                return cocokNama && cocokHalaqah && cocokSyahadah;
+                return cocokNama && cocokHalaqah;
             });
 
             if (urut === 'nama') hasil = hasil.slice().sort((a, b) => (a.nama || '').localeCompare(b.nama || '', 'id'));
             else if (urut === 'halaqah') hasil = hasil.slice().sort((a, b) => (a.halaqah || '').localeCompare(b.halaqah || '', 'id') || (a.nama || '').localeCompare(b.nama || '', 'id'));
-            else if (urut === 'syahadah') hasil = hasil.slice().sort((a, b) => DAFTAR_SYAHADAH.indexOf(syahadahSiswa(a)) - DAFTAR_SYAHADAH.indexOf(syahadahSiswa(b)) || (a.nama || '').localeCompare(b.nama || '', 'id'));
             else hasil = hasil.slice().reverse();
 
             return hasil;
@@ -2080,16 +1608,14 @@
                         <td class="p-2.5">${idx + 1}</td>
                         <td class="p-2.5 font-bold text-slate-800">${escapeHtmlMutqin(s.nama)}</td>
                         <td class="p-2.5">${escapeHtmlMutqin(s.halaqah)}</td>
-                        <td class="p-2.5">${badgeSyahadahHtml(syahadahSiswa(s))}</td>
                         <td class="p-2.5"><code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-emerald-700">${escapeHtmlMutqin(s.pin)}</code></td>
                         <td class="p-2.5 text-center space-x-2 whitespace-nowrap">
-                            <button onclick="bukaModalInfoSiswa('${s.id}')" class="text-emerald-700 font-semibold hover:underline">Info</button>
                             <button onclick="bukaModalEditSiswa('${s.id}')" class="text-blue-600 font-semibold hover:underline">Edit</button>
                             <button onclick="hapusSantri('${s.id}')" class="text-red-500 font-semibold hover:underline">Hapus</button>
                         </td>
                     </tr>
                 `).join('')
-                : `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Tidak ada siswa yang cocok dengan pencarian / filter.</td></tr>`;
+                : `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Tidak ada siswa yang cocok dengan pencarian / filter.</td></tr>`;
 
             const infoTampil = document.getElementById('infoJumlahSantriTampil');
             const infoTotal = document.getElementById('infoJumlahSantriTotal');
@@ -2184,34 +1710,74 @@
             }
         }
 
-        // ---- KELOMPOK HALAQAH: NOMOR KELOMPOK & RUANG BISA DIEDIT ----
+        // ---- KELOMPOK HALAQAH: NOMOR KELOMPOK OTOMATIS & GESER BERURUTAN ----
         function infoHalaqah(nama, urutanDefault) {
             const info = dataInfoHalaqah[nama] || {};
             const nomor = (info.nomor !== undefined && info.nomor !== null && info.nomor !== '') ? Number(info.nomor) : (urutanDefault + 1);
             return { nomor: isNaN(nomor) ? urutanDefault + 1 : nomor, ruang: info.ruang || '' };
         }
 
+        // Memastikan seluruh nomor kelompok unik & rapi berurutan 1, 2, 3, ..., N
+        function rapikanNomorSemuaHalaqah(namaDipindah = null, nomorTarget = null) {
+            if (!Array.isArray(dataHalaqah) || dataHalaqah.length === 0) return;
+
+            const daftarTerurut = dataHalaqah.map((h, idx) => {
+                const info = infoHalaqah(h, idx);
+                return { nama: h, nomor: info.nomor, ruang: info.ruang, idxAsli: idx };
+            }).sort((a, b) => a.nomor - b.nomor || a.idxAsli - b.idxAsli);
+
+            let urutanAkhir = daftarTerurut;
+
+            if (namaDipindah && dataHalaqah.includes(namaDipindah) && nomorTarget !== null) {
+                const sisa = daftarTerurut.filter(item => item.nama !== namaDipindah);
+                const posisi = Math.max(0, Math.min(sisa.length, nomorTarget - 1));
+                const dipindahObj = daftarTerurut.find(item => item.nama === namaDipindah) || {
+                    nama: namaDipindah,
+                    ruang: (dataInfoHalaqah[namaDipindah] && dataInfoHalaqah[namaDipindah].ruang) || ''
+                };
+                sisa.splice(posisi, 0, dipindahObj);
+                urutanAkhir = sisa;
+            }
+
+            const infoBaru = {};
+            urutanAkhir.forEach((item, index) => {
+                infoBaru[item.nama] = {
+                    nomor: index + 1,
+                    ruang: item.ruang || ''
+                };
+            });
+            dataInfoHalaqah = infoBaru;
+        }
+
         function renderDaftarHalaqahAdmin() {
             const wadah = document.getElementById('adminListHalaqah');
             if (!wadah) return;
-            wadah.innerHTML = dataHalaqah.length
-                ? dataHalaqah.map((h, idx) => {
-                    const info = infoHalaqah(h, idx);
+            const daftarTerurut = dataHalaqah.map((h, idx) => ({
+                nama: h,
+                info: infoHalaqah(h, idx),
+                idxAsli: idx
+            })).sort((a, b) => a.info.nomor - b.info.nomor || a.idxAsli - b.idxAsli);
+
+            wadah.innerHTML = daftarTerurut.length
+                ? daftarTerurut.map(({ nama: h, info }) => {
                     const jumlahSiswa = dataSantri.filter(s => s.halaqah === h).length;
                     const namaGuru = dataGuru.filter(g => g.halaqah === h).map(g => g.nama).join(', ') || 'Belum ditentukan';
                     return `
                         <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 space-y-2.5">
                             <div class="flex justify-between items-start gap-2">
                                 <div class="min-w-0">
-                                    <strong class="text-slate-800 text-sm block truncate">${escapeHtmlMutqin(h)}</strong>
-                                    <span class="text-[11px] text-slate-500">${jumlahSiswa} siswa • ${escapeHtmlMutqin(namaGuru)}</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md flex-shrink-0">Kelompok ${info.nomor}</span>
+                                        <strong class="text-slate-800 text-sm block truncate">${escapeHtmlMutqin(h)}</strong>
+                                    </div>
+                                    <span class="text-[11px] text-slate-500 mt-0.5 block">${jumlahSiswa} siswa • ${escapeHtmlMutqin(namaGuru)}</span>
                                 </div>
                                 <button onclick="adminHapusHalaqah('${encodeURIComponent(h)}')" class="text-red-500 font-bold hover:underline text-xs flex-shrink-0">Hapus</button>
                             </div>
                             <div class="grid grid-cols-3 gap-2">
                                 <div>
                                     <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Kelompok Ke</label>
-                                    <input type="number" min="1" value="${info.nomor}" onchange="adminUbahNomorHalaqah('${encodeURIComponent(h)}', this.value)" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white font-bold text-emerald-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <input type="number" min="1" max="${dataHalaqah.length}" value="${info.nomor}" onchange="adminUbahNomorHalaqah('${encodeURIComponent(h)}', this.value)" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white font-bold text-emerald-700 focus:ring-2 focus:ring-emerald-500 outline-none">
                                 </div>
                                 <div class="col-span-2">
                                     <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Ruang / Tempat</label>
@@ -2227,11 +1793,11 @@
         function adminUbahNomorHalaqah(namaEncoded, nilai) {
             const nama = decodeURIComponent(namaEncoded);
             const angka = parseInt(nilai, 10);
-            if (!dataInfoHalaqah[nama]) dataInfoHalaqah[nama] = {};
-            dataInfoHalaqah[nama].nomor = isNaN(angka) || angka < 1 ? 1 : angka;
+            const target = isNaN(angka) || angka < 1 ? 1 : Math.min(dataHalaqah.length, angka);
+            rapikanNomorSemuaHalaqah(nama, target);
             simpanKeFirebase();
             renderDaftarHalaqahAdmin();
-            window.mutqinToast('✅ Nomor kelompok diperbarui.');
+            window.mutqinToast(`✅ Dipindahkan ke Kelompok ${target}, urutan lainnya otomatis menyesuaikan.`);
         }
 
         function adminUbahRuangHalaqah(namaEncoded, nilai) {
@@ -2247,11 +1813,14 @@
             const val = document.getElementById('adminInputHalaqah').value.trim();
             const ruang = document.getElementById('adminInputRuangHalaqah').value.trim();
             if (val && !dataHalaqah.includes(val)) {
+                rapikanNomorSemuaHalaqah();
+                const nomorBerikutnya = dataHalaqah.length + 1;
                 dataHalaqah.push(val);
-                dataInfoHalaqah[val] = { nomor: dataHalaqah.length, ruang: ruang };
+                dataInfoHalaqah[val] = { nomor: nomorBerikutnya, ruang: ruang };
                 simpanKeFirebase();
                 document.getElementById('adminInputHalaqah').value = '';
                 document.getElementById('adminInputRuangHalaqah').value = '';
+                window.mutqinToast(`✅ ${val} otomatis menjadi Kelompok ${nomorBerikutnya}.`);
             } else if (val) {
                 alert('Nama kelompok halaqah tersebut sudah ada.');
             }
@@ -2262,6 +1831,7 @@
             if (confirm(`Hapus ${nama}?`)) {
                 dataHalaqah = dataHalaqah.filter(h => h !== nama);
                 delete dataInfoHalaqah[nama];
+                rapikanNomorSemuaHalaqah();
                 simpanKeFirebase();
             }
         }
@@ -2279,6 +1849,60 @@
             alert('Akun Guru Pembimbing berhasil dibuat!');
         };
 
+        function bukaModalEditGuru(id) {
+            const g = dataGuru.find(item => item.id === id);
+            if (!g) return;
+            document.getElementById('editGuruId').value = g.id;
+            document.getElementById('editGuruNama').value = g.nama;
+            document.getElementById('editGuruPin').value = g.pin;
+
+            const selHalaqah = document.getElementById('editGuruHalaqah');
+            const semuaHalaqah = Array.from(new Set([...dataHalaqah, g.halaqah]));
+            selHalaqah.innerHTML = semuaHalaqah.map(h => `<option value="${escapeHtmlMutqin(h)}">${escapeHtmlMutqin(h)}</option>`).join('');
+            selHalaqah.value = g.halaqah;
+
+            document.getElementById('modalEditGuru').classList.remove('hidden');
+        }
+
+        function tutupModalEditGuru() {
+            document.getElementById('modalEditGuru').classList.add('hidden');
+        }
+
+        document.getElementById('formEditGuru').onsubmit = function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editGuruId').value;
+            const namaBaru = document.getElementById('editGuruNama').value.trim();
+            const halaqahBaru = document.getElementById('editGuruHalaqah').value;
+            const pinBaru = document.getElementById('editGuruPin').value.trim();
+
+            const idx = dataGuru.findIndex(item => item.id === id);
+            if (idx !== -1) {
+                const namaLama = dataGuru[idx].nama;
+                const halaqahLama = dataGuru[idx].halaqah;
+
+                dataGuru[idx].nama = namaBaru;
+                dataGuru[idx].halaqah = halaqahBaru;
+                dataGuru[idx].pin = pinBaru;
+
+                // Perbarui nama guru di riwayat setoran & pengumuman yang dibuat guru ini
+                dataSetoran.forEach(st => {
+                    if (st.guruNama === namaLama && st.halaqah === halaqahLama) {
+                        st.guruNama = namaBaru;
+                    }
+                });
+                dataPengumuman.forEach(pgm => {
+                    if (pgm.pembuatRole === 'guru' && pgm.pembuatId === id) {
+                        pgm.pembuatNama = `${namaBaru} (${halaqahBaru})`;
+                        pgm.halaqah = halaqahBaru;
+                    }
+                });
+
+                simpanKeFirebase();
+                tutupModalEditGuru();
+                alert('✅ Data akun guru berhasil diperbarui!');
+            }
+        };
+
         function adminHapusGuru(id) {
             if (confirm('Hapus akun guru ini?')) {
                 dataGuru = dataGuru.filter(g => g.id !== id);
@@ -2292,12 +1916,10 @@
                 id: 's_' + Date.now(),
                 nama: document.getElementById('adminNamaSantri').value.trim(),
                 halaqah: document.getElementById('adminHalaqahSantri').value,
-                pin: document.getElementById('adminPinSantri').value.trim(),
-                syahadah: normalisasiSyahadah(document.getElementById('adminSyahadahSantri').value)
+                pin: document.getElementById('adminPinSantri').value.trim()
             });
             simpanKeFirebase();
             this.reset();
-            isiDropdownSyahadahStatis();
             alert('Data Siswa berhasil ditambahkan!');
         };
 
@@ -2314,8 +1936,8 @@
         // =========================================================================
         function downloadTemplateSiswaGuru() {
             const ws = XLSX.utils.json_to_sheet([
-                { "Nama_Siswa": "Ahmad Zaki", "PIN_Akses": "12345", "Syahadah": "Syahadah 1" },
-                { "Nama_Siswa": "Fatimah Az-Zahra", "PIN_Akses": "54321", "Syahadah": "Syahadah 2" }
+                { "Nama_Siswa": "Ahmad Zaki", "PIN_Akses": "12345" },
+                { "Nama_Siswa": "Fatimah Az-Zahra", "PIN_Akses": "54321" }
             ]);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Template_Siswa");
@@ -2335,14 +1957,12 @@
                 rows.forEach(row => {
                     const nama = String(row.Nama_Siswa || row['Nama Siswa'] || '').trim();
                     const pin = String(row.PIN_Akses || row['PIN Akses'] || '12345').trim();
-                    const syahadah = normalisasiSyahadah(row.Syahadah || row['Tingkatan'] || '');
                     if (nama) {
                         dataSantri.push({
                             id: 's_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                             nama: nama,
                             halaqah: guru.halaqah,
-                            pin: pin,
-                            syahadah: syahadah
+                            pin: pin
                         });
                         count++;
                     }
@@ -2382,7 +2002,10 @@
                     const halaqah = String(row.Halaqah || dataHalaqah[0] || 'Halaqah Umum').trim();
                     const pin = String(row.Password_PIN || row['Password PIN'] || '123456').trim();
                     if (nama) {
-                        if (!dataHalaqah.includes(halaqah)) dataHalaqah.push(halaqah);
+                        if (!dataHalaqah.includes(halaqah)) {
+                            dataHalaqah.push(halaqah);
+                            dataInfoHalaqah[halaqah] = { nomor: dataHalaqah.length, ruang: '' };
+                        }
                         dataGuru.push({
                             id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                             nama: nama,
@@ -2393,6 +2016,7 @@
                     }
                 });
                 if (count > 0) {
+                    rapikanNomorSemuaHalaqah();
                     simpanKeFirebase();
                     fileInput.value = '';
                     alert(`✅ Berhasil mengimpor ${count} akun guru pembimbing!`);
@@ -2406,8 +2030,8 @@
         function downloadTemplateSiswaAdmin() {
             const contohHalaqah = dataHalaqah[0] || "Halaqah Abu Bakar";
             const ws = XLSX.utils.json_to_sheet([
-                { "Nama_Siswa": "Muhammad Fatih", "Halaqah": contohHalaqah, "PIN_Akses": "12345", "Syahadah": "Syahadah 1" },
-                { "Nama_Siswa": "Zainab Al-Kubra", "Halaqah": contohHalaqah, "PIN_Akses": "67890", "Syahadah": "Syahadah 3" }
+                { "Nama_Siswa": "Muhammad Fatih", "Halaqah": contohHalaqah, "PIN_Akses": "12345" },
+                { "Nama_Siswa": "Zainab Al-Kubra", "Halaqah": contohHalaqah, "PIN_Akses": "67890" }
             ]);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Template_Siswa");
@@ -2426,20 +2050,22 @@
                     const nama = String(row.Nama_Siswa || row['Nama Siswa'] || '').trim();
                     const halaqah = String(row.Halaqah || dataHalaqah[0] || 'Halaqah Umum').trim();
                     const pin = String(row.PIN_Akses || row['PIN Akses'] || '12345').trim();
-                    const syahadah = normalisasiSyahadah(row.Syahadah || row['Tingkatan'] || '');
                     if (nama) {
-                        if (!dataHalaqah.includes(halaqah)) dataHalaqah.push(halaqah);
+                        if (!dataHalaqah.includes(halaqah)) {
+                            dataHalaqah.push(halaqah);
+                            dataInfoHalaqah[halaqah] = { nomor: dataHalaqah.length, ruang: '' };
+                        }
                         dataSantri.push({
                             id: 's_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                             nama: nama,
                             halaqah: halaqah,
-                            pin: pin,
-                            syahadah: syahadah
+                            pin: pin
                         });
                         count++;
                     }
                 });
                 if (count > 0) {
+                    rapikanNomorSemuaHalaqah();
                     simpanKeFirebase();
                     fileInput.value = '';
                     alert(`✅ Berhasil mengimpor ${count} data siswa!`);
@@ -2465,9 +2091,6 @@
             selHalaqah.innerHTML = semuaHalaqah.map(h => `<option value="${escapeHtmlMutqin(h)}">${escapeHtmlMutqin(h)}</option>`).join('');
             selHalaqah.value = s.halaqah;
 
-            const selSyahadah = document.getElementById('editSiswaSyahadah');
-            selSyahadah.innerHTML = opsiSyahadahHtml(syahadahSiswa(s));
-
             document.getElementById('modalEditSiswa').classList.remove('hidden');
         }
 
@@ -2481,26 +2104,17 @@
             const namaBaru = document.getElementById('editSiswaNama').value.trim();
             const halaqahBaru = document.getElementById('editSiswaHalaqah').value;
             const pinBaru = document.getElementById('editSiswaPin').value.trim();
-            const syahadahBaru = normalisasiSyahadah(document.getElementById('editSiswaSyahadah').value);
 
             const idx = dataSantri.findIndex(item => item.id === id);
             if (idx !== -1) {
                 dataSantri[idx].nama = namaBaru;
                 dataSantri[idx].halaqah = halaqahBaru;
                 dataSantri[idx].pin = pinBaru;
-                dataSantri[idx].syahadah = syahadahBaru;
 
                 dataSetoran.forEach(st => {
                     if (st.santriId === id) {
                         st.santriNama = namaBaru;
                         st.halaqah = halaqahBaru;
-                    }
-                });
-                dataTasmi.forEach(t => {
-                    if (t.santriId === id) {
-                        t.santriNama = namaBaru;
-                        t.halaqah = halaqahBaru;
-                        t.syahadah = syahadahBaru;
                     }
                 });
 
@@ -2510,240 +2124,7 @@
             }
         };
 
-        // ---- INFO / RINCIAN RIWAYAT SISWA (UJIAN KENAIKAN, TASMI', SETORAN) ----
-        function bukaModalInfoSiswa(id) {
-            const s = dataSantri.find(item => item.id === id);
-            if (!s) return;
-            const guruObj = dataGuru.filter(g => g.halaqah === s.halaqah).map(g => g.nama).join(', ') || 'Belum ditentukan';
-            const setoranSiswa = dataSetoran.filter(st => st.santriId === id);
-            const tasmiSiswa = dataTasmi.filter(t => t.santriId === id);
-            const ujianSiswa = [];
-            dataUjian.forEach(lembar => {
-                (lembar.baris || []).forEach(b => { if (b.santriId === id) ujianSiswa.push({ lembar: lembar, baris: b }); });
-            });
-            const rataSetoran = setoranSiswa.length
-                ? (setoranSiswa.reduce((a, b) => a + Number(b.nilai || 0), 0) / setoranSiswa.length).toFixed(1)
-                : null;
-
-            document.getElementById('infoSiswaSub').innerHTML = `${escapeHtmlMutqin(s.nama)} • ${escapeHtmlMutqin(s.halaqah)} • Pembimbing: ${escapeHtmlMutqin(guruObj)}`;
-
-            const htmlUjian = ujianSiswa.length
-                ? ujianSiswa.map(item => {
-                    const b = item.baris;
-                    const rata = hitungRataUjianSiswa(b.daftarSurat);
-                    const suratHtml = (b.daftarSurat || []).filter(x => x.surat || (x.nilai !== '' && x.nilai !== undefined)).map(x => {
-                        const p = (x.nilai !== '' && x.nilai !== undefined && !isNaN(Number(x.nilai))) ? dapatkanPredikat(x.nilai) : null;
-                        return `<tr class="border-b border-slate-100">
-                                    <td class="py-1.5 pr-2 font-semibold text-slate-700">${escapeHtmlMutqin(bersihNomorSurah(x.surat) || '-')}</td>
-                                    <td class="py-1.5 pr-2 text-center font-bold">${escapeHtmlMutqin(x.nilai === '' || x.nilai === undefined ? '-' : x.nilai)}</td>
-                                    <td class="py-1.5">${p ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-bold ${p.badge}"><span class="font-arab text-xs">${p.arab}</span><span>${p.latin}</span></span>` : '-'}</td>
-                                </tr>`;
-                    }).join('');
-                    return `
-                        <div class="border border-slate-200 rounded-xl p-3 bg-white space-y-2">
-                            <div class="flex flex-wrap items-center gap-2 text-[11px]">
-                                <span class="font-bold text-slate-700">📅 ${escapeHtmlMutqin(item.lembar.tempatTanggal || item.lembar.tanggalSimpan || '-')}</span>
-                                <span class="text-slate-500">Level: <strong>${escapeHtmlMutqin(item.lembar.level || '-')}</strong></span>
-                                ${badgeSyahadahHtml(b.syahadahAwal)}<span class="text-slate-400">→</span>${badgeSyahadahHtml(b.syahadahBaru || b.syahadahAwal)}
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${b.status === 'Naik' ? 'bg-emerald-600 text-white' : b.status === 'Menetap' ? 'bg-amber-500 text-white' : 'bg-slate-300 text-slate-700'}">${escapeHtmlMutqin(b.status || 'Belum ditentukan')}</span>
-                            </div>
-                            <p class="text-[11px] text-slate-500">Pengampu: <strong>${escapeHtmlMutqin(item.lembar.pengampu || '-')}</strong> • Penguji: <strong>${escapeHtmlMutqin(item.lembar.penguji || '-')}</strong>${item.lembar.tampilRata && rata !== null ? ` • Rata-rata: <strong>${rata}</strong>` : ''}</p>
-                            <table class="w-full text-[11px] text-left">
-                                <thead><tr class="text-slate-500 border-b border-slate-200"><th class="py-1">Surat</th><th class="py-1 text-center w-16">Nilai</th><th class="py-1 w-40">Predikat</th></tr></thead>
-                                <tbody>${suratHtml || `<tr><td colspan="3" class="py-2 text-slate-400 italic">Belum ada nilai surat.</td></tr>`}</tbody>
-                            </table>
-                        </div>
-                    `;
-                }).join('')
-                : `<p class="text-xs text-slate-400 italic">Belum ada riwayat ujian kenaikan tersimpan.</p>`;
-
-            const htmlTasmi = tasmiSiswa.length
-                ? tasmiSiswa.map(t => {
-                    const nilaiAkhir = hitungNilaiTasmi(t);
-                    const p = nilaiAkhir !== null ? dapatkanPredikat(nilaiAkhir) : null;
-                    const aspekHtml = ASPEK_TASMI.map(a => {
-                        const v = (t.nilaiAspek || {})[a.key];
-                        return `<span class="text-[10px] bg-slate-50 border border-slate-200 rounded-lg px-2 py-0.5">${a.label}: <strong>${v === '' || v === undefined ? '-' : escapeHtmlMutqin(v)}</strong></span>`;
-                    }).join('');
-                    return `
-                        <div class="border border-emerald-200 rounded-xl p-3 bg-emerald-50/40 space-y-1.5">
-                            <div class="flex flex-wrap items-center gap-2 text-[11px]">
-                                <span class="font-bold text-emerald-800">🎙️ ${escapeHtmlMutqin(t.juz || '-')}</span>
-                                <span class="text-slate-500">📅 ${escapeHtmlMutqin(t.tanggalUji || t.tanggalDaftar || '-')}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${t.status === 'Selesai' ? 'bg-emerald-600 text-white' : t.status === 'Diuji' ? 'bg-blue-600 text-white' : 'bg-amber-500 text-white'}">${escapeHtmlMutqin(t.status)}</span>
-                                <span class="text-slate-500">Penguji: <strong>${escapeHtmlMutqin(t.penguji || '-')}</strong></span>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5">${aspekHtml}</div>
-                            ${p ? `<div class="text-xs">Nilai Akhir: <strong>${nilaiAkhir}</strong> — <span class="font-arab text-sm">${p.arab}</span> (${p.latin})</div><p class="text-[11px] text-slate-600">${p.keterangan}</p>` : `<p class="text-[11px] text-slate-500 italic">Belum dinilai.</p>`}
-                            ${t.catatan ? `<p class="text-[11px] text-slate-600">Catatan: ${escapeHtmlMutqin(t.catatan)}</p>` : ''}
-                        </div>
-                    `;
-                }).join('')
-                : `<p class="text-xs text-slate-400 italic">Belum pernah mengikuti tasmi'.</p>`;
-
-            const htmlSetoran = setoranSiswa.length
-                ? `<div class="overflow-x-auto"><table class="w-full text-[11px] text-left border-collapse">
-                        <thead><tr class="bg-slate-100 text-slate-600"><th class="p-2">Tanggal</th><th class="p-2">Jenis</th><th class="p-2">Surah &amp; Ayat</th><th class="p-2 text-center">Nilai</th><th class="p-2">Predikat</th><th class="p-2 text-center">Ortu</th></tr></thead>
-                        <tbody>${setoranSiswa.slice(0, 40).map(st => {
-                            const p = dapatkanPredikat(st.nilai);
-                            return `<tr class="border-b border-slate-100">
-                                <td class="p-2 whitespace-nowrap text-slate-500">${escapeHtmlMutqin(st.tanggal)}</td>
-                                <td class="p-2">${escapeHtmlMutqin(st.jenis)}</td>
-                                <td class="p-2 font-semibold">${escapeHtmlMutqin(bersihNomorSurah(st.surah))} : ${escapeHtmlMutqin(st.ayatDari)}-${escapeHtmlMutqin(st.ayatSampai)}</td>
-                                <td class="p-2 text-center font-bold">${escapeHtmlMutqin(st.nilai)}</td>
-                                <td class="p-2"><span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[10px] font-bold ${p.badge}"><span class="font-arab text-xs">${p.arab}</span><span>${p.latin}</span></span></td>
-                                <td class="p-2 text-center">${st.validasi_ortu ? '✅' : '⏳'}</td>
-                            </tr>`;
-                        }).join('')}</tbody>
-                    </table></div>${setoranSiswa.length > 40 ? `<p class="text-[11px] text-slate-400 italic mt-1">Menampilkan 40 setoran terbaru dari ${setoranSiswa.length} setoran.</p>` : ''}`
-                : `<p class="text-xs text-slate-400 italic">Belum ada setoran harian.</p>`;
-
-            document.getElementById('isiInfoSiswa').innerHTML = `
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center">
-                        <span class="block text-[10px] font-bold uppercase text-emerald-700">Syahadah</span>
-                        <span class="block text-sm font-black text-emerald-800 mt-0.5">${escapeHtmlMutqin(syahadahSiswa(s))}</span>
-                    </div>
-                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-center">
-                        <span class="block text-[10px] font-bold uppercase text-blue-700">Setoran</span>
-                        <span class="block text-sm font-black text-blue-800 mt-0.5">${setoranSiswa.length}</span>
-                    </div>
-                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center">
-                        <span class="block text-[10px] font-bold uppercase text-amber-700">Ujian</span>
-                        <span class="block text-sm font-black text-amber-800 mt-0.5">${ujianSiswa.length}</span>
-                    </div>
-                    <div class="bg-purple-50 border border-purple-200 rounded-xl p-3 text-center">
-                        <span class="block text-[10px] font-bold uppercase text-purple-700">Tasmi'</span>
-                        <span class="block text-sm font-black text-purple-800 mt-0.5">${tasmiSiswa.length}</span>
-                    </div>
-                </div>
-                ${rataSetoran !== null ? `<p class="text-[11px] text-slate-500">Rata-rata nilai setoran harian: <strong class="text-slate-700">${rataSetoran}</strong> • PIN Akses: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-bold text-emerald-700">${escapeHtmlMutqin(s.pin)}</code></p>` : ''}
-                <div class="space-y-2">
-                    <h4 class="text-xs font-bold uppercase text-slate-600 border-b pb-1.5">📜 Rincian Riwayat Ujian Kenaikan</h4>
-                    ${htmlUjian}
-                </div>
-                <div class="space-y-2">
-                    <h4 class="text-xs font-bold uppercase text-slate-600 border-b pb-1.5">🎙️ Rincian Riwayat Tasmi'</h4>
-                    ${htmlTasmi}
-                </div>
-                <div class="space-y-2">
-                    <h4 class="text-xs font-bold uppercase text-slate-600 border-b pb-1.5">📖 Riwayat Setoran Harian</h4>
-                    ${htmlSetoran}
-                </div>
-            `;
-            document.getElementById('modalInfoSiswa').classList.remove('hidden');
-        }
-
-        function tutupModalInfoSiswa() {
-            document.getElementById('modalInfoSiswa').classList.add('hidden');
-        }
-
-        // ---- PENGELOMPOKAN: HALAQAH / PER SYAHADAH / GABUNGAN BEDA TINGKATAN ----
-        function sinkronkanModeKelompokUi() {
-            ['adminModeKelompok', 'guruModeKelompok'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = pengaturanKelompok.mode || 'halaqah';
-            });
-            const kotak = document.getElementById('opsiGabunganKelompok');
-            if (kotak) kotak.classList.toggle('hidden', (pengaturanKelompok.mode || 'halaqah') !== 'gabungan');
-            const jml = document.getElementById('adminJumlahGabungan');
-            if (jml) jml.value = pengaturanKelompok.jumlahGabungan || 3;
-            const met = document.getElementById('adminMetodeGabungan');
-            if (met) met.value = pengaturanKelompok.metodeGabungan || 'acak';
-        }
-
-        function ubahModeKelompok(mode) {
-            pengaturanKelompok.mode = ['halaqah', 'syahadah', 'gabungan'].includes(mode) ? mode : 'halaqah';
-            simpanKeFirebase();
-            sinkronkanModeKelompokUi();
-            window.mutqinToast('✅ Mode pengelompokan diperbarui.');
-        }
-
-        function ubahJumlahGabungan(nilai) {
-            const angka = parseInt(nilai, 10);
-            pengaturanKelompok.jumlahGabungan = isNaN(angka) ? 3 : Math.min(12, Math.max(1, angka));
-            simpanKeFirebase();
-            sinkronkanModeKelompokUi();
-        }
-
-        function ubahMetodeGabungan(metode) {
-            pengaturanKelompok.metodeGabungan = metode === 'urut' ? 'urut' : 'acak';
-            simpanKeFirebase();
-        }
-
-        function acakUlangGabungan() {
-            pengaturanKelompok.seedGabungan = Math.floor(Math.random() * 100000) + 1;
-            simpanKeFirebase();
-            window.mutqinToast('🔀 Pembagian kelompok gabungan diacak ulang.');
-        }
-
-        function pseudoAcak(seed) {
-            let state = seed % 2147483647;
-            if (state <= 0) state += 2147483646;
-            return function () {
-                state = state * 16807 % 2147483647;
-                return (state - 1) / 2147483646;
-            };
-        }
-
         function dapatkanDataKelompokLengkap() {
-            const mode = pengaturanKelompok.mode || 'halaqah';
-
-            if (mode === 'syahadah') {
-                return DAFTAR_SYAHADAH.map((tingkat, idx) => {
-                    const siswaList = dataSantri
-                        .filter(s => syahadahSiswa(s) === tingkat)
-                        .slice()
-                        .sort((a, b) => (a.nama || '').localeCompare(b.nama || '', 'id'));
-                    const guruList = Array.from(new Set(siswaList.map(s => dataGuru.filter(g => g.halaqah === s.halaqah).map(g => g.nama).join(', ')).filter(Boolean)));
-                    const ruangList = Array.from(new Set(siswaList.map(s => infoHalaqah(s.halaqah, 0).ruang).filter(Boolean)));
-                    return {
-                        nomor: idx + 1,
-                        ruang: ruangList.join(', '),
-                        halaqahAsli: tingkat,
-                        halaqahBersih: tingkat,
-                        guruText: guruList.length ? guruList.join(', ') : 'Belum ditentukan',
-                        siswaList: siswaList,
-                        infoTingkatan: true
-                    };
-                }).filter(k => k.siswaList.length > 0);
-            }
-
-            if (mode === 'gabungan') {
-                const jumlah = Math.min(12, Math.max(1, Number(pengaturanKelompok.jumlahGabungan) || 3));
-                const urutSyahadah = dataSantri.slice().sort((a, b) =>
-                    DAFTAR_SYAHADAH.indexOf(syahadahSiswa(a)) - DAFTAR_SYAHADAH.indexOf(syahadahSiswa(b)) ||
-                    (a.nama || '').localeCompare(b.nama || '', 'id')
-                );
-                let daftarSiswa = urutSyahadah;
-                if ((pengaturanKelompok.metodeGabungan || 'acak') === 'acak') {
-                    const rand = pseudoAcak(Number(pengaturanKelompok.seedGabungan) || 1);
-                    daftarSiswa = urutSyahadah.slice();
-                    for (let i = daftarSiswa.length - 1; i > 0; i--) {
-                        const j = Math.floor(rand() * (i + 1));
-                        const tmp = daftarSiswa[i];
-                        daftarSiswa[i] = daftarSiswa[j];
-                        daftarSiswa[j] = tmp;
-                    }
-                }
-                const wadah = Array.from({ length: jumlah }, () => []);
-                daftarSiswa.forEach((s, i) => wadah[i % jumlah].push(s));
-                return wadah.map((siswaList, idx) => {
-                    const tingkatUnik = Array.from(new Set(siswaList.map(s => syahadahSiswa(s))));
-                    const guruList = Array.from(new Set(siswaList.map(s => dataGuru.filter(g => g.halaqah === s.halaqah).map(g => g.nama).join(', ')).filter(Boolean)));
-                    return {
-                        nomor: idx + 1,
-                        ruang: '',
-                        halaqahAsli: 'Kelompok Gabungan ' + (idx + 1),
-                        halaqahBersih: 'Kelompok Gabungan ' + (idx + 1),
-                        guruText: guruList.length ? guruList.join(', ') : 'Belum ditentukan',
-                        siswaList: siswaList,
-                        infoTingkatan: true,
-                        ringkasTingkatan: tingkatUnik.join(', ')
-                    };
-                });
-            }
-
             const halaqahMurni = dataHalaqah.filter(h => !h.toUpperCase().includes('(') || h.trim() === 'SYAHADAH 3');
             const semuaHalaqah = Array.from(new Set([
                 ...halaqahMurni,
@@ -2763,19 +2144,11 @@
                     halaqahAsli: h,
                     halaqahBersih: hBersih,
                     guruText: guruText,
-                    siswaList: siswaDiHalaqah,
-                    infoTingkatan: true
+                    siswaList: siswaDiHalaqah
                 };
             });
 
             return daftar.sort((a, b) => a.nomor - b.nomor || a.halaqahBersih.localeCompare(b.halaqahBersih, 'id'));
-        }
-
-        function labelModeKelompok() {
-            const mode = pengaturanKelompok.mode || 'halaqah';
-            if (mode === 'syahadah') return 'Mode: Per Tingkatan Syahadah';
-            if (mode === 'gabungan') return 'Mode: Gabungan Beda Syahadah (' + (pengaturanKelompok.jumlahGabungan || 3) + ' kelompok)';
-            return 'Mode: Halaqah';
         }
 
         function renderTabelPembagianKelompok(containerId, keyword = '') {
@@ -2789,16 +2162,15 @@
                 const matchHeader = kel.halaqahAsli.toLowerCase().includes(q) || kel.guruText.toLowerCase().includes(q) || (kel.ruang || '').toLowerCase().includes(q);
                 const siswaTampil = matchHeader
                     ? kel.siswaList
-                    : kel.siswaList.filter(s => s.nama.toLowerCase().includes(q) || syahadahSiswa(s).toLowerCase().includes(q));
+                    : kel.siswaList.filter(s => s.nama.toLowerCase().includes(q));
 
                 if (q && !matchHeader && siswaTampil.length === 0) return '';
 
                 return `
-                    <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-sm flex flex-col relative group kartu-masuk">
+                    <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-sm flex flex-col relative group">
                         <div class="bg-slate-200 px-3 py-2 text-center border-b border-slate-300 relative">
                             <div class="font-black text-slate-800 text-xs uppercase tracking-wide">${escapeHtmlMutqin(kel.halaqahBersih)}</div>
                             <div class="text-[10px] text-slate-600 font-semibold">Kelompok ${kel.nomor} • ${kel.siswaList.length} Siswa</div>
-                            ${kel.ringkasTingkatan ? `<div class="text-[9px] text-slate-500 mt-0.5">${escapeHtmlMutqin(kel.ringkasTingkatan)}</div>` : ''}
                         </div>
                         <div class="bg-emerald-50 px-3 py-2 border-b border-slate-300 text-[11px] space-y-0.5">
                             <div><span class="font-bold text-slate-600">GURU :</span> <strong class="text-emerald-800">${escapeHtmlMutqin(kel.guruText)}</strong></div>
@@ -2810,7 +2182,6 @@
                                     <tr class="bg-slate-100 text-slate-600 border-b border-slate-300">
                                         <th class="py-1.5 px-2.5 border-r border-slate-200 w-9 text-center">No</th>
                                         <th class="py-1.5 px-2.5">Nama Siswa</th>
-                                        <th class="py-1.5 px-2.5 w-24">Syahadah</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-200">
@@ -2819,10 +2190,9 @@
                                             <tr class="hover:bg-slate-50">
                                                 <td class="py-1.5 px-2.5 border-r border-slate-200 text-center text-slate-500 font-medium">${i + 1}</td>
                                                 <td class="py-1.5 px-2.5 font-semibold text-slate-800">${escapeHtmlMutqin(s.nama)}</td>
-                                                <td class="py-1.5 px-2.5">${badgeSyahadahHtml(syahadahSiswa(s))}</td>
                                             </tr>
                                         `).join('')
-                                        : `<tr><td colspan="3" class="py-3 px-2.5 text-center text-slate-400 italic">Belum ada siswa di kelompok ini</td></tr>`
+                                        : `<tr><td colspan="2" class="py-3 px-2.5 text-center text-slate-400 italic">Belum ada siswa di kelompok ini</td></tr>`
                                     }
                                 </tbody>
                             </table>
@@ -2839,7 +2209,6 @@
             if (!daftarKelompok.length) return alert('Belum ada data kelompok halaqah untuk dicetak.');
 
             document.getElementById('pdfKelompokTanggal').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            document.getElementById('pdfKelompokMode').innerText = labelModeKelompok();
 
             // Setiap halaman landscape berisi 6 kelompok: 3 di baris atas, 3 di baris bawah
             const kelompokPerHalaman = 6;
@@ -2863,7 +2232,6 @@
                             <tr style="background-color: #f1f5f9; border-bottom: 1px solid #cbd5e1;">
                                 <th style="padding: 2px 4px; border-right: 1px solid #cbd5e1; width: 20px; text-align: center;">No</th>
                                 <th style="padding: 2px 5px; text-align: left;">Nama Siswa</th>
-                                <th style="padding: 2px 5px; text-align: left; width: 62px;">Syahadah</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -2872,10 +2240,9 @@
                                     <tr style="border-bottom: 1px solid #e2e8f0;">
                                         <td style="padding: 1.6px 4px; border-right: 1px solid #e2e8f0; text-align: center;">${i + 1}</td>
                                         <td style="padding: 1.6px 5px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">${escapeHtmlMutqin(s.nama)}</td>
-                                        <td style="padding: 1.6px 5px; color: #065f46;">${escapeHtmlMutqin(syahadahSiswa(s))}</td>
                                     </tr>
                                 `).join('')
-                                : `<tr><td colspan="3" style="padding: 5px; text-align: center; color: #64748b; font-style: italic;">Belum ada siswa</td></tr>`
+                                : `<tr><td colspan="2" style="padding: 5px; text-align: center; color: #64748b; font-style: italic;">Belum ada siswa</td></tr>`
                             }
                         </tbody>
                     </table>
@@ -2927,10 +2294,10 @@
                 const h = kel.halaqahAsli;
                 const guruText = kel.guruText;
                 if (kel.siswaList.length === 0) {
-                    rows.push({ "No": no++, "Kelompok Ke": kel.nomor, "Kelompok": h, "Ruang": kel.ruang || '-', "Guru Pembimbing": guruText, "Nama Siswa": "(Belum ada siswa)", "Syahadah": "-" });
+                    rows.push({ "No": no++, "Kelompok Ke": kel.nomor, "Kelompok Halaqah": h, "Ruang": kel.ruang || '-', "Guru Pembimbing": guruText, "Nama Siswa": "(Belum ada siswa)" });
                 } else {
                     kel.siswaList.forEach(s => {
-                        rows.push({ "No": no++, "Kelompok Ke": kel.nomor, "Kelompok": h, "Ruang": kel.ruang || '-', "Guru Pembimbing": guruText, "Nama Siswa": s.nama, "Syahadah": syahadahSiswa(s) });
+                        rows.push({ "No": no++, "Kelompok Ke": kel.nomor, "Kelompok Halaqah": h, "Ruang": kel.ruang || '-', "Guru Pembimbing": guruText, "Nama Siswa": s.nama });
                     });
                 }
             });
@@ -3091,9 +2458,7 @@
             return (rawBaris || []).map(item => {
                 if (Array.isArray(item.daftarSurat) && item.daftarSurat.length > 0) {
                     return {
-                        santriId: item.santriId || '',
                         nama: item.nama || '',
-                        syahadah: normalisasiSyahadah(item.syahadah),
                         daftarSurat: item.daftarSurat.map(itemSurat => ({
                             surat: bersihNomorSurah(itemSurat.surat),
                             nilai: itemSurat.nilai !== undefined ? itemSurat.nilai : ''
@@ -3104,23 +2469,11 @@
                 const list = buatDaftarSuratDefaultUjian(11);
                 if (item.surat) list[0].surat = bersihNomorSurah(item.surat);
                 return {
-                    santriId: item.santriId || '',
                     nama: item.nama || '',
-                    syahadah: normalisasiSyahadah(item.syahadah),
                     daftarSurat: list,
                     status: item.status || ''
                 };
             });
-        }
-
-        function cariSantriUntukBarisUjian(row) {
-            if (row.santriId) {
-                const byId = dataSantri.find(s => s.id === row.santriId);
-                if (byId) return byId;
-            }
-            const nama = String(row.nama || '').trim().toLowerCase();
-            if (!nama) return null;
-            return dataSantri.find(s => String(s.nama || '').trim().toLowerCase() === nama) || null;
         }
 
         function inisialisasiUjianKenaikanGuru() {
@@ -3136,14 +2489,7 @@
                     document.getElementById('ujianLevel').value = parsed.level || guru.halaqah;
                     document.getElementById('ujianTempatTanggal').value = parsed.tempatTanggal || 'Kotagajah, ';
                     document.getElementById('ujianNamaPenguji').value = parsed.penguji || '';
-                    opsiRataUjian = parsed.tampilRata === true;
-                    document.getElementById('ujianTampilRata').checked = opsiRataUjian;
-                    document.getElementById('ujianAutoSyahadah').checked = parsed.autoSyahadah !== false;
                     barisUjianKenaikan = normalisasiBarisUjian(parsed.baris);
-                    barisUjianKenaikan.forEach(row => {
-                        const s = cariSantriUntukBarisUjian(row);
-                        if (s) { row.santriId = s.id; row.syahadah = syahadahSiswa(s); }
-                    });
                 } catch (e) {
                     muatSiswaKeLembarUjian(true);
                 }
@@ -3167,9 +2513,7 @@
 
             const santriBimbingan = dataSantri.filter(s => s.halaqah === guru.halaqah);
             barisUjianKenaikan = santriBimbingan.map(s => ({
-                santriId: s.id,
                 nama: s.nama,
-                syahadah: syahadahSiswa(s),
                 daftarSurat: buatDaftarSuratDefaultUjian(11),
                 status: ''
             }));
@@ -3177,9 +2521,7 @@
             // Jika belum ada siswa terdaftar di halaqah, sediakan 1 baris siap isi dengan 11 kolom surat
             if (barisUjianKenaikan.length === 0) {
                 barisUjianKenaikan.push({
-                    santriId: '',
                     nama: '',
-                    syahadah: DAFTAR_SYAHADAH[0],
                     daftarSurat: buatDaftarSuratDefaultUjian(11),
                     status: ''
                 });
@@ -3197,31 +2539,13 @@
                 level: document.getElementById('ujianLevel').value,
                 tempatTanggal: document.getElementById('ujianTempatTanggal').value,
                 penguji: document.getElementById('ujianNamaPenguji').value,
-                tampilRata: opsiRataUjian === true,
-                autoSyahadah: document.getElementById('ujianAutoSyahadah') ? document.getElementById('ujianAutoSyahadah').checked : true,
                 baris: barisUjianKenaikan
             }));
-        }
-
-        function ubahOpsiRataUjian(aktif) {
-            opsiRataUjian = aktif === true;
-            simpanDraftUjianGuru();
-            renderTabelUjianKenaikan();
-            window.mutqinToast(opsiRataUjian ? '✅ Rata-rata ditampilkan.' : 'ℹ️ Rata-rata disembunyikan (default).');
         }
 
         function updateBarisUjian(idx, field, val) {
             if (barisUjianKenaikan[idx]) {
                 barisUjianKenaikan[idx][field] = val;
-                if (field === 'nama') {
-                    const s = cariSantriUntukBarisUjian(barisUjianKenaikan[idx]);
-                    if (s) {
-                        barisUjianKenaikan[idx].santriId = s.id;
-                        barisUjianKenaikan[idx].syahadah = syahadahSiswa(s);
-                    } else {
-                        barisUjianKenaikan[idx].santriId = '';
-                    }
-                }
                 simpanDraftUjianGuru();
                 updateStatistikUjian();
             }
@@ -3229,7 +2553,7 @@
 
         function updateSuratUjianSiswa(siswaIdx, suratIdx, field, val) {
             if (barisUjianKenaikan[siswaIdx] && barisUjianKenaikan[siswaIdx].daftarSurat[suratIdx]) {
-                barisUjianKenaikan[siswaIdx].daftarSurat[suratIdx][field] = val;
+                barisUjianKenaikan[siswaIdx].daftarSurat[suratIdx][field] = field === 'surat' ? val : val;
                 simpanDraftUjianGuru();
                 hitungRataUjianDom(siswaIdx);
             }
@@ -3271,9 +2595,7 @@
 
         function tambahBarisUjianKenaikan() {
             barisUjianKenaikan.push({
-                santriId: '',
                 nama: '',
-                syahadah: DAFTAR_SYAHADAH[0],
                 daftarSurat: buatDaftarSuratDefaultUjian(11),
                 status: ''
             });
@@ -3321,12 +2643,9 @@
                     : row.status === 'Menetap'
                         ? 'border-amber-300 bg-amber-50 text-amber-700'
                         : 'border-slate-300 bg-white text-slate-600';
-                const santriTerhubung = cariSantriUntukBarisUjian(row);
-                const syahadahAwal = santriTerhubung ? syahadahSiswa(santriTerhubung) : normalisasiSyahadah(row.syahadah);
-                const syahadahTujuan = row.status === 'Naik' ? syahadahBerikutnya(syahadahAwal) : syahadahAwal;
 
                 return `
-                    <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden kartu-masuk">
+                    <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden">
                         <!-- KEPALA KARTU SISWA -->
                         <div class="bg-slate-50 border-b border-slate-200 p-3 flex flex-col lg:flex-row lg:items-end gap-2.5">
                             <div class="flex items-center gap-2.5 flex-grow min-w-0">
@@ -3334,12 +2653,6 @@
                                 <div class="flex-grow min-w-0">
                                     <label class="block text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-0.5">Nama Siswa</label>
                                     <input type="text" value="${escapeHtmlMutqin(row.nama)}" oninput="updateBarisUjian(${idx}, 'nama', this.value)" placeholder="Ketik nama siswa..." class="w-full border border-slate-300 rounded-lg px-2.5 py-2 text-sm bg-white font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
-                                    <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
-                                        ${badgeSyahadahHtml(syahadahAwal)}
-                                        <span class="text-[10px] text-slate-400">→</span>
-                                        ${badgeSyahadahHtml(syahadahTujuan)}
-                                        ${santriTerhubung ? `<span class="text-[10px] text-slate-400">(${escapeHtmlMutqin(santriTerhubung.halaqah)})</span>` : `<span class="text-[10px] text-amber-600 font-semibold">belum terhubung data siswa</span>`}
-                                    </div>
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 sm:flex sm:items-end gap-2 lg:flex-shrink-0">
@@ -3355,7 +2668,7 @@
                                     <span class="text-[11px] text-slate-500 whitespace-nowrap">Total: <strong class="text-slate-700">${listSurat.length}</strong> surat</span>
                                 </div>
                                 <div class="flex items-center justify-end gap-2 sm:pb-0.5">
-                                    ${opsiRataUjian ? `<span id="rataUjianSiswa_${idx}" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg whitespace-nowrap">${rataAwal !== null ? 'Rata-rata: ' + rataAwal : 'Rata-rata: -'}</span>` : ''}
+                                    <span id="rataUjianSiswa_${idx}" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg whitespace-nowrap">${rataAwal !== null ? 'Rata-rata: ' + rataAwal : 'Rata-rata: -'}</span>
                                     <button type="button" onclick="hapusBarisUjianKenaikan(${idx})" title="Hapus Baris Siswa" class="w-8 h-8 flex-shrink-0 rounded-lg bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold text-base leading-none">&times;</button>
                                 </div>
                             </div>
@@ -3426,211 +2739,21 @@
             renderTabelUjianKenaikan();
         }
 
-        // ---- SIMPAN LEMBAR UJIAN KE DATABASE + UPDATE SYAHADAH SISWA ----
-        function simpanUjianKeDatabase() {
-            if (!currentUser || currentUser.role !== 'guru') return alert('Fitur ini untuk Guru Pembimbing.');
-            if (!barisUjianKenaikan.length) return alert('Belum ada baris siswa pada lembar ujian.');
-
-            const barisBernama = barisUjianKenaikan.filter(r => String(r.nama || '').trim() !== '');
-            if (!barisBernama.length) return alert('Isi minimal satu nama siswa sebelum menyimpan.');
-
-            const autoSyahadah = document.getElementById('ujianAutoSyahadah') ? document.getElementById('ujianAutoSyahadah').checked : true;
-            const pengampu = document.getElementById('ujianGuruPengampu').value.trim();
-            const level = document.getElementById('ujianLevel').value.trim();
-            const tempatTanggal = document.getElementById('ujianTempatTanggal').value.trim();
-            const penguji = document.getElementById('ujianNamaPenguji').value.trim();
-
-            if (!confirm(`Simpan ${barisBernama.length} hasil ujian ke database${autoSyahadah ? ' dan perbarui tingkatan syahadah siswa (Naik = lanjut, Menetap = tetap)' : ''}?`)) return;
-
-            let jumlahNaik = 0, jumlahMenetap = 0;
-            const barisArsip = barisBernama.map(row => {
-                const santri = cariSantriUntukBarisUjian(row);
-                const syahadahAwal = santri ? syahadahSiswa(santri) : normalisasiSyahadah(row.syahadah);
-                let syahadahBaru = syahadahAwal;
-                if (autoSyahadah && santri) {
-                    if (row.status === 'Naik') { syahadahBaru = syahadahBerikutnya(syahadahAwal); jumlahNaik++; }
-                    else if (row.status === 'Menetap') { syahadahBaru = syahadahAwal; jumlahMenetap++; }
-                    const idxSantri = dataSantri.findIndex(s => s.id === santri.id);
-                    if (idxSantri !== -1) dataSantri[idxSantri].syahadah = syahadahBaru;
-                    dataTasmi.forEach(t => { if (t.santriId === santri.id) t.syahadah = syahadahBaru; });
-                }
-                return {
-                    santriId: santri ? santri.id : '',
-                    nama: row.nama,
-                    halaqah: santri ? santri.halaqah : (currentUser.data.halaqah || ''),
-                    syahadahAwal: syahadahAwal,
-                    syahadahBaru: syahadahBaru,
-                    status: row.status || '',
-                    daftarSurat: (row.daftarSurat || []).map(x => ({ surat: bersihNomorSurah(x.surat), nilai: x.nilai === undefined ? '' : x.nilai })),
-                    rata: hitungRataUjianSiswa(row.daftarSurat)
-                };
-            });
-
-            dataUjian.unshift({
-                id: 'uj_' + Date.now(),
-                tanggalSimpan: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                guruId: currentUser.data.id,
-                guruNama: currentUser.data.nama,
-                halaqah: currentUser.data.halaqah,
-                pengampu: pengampu,
-                level: level,
-                tempatTanggal: tempatTanggal,
-                penguji: penguji,
-                tampilRata: opsiRataUjian === true,
-                autoSyahadah: autoSyahadah,
-                baris: barisArsip
-            });
-
-            // Sinkronkan syahadah pada draft berjalan
-            barisUjianKenaikan.forEach(row => {
-                const s = cariSantriUntukBarisUjian(row);
-                if (s) row.syahadah = syahadahSiswa(s);
-            });
-
-            simpanKeFirebase();
-            simpanDraftUjianGuru();
-            renderTabelUjianKenaikan();
-            renderArsipUjian('guru');
-            alert(`✅ Hasil ujian tersimpan di database.${autoSyahadah ? `\n${jumlahNaik} siswa naik syahadah, ${jumlahMenetap} siswa menetap.` : ''}`);
-        }
-
-        function renderArsipUjian(peran) {
-            const wadah = document.getElementById(peran === 'admin' ? 'listArsipUjianAdmin' : 'listArsipUjianGuru');
-            if (!wadah) return;
-            const kata = (document.getElementById(peran === 'admin' ? 'adminCariArsipUjian' : 'ujianCariArsip')?.value || '').trim().toLowerCase();
-
-            const daftar = dataUjian.filter(l => {
-                if (!kata) return true;
-                const gabung = [l.level, l.pengampu, l.penguji, l.guruNama, l.tempatTanggal, ...(l.baris || []).map(b => b.nama)].join(' ').toLowerCase();
-                return gabung.includes(kata);
-            });
-
-            if (!daftar.length) {
-                wadah.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-5 bg-slate-50 border border-dashed border-slate-300 rounded-xl">${dataUjian.length ? 'Arsip yang dicari tidak ditemukan.' : 'Belum ada lembar ujian yang disimpan ke database.'}</p>`;
-                return;
-            }
-
-            wadah.innerHTML = daftar.map(l => {
-                const jumlahNaik = (l.baris || []).filter(b => b.status === 'Naik').length;
-                const jumlahMenetap = (l.baris || []).filter(b => b.status === 'Menetap').length;
-                const barisHtml = (l.baris || []).map((b, i) => {
-                    const nilaiRingkas = (b.daftarSurat || []).filter(x => x.nilai !== '' && x.nilai !== undefined).map(x => `${bersihNomorSurah(x.surat) || '-'}: ${x.nilai}`).join(' • ');
-                    return `
-                        <tr class="border-b border-slate-100">
-                            <td class="py-1.5 px-2 text-center text-slate-500">${i + 1}</td>
-                            <td class="py-1.5 px-2 font-semibold text-slate-800">${escapeHtmlMutqin(b.nama)}</td>
-                            <td class="py-1.5 px-2 whitespace-nowrap">${badgeSyahadahHtml(b.syahadahAwal)} <span class="text-slate-400">→</span> ${badgeSyahadahHtml(b.syahadahBaru || b.syahadahAwal)}</td>
-                            <td class="py-1.5 px-2 text-[10px] text-slate-600">${escapeHtmlMutqin(nilaiRingkas || '-')}</td>
-                            ${l.tampilRata ? `<td class="py-1.5 px-2 text-center font-bold">${b.rata !== null && b.rata !== undefined ? b.rata : '-'}</td>` : ''}
-                            <td class="py-1.5 px-2 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${b.status === 'Naik' ? 'bg-emerald-600 text-white' : b.status === 'Menetap' ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-600'}">${escapeHtmlMutqin(b.status || '-')}</span></td>
-                            <td class="py-1.5 px-2 text-center">${b.santriId ? `<button onclick="bukaModalInfoSiswa('${b.santriId}')" class="text-emerald-700 font-bold hover:underline text-[11px]">Info</button>` : '<span class="text-slate-300">-</span>'}</td>
-                        </tr>
-                    `;
-                }).join('');
-                return `
-                    <div class="border border-slate-200 rounded-xl bg-white overflow-hidden kartu-masuk">
-                        <div class="bg-slate-50 border-b border-slate-200 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div class="min-w-0">
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <strong class="text-sm text-slate-800">${escapeHtmlMutqin(l.level || 'Ujian Kenaikan')}</strong>
-                                    <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">${(l.baris || []).length} siswa</span>
-                                    <span class="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded-full">Naik ${jumlahNaik}</span>
-                                    <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">Menetap ${jumlahMenetap}</span>
-                                </div>
-                                <p class="text-[11px] text-slate-500 mt-1">📅 ${escapeHtmlMutqin(l.tempatTanggal || l.tanggalSimpan)} • Pengampu: <strong>${escapeHtmlMutqin(l.pengampu || '-')}</strong> • Penguji: <strong>${escapeHtmlMutqin(l.penguji || '-')}</strong> • Disimpan: ${escapeHtmlMutqin(l.tanggalSimpan || '-')}</p>
-                            </div>
-                            <div class="flex gap-2 flex-shrink-0">
-                                <button onclick="cetakArsipUjianPDF('${l.id}')" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-1.5 rounded-lg text-[11px]">📄 PDF</button>
-                                ${peran === 'admin' ? `<button onclick="hapusArsipUjian('${l.id}')" class="bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold px-3 py-1.5 rounded-lg text-[11px]">Hapus</button>` : ''}
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto p-2">
-                            <table class="w-full text-left text-[11px] border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-100 text-slate-600">
-                                        <th class="py-1.5 px-2 w-8 text-center">No</th>
-                                        <th class="py-1.5 px-2">Nama</th>
-                                        <th class="py-1.5 px-2">Syahadah</th>
-                                        <th class="py-1.5 px-2">Nilai Surat</th>
-                                        ${l.tampilRata ? `<th class="py-1.5 px-2 text-center w-16">Rata²</th>` : ''}
-                                        <th class="py-1.5 px-2 text-center w-20">Hasil</th>
-                                        <th class="py-1.5 px-2 text-center w-14">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>${barisHtml}</tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function hapusArsipUjian(id) {
-            if (!confirm('Hapus arsip lembar ujian ini dari database? Data syahadah siswa tidak dikembalikan otomatis.')) return;
-            dataUjian = dataUjian.filter(l => l.id !== id);
-            simpanKeFirebase();
-            renderArsipUjian('admin');
-            window.mutqinToast('🗑️ Arsip ujian dihapus.');
-        }
-
-        function exportExcelArsipUjian() {
-            if (!dataUjian.length) return alert('Belum ada arsip ujian untuk diexport.');
-            const rows = [];
-            dataUjian.forEach(l => {
-                (l.baris || []).forEach(b => {
-                    const nilaiObj = {};
-                    (b.daftarSurat || []).forEach((x, i) => { nilaiObj['Surat_' + (i + 1)] = bersihNomorSurah(x.surat); nilaiObj['Nilai_' + (i + 1)] = x.nilai; });
-                    rows.push(Object.assign({
-                        "Tanggal Ujian": l.tempatTanggal || l.tanggalSimpan,
-                        "Level": l.level || '-',
-                        "Pengampu": l.pengampu || '-',
-                        "Penguji": l.penguji || '-',
-                        "Nama Siswa": b.nama,
-                        "Halaqah": b.halaqah || '-',
-                        "Syahadah Awal": b.syahadahAwal || '-',
-                        "Syahadah Baru": b.syahadahBaru || '-',
-                        "Hasil": b.status || '-'
-                    }, nilaiObj, l.tampilRata ? { "Rata_rata": b.rata } : {}));
-                });
-            });
-            const ws = XLSX.utils.json_to_sheet(rows);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Arsip_Ujian");
-            XLSX.writeFile(wb, "Arsip_Ujian_Kenaikan_MUTQIN.xlsx");
-        }
-
         function exportPDFUjianKenaikan() {
             const pengampu = document.getElementById('ujianGuruPengampu').value.trim();
             const level = document.getElementById('ujianLevel').value.trim();
             const tempatTanggal = document.getElementById('ujianTempatTanggal').value.trim() || 'Kotagajah,';
             const penguji = document.getElementById('ujianNamaPenguji').value.trim();
 
+            document.getElementById('pdfUjianPengampuText').innerText = pengampu;
+            document.getElementById('pdfUjianLevelText').innerText = level;
+            document.getElementById('pdfUjianTempatTglText').innerText = tempatTanggal;
+            document.getElementById('pdfUjianTtdPengampu').innerText = pengampu || '( ........................................ )';
+            document.getElementById('pdfUjianTtdPenguji').innerText = penguji || '( ........................................ )';
+
             const rowsToPrint = barisUjianKenaikan.length
                 ? barisUjianKenaikan
                 : [{ nama: '', daftarSurat: buatDaftarSuratDefaultUjian(11), status: '' }];
-
-            gambarPdfUjian(rowsToPrint, { pengampu, level, tempatTanggal, penguji, tampilRata: opsiRataUjian === true });
-        }
-
-        function cetakArsipUjianPDF(id) {
-            const lembar = dataUjian.find(l => l.id === id);
-            if (!lembar) return alert('Arsip ujian tidak ditemukan.');
-            gambarPdfUjian(lembar.baris || [], {
-                pengampu: lembar.pengampu || '',
-                level: lembar.level || '',
-                tempatTanggal: lembar.tempatTanggal || lembar.tanggalSimpan || '',
-                penguji: lembar.penguji || '',
-                tampilRata: lembar.tampilRata === true
-            });
-        }
-
-        function gambarPdfUjian(rowsToPrint, meta) {
-            const tampilRata = meta.tampilRata === true;
-            document.getElementById('pdfUjianPengampuText').innerText = meta.pengampu || '';
-            document.getElementById('pdfUjianLevelText').innerText = meta.level || '';
-            document.getElementById('pdfUjianTempatTglText').innerText = meta.tempatTanggal || '';
-            document.getElementById('pdfUjianTtdPengampu').innerText = meta.pengampu || '( ........................................ )';
-            document.getElementById('pdfUjianTtdPenguji').innerText = meta.penguji || '( ........................................ )';
 
             // Tentukan jumlah kolom surat terbanyak di kelompok ini (minimal 11 kolom ke samping)
             const maxSurat = rowsToPrint.reduce((maks, r) => {
@@ -3660,9 +2783,8 @@
                 <tr>
                     <th rowspan="2" style="border: 1px solid #000; padding: ${cellPad}; width: 24px; text-align: center; background-color: #f8fafc;">NO</th>
                     <th rowspan="2" style="border: 1px solid #000; padding: ${cellPad}; width: 17%; text-align: center; background-color: #f8fafc;">NAMA</th>
-                    <th rowspan="2" style="border: 1px solid #000; padding: ${cellPad}; width: 62px; text-align: center; background-color: #f8fafc;">SYAHADAH</th>
                     <th colspan="${maxSurat}" style="border: 1px solid #000; padding: ${cellPad}; text-align: center; background-color: #f8fafc;">SURAT & NILAI</th>
-                    ${tampilRata ? `<th rowspan="2" style="border: 1px solid #000; padding: ${cellPad}; width: 38px; text-align: center; background-color: #f8fafc;">RATA2</th>` : ''}
+                    <th rowspan="2" style="border: 1px solid #000; padding: ${cellPad}; width: 38px; text-align: center; background-color: #f8fafc;">RATA2</th>
                     <th rowspan="2" style="border: 1px solid #000; padding: ${cellPad}; width: 78px; text-align: center; background-color: #f8fafc;">Naik /<br>Menetap</th>
                 </tr>
                 <tr>
@@ -3682,10 +2804,6 @@
                 const listSurat = Array.isArray(r.daftarSurat) ? r.daftarSurat : [];
                 const rataNilai = hitungRataUjianSiswa(listSurat);
                 const statusTeks = r.status || '&nbsp;';
-                const santriRef = cariSantriUntukBarisUjian(r);
-                const syahadahTeks = r.syahadahAwal
-                    ? (r.syahadahBaru && r.syahadahBaru !== r.syahadahAwal ? `${r.syahadahAwal} → ${r.syahadahBaru}` : r.syahadahAwal)
-                    : (santriRef ? syahadahSiswa(santriRef) : normalisasiSyahadah(r.syahadah));
 
                 let selSuratHtml = '';
                 for (let s = 0; s < maxSurat; s++) {
@@ -3705,9 +2823,8 @@
                     <tr style="break-inside: avoid;">
                         <td style="border: 1px solid #000; padding: ${cellPad}; text-align: center; font-weight: bold;">${i + 1}</td>
                         <td style="border: 1px solid #000; padding: ${cellPad}; font-weight: bold; word-break: break-word;">${escapeHtmlMutqin(r.nama) || '&nbsp;'}</td>
-                        <td style="border: 1px solid #000; padding: ${cellPad}; text-align: center; font-size: 6.5pt;">${escapeHtmlMutqin(syahadahTeks)}</td>
                         ${selSuratHtml}
-                        ${tampilRata ? `<td style="border: 1px solid #000; padding: ${cellPad}; text-align: center; font-weight: bold;">${rataNilai !== null ? rataNilai : '&nbsp;'}</td>` : ''}
+                        <td style="border: 1px solid #000; padding: ${cellPad}; text-align: center; font-weight: bold;">${rataNilai !== null ? rataNilai : '&nbsp;'}</td>
                         <td style="border: 1px solid #000; padding: ${cellPad}; text-align: center; font-weight: bold;">${statusTeks}</td>
                     </tr>
                 `;
@@ -3718,7 +2835,7 @@
             const element = document.getElementById('pdfUjianContainer');
             element.style.display = 'block';
 
-            const namaFileLevel = (meta.level || 'Halaqah').replace(/[^a-zA-Z0-9]/g, '_');
+            const namaFileLevel = (level || 'Halaqah').replace(/[^a-zA-Z0-9]/g, '_');
             html2pdf().set({
                 margin: [6, 6, 6, 6],
                 filename: `Penilaian_Ujian_Kenaikan_${namaFileLevel}.pdf`,
@@ -3726,417 +2843,6 @@
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
                 pagebreak: { mode: ['avoid-all'] }
-            }).from(element).save().then(() => {
-                element.style.display = 'none';
-            }).catch(() => {
-                element.style.display = 'none';
-            });
-        }
-
-        // =========================================================================
-        // 8F. MENU TASMI' SEKALI DUDUK (ADMIN & GURU, LINTAS KELOMPOK)
-        // =========================================================================
-        function sufiksPeran(peran) { return peran === 'admin' ? 'Admin' : 'Guru'; }
-
-        function renderPencarianTasmi(peran) {
-            const suf = sufiksPeran(peran);
-            const input = document.getElementById('tasmiCariSiswa' + suf);
-            const wadah = document.getElementById('hasilCariTasmi' + suf);
-            if (!input || !wadah) return;
-            const kata = input.value.trim().toLowerCase();
-
-            if (!kata) {
-                wadah.innerHTML = `<p class="text-[11px] text-slate-400 italic px-1 py-2">Ketik nama siswa untuk mencari dari seluruh data siswa (${dataSantri.length} siswa terdaftar).</p>`;
-                return;
-            }
-
-            const hasil = dataSantri.filter(s =>
-                (s.nama || '').toLowerCase().includes(kata) ||
-                (s.halaqah || '').toLowerCase().includes(kata) ||
-                syahadahSiswa(s).toLowerCase().includes(kata)
-            ).slice(0, 30);
-
-            if (!hasil.length) {
-                wadah.innerHTML = `<p class="text-[11px] text-slate-400 italic px-1 py-2">Siswa tidak ditemukan.</p>`;
-                return;
-            }
-
-            wadah.innerHTML = hasil.map(s => {
-                const sudahAntri = dataTasmi.some(t => t.santriId === s.id && t.status !== 'Selesai');
-                return `
-                    <div class="flex items-center justify-between gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2">
-                        <div class="min-w-0">
-                            <strong class="block text-xs text-slate-800 truncate">${escapeHtmlMutqin(s.nama)}</strong>
-                            <span class="text-[10px] text-slate-500">${escapeHtmlMutqin(s.halaqah)} • ${escapeHtmlMutqin(syahadahSiswa(s))}</span>
-                        </div>
-                        ${sudahAntri
-                            ? `<span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded-lg whitespace-nowrap">Sudah antri</span>`
-                            : `<button onclick="tambahAntrianTasmi('${s.id}', '${peran}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg text-[11px] whitespace-nowrap">+ Antrian</button>`
-                        }
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function tambahAntrianTasmi(santriId, peran) {
-            const santri = dataSantri.find(s => s.id === santriId);
-            if (!santri) return alert('Data siswa tidak ditemukan.');
-            if (dataTasmi.some(t => t.santriId === santriId && t.status !== 'Selesai')) {
-                return alert('Siswa ini sudah ada dalam antrian tasmi\' yang belum selesai.');
-            }
-            const suf = sufiksPeran(peran);
-            const juzPilihan = document.getElementById('tasmiJuzDefault' + suf)?.value || 'Juz 30';
-            const juzCustom = (document.getElementById('tasmiJuzCustom' + suf)?.value || '').trim();
-            const pengujiInput = peran === 'admin'
-                ? (document.getElementById('tasmiPengujiAdmin')?.value || '').trim()
-                : (currentUser && currentUser.role === 'guru' ? currentUser.data.nama : '');
-
-            const nilaiAspek = {};
-            ASPEK_TASMI.forEach(a => { nilaiAspek[a.key] = ''; });
-
-            dataTasmi.unshift({
-                id: 'tsm_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-                santriId: santri.id,
-                santriNama: santri.nama,
-                halaqah: santri.halaqah,
-                syahadah: syahadahSiswa(santri),
-                juz: juzCustom || juzPilihan,
-                status: 'Antri',
-                tanggalDaftar: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                tanggalUji: '',
-                penguji: pengujiInput,
-                pendaftaranOleh: currentUser ? (currentUser.role === 'admin' ? 'Administrator' : currentUser.data.nama) : '-',
-                nilaiAspek: nilaiAspek,
-                catatan: ''
-            });
-            simpanKeFirebase();
-            renderPencarianTasmi(peran);
-            renderTasmi(peran);
-            window.mutqinToast(`✅ ${santri.nama} masuk antrian tasmi' ${juzCustom || juzPilihan}.`);
-        }
-
-        function hitungNilaiTasmi(item) {
-            const nilaiValid = ASPEK_TASMI
-                .map(a => (item.nilaiAspek || {})[a.key])
-                .filter(v => v !== '' && v !== undefined && v !== null && !isNaN(Number(v)))
-                .map(Number);
-            if (!nilaiValid.length) return null;
-            return Number((nilaiValid.reduce((a, b) => a + b, 0) / nilaiValid.length).toFixed(1));
-        }
-
-        function daftarTasmiTerfilter(peran) {
-            const suf = sufiksPeran(peran);
-            const status = document.getElementById('tasmiFilterStatus' + suf)?.value || 'SEMUA';
-            const kata = (document.getElementById('tasmiFilterNama' + suf)?.value || '').trim().toLowerCase();
-            return dataTasmi.filter(t => {
-                const cocokStatus = status === 'SEMUA' || t.status === status;
-                const cocokKata = !kata || [t.santriNama, t.halaqah, t.syahadah, t.juz, t.penguji].join(' ').toLowerCase().includes(kata);
-                return cocokStatus && cocokKata;
-            });
-        }
-
-        function renderTasmi(peran) {
-            const suf = sufiksPeran(peran);
-            const wadah = document.getElementById('listTasmi' + suf);
-            if (!wadah) return;
-
-            const statAntri = document.getElementById('tasmiStatAntri' + suf);
-            if (statAntri) {
-                statAntri.innerText = dataTasmi.filter(t => t.status === 'Antri').length;
-                document.getElementById('tasmiStatProses' + suf).innerText = dataTasmi.filter(t => t.status === 'Diuji').length;
-                document.getElementById('tasmiStatSelesai' + suf).innerText = dataTasmi.filter(t => t.status === 'Selesai').length;
-            }
-
-            const daftar = daftarTasmiTerfilter(peran);
-            if (!daftar.length) {
-                wadah.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6 bg-slate-50 border border-dashed border-slate-300 rounded-xl">${dataTasmi.length ? 'Tidak ada antrian yang cocok dengan filter.' : 'Belum ada siswa dalam antrian tasmi\'. Cari nama siswa di atas lalu tekan "+ Antrian".'}</p>`;
-                updateJumlahTerpilihTasmi();
-                return;
-            }
-
-            wadah.innerHTML = daftar.map((t, idx) => {
-                const nilaiAkhir = hitungNilaiTasmi(t);
-                const p = nilaiAkhir !== null ? dapatkanPredikat(nilaiAkhir) : null;
-                const warnaStatus = t.status === 'Selesai'
-                    ? 'bg-emerald-600 text-white'
-                    : t.status === 'Diuji' ? 'bg-blue-600 text-white' : 'bg-amber-500 text-white';
-                const aspekHtml = ASPEK_TASMI.map(a => {
-                    const v = (t.nilaiAspek || {})[a.key];
-                    const pv = (v !== '' && v !== undefined && !isNaN(Number(v))) ? dapatkanPredikat(v) : null;
-                    return `
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-2">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1" title="${escapeHtmlMutqin(a.bobot)}">${a.label}</label>
-                            <div class="flex items-center gap-1.5">
-                                <input type="number" min="0" max="100" inputmode="numeric" value="${v === undefined || v === null ? '' : escapeHtmlMutqin(v)}" oninput="updateNilaiAspekTasmi('${t.id}', '${a.key}', this.value, '${peran}')" placeholder="0-100" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs text-center font-bold bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
-                                <span id="pred_${t.id}_${a.key}" class="text-[10px] font-bold whitespace-nowrap ${pv ? 'text-emerald-700' : 'text-slate-300'}">${pv ? pv.latin : '-'}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-                return `
-                    <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden kartu-masuk">
-                        <div class="bg-slate-50 border-b border-slate-200 p-3 flex flex-col lg:flex-row lg:items-end gap-2.5">
-                            <div class="flex items-start gap-2.5 flex-grow min-w-0">
-                                ${peran === 'admin' ? `<input type="checkbox" value="${t.id}" onchange="updateJumlahTerpilihTasmi()" class="chk-tasmi mt-1 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">` : ''}
-                                <span class="w-8 h-8 flex-shrink-0 rounded-xl bg-emerald-600 text-white font-black text-xs flex items-center justify-center">${idx + 1}</span>
-                                <div class="min-w-0">
-                                    <strong class="block text-sm text-slate-800 truncate">${escapeHtmlMutqin(t.santriNama)}</strong>
-                                    <div class="flex flex-wrap items-center gap-1.5 mt-1">
-                                        ${badgeSyahadahHtml(t.syahadah)}
-                                        <span class="text-[10px] text-slate-500">${escapeHtmlMutqin(t.halaqah)}</span>
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${warnaStatus}">${escapeHtmlMutqin(t.status)}</span>
-                                    </div>
-                                    <p class="text-[10px] text-slate-400 mt-1">Daftar: ${escapeHtmlMutqin(t.tanggalDaftar || '-')} • Oleh: ${escapeHtmlMutqin(t.pendaftaranOleh || '-')}${t.tanggalUji ? ` • Diuji: ${escapeHtmlMutqin(t.tanggalUji)}` : ''}</p>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 sm:flex sm:items-end gap-2 lg:flex-shrink-0">
-                                <div>
-                                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-0.5">Juz Diujikan</label>
-                                    <select onchange="updateFieldTasmi('${t.id}', 'juz', this.value, '${peran}')" class="w-full border border-slate-300 rounded-lg px-2 py-2 text-xs bg-white font-bold text-emerald-800">
-                                        ${DAFTAR_JUZ_TASMI.map(j => `<option value="${j}" ${t.juz === j ? 'selected' : ''}>${j}</option>`).join('')}
-                                        ${DAFTAR_JUZ_TASMI.includes(t.juz) ? '' : `<option value="${escapeHtmlMutqin(t.juz)}" selected>${escapeHtmlMutqin(t.juz)}</option>`}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-0.5">Juz Lainnya</label>
-                                    <input type="text" value="${escapeHtmlMutqin(t.juzLainnya || '')}" onchange="updateJuzLainnyaTasmi('${t.id}', this.value, '${peran}')" placeholder="Juz 28 / 1-2" class="w-full sm:w-28 border border-slate-300 rounded-lg px-2 py-2 text-xs bg-white">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-0.5">Penguji</label>
-                                    <input type="text" value="${escapeHtmlMutqin(t.penguji || '')}" onchange="updateFieldTasmi('${t.id}', 'penguji', this.value, '${peran}')" placeholder="Nama penguji" class="w-full sm:w-36 border border-slate-300 rounded-lg px-2 py-2 text-xs bg-white">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-0.5">Status</label>
-                                    <select onchange="ubahStatusTasmi('${t.id}', this.value, '${peran}')" class="w-full border border-slate-300 rounded-lg px-2 py-2 text-xs bg-white font-bold">
-                                        <option value="Antri" ${t.status === 'Antri' ? 'selected' : ''}>⏳ Antri</option>
-                                        <option value="Diuji" ${t.status === 'Diuji' ? 'selected' : ''}>🎧 Sedang Diuji</option>
-                                        <option value="Selesai" ${t.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-3 space-y-2.5">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-2">${aspekHtml}</div>
-                            <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
-                                <div id="hasilTasmi_${t.id}" class="flex-shrink-0">
-                                    ${p
-                                        ? `<span class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold ${p.badge}">
-                                                <span>Nilai Akhir: ${nilaiAkhir}</span><span>•</span>
-                                                <span class="font-arab text-base leading-none">${p.arab}</span><span>${p.latin}</span>
-                                           </span>`
-                                        : `<span class="inline-block px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-400">Menunggu input nilai aspek...</span>`
-                                    }
-                                </div>
-                                <input type="text" value="${escapeHtmlMutqin(t.catatan || '')}" onchange="updateFieldTasmi('${t.id}', 'catatan', this.value, '${peran}')" placeholder="Catatan penguji (mis. perlu muroja'ah surat tertentu)..." class="flex-grow border border-slate-300 rounded-lg px-2.5 py-2 text-xs bg-white">
-                                <div class="flex gap-2 flex-shrink-0">
-                                    <button onclick="bukaModalInfoSiswa('${t.santriId}')" class="bg-white hover:bg-slate-50 border border-slate-300 text-slate-600 font-bold px-3 py-2 rounded-lg text-[11px]">Info</button>
-                                    <button onclick="hapusTasmi('${t.id}', '${peran}')" class="bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold px-3 py-2 rounded-lg text-[11px]">Hapus</button>
-                                </div>
-                            </div>
-                            ${p ? `<p class="text-[11px] text-slate-600">${p.keterangan}</p>` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            updateJumlahTerpilihTasmi();
-        }
-
-        function updateNilaiAspekTasmi(id, kunci, nilai, peran) {
-            const item = dataTasmi.find(t => t.id === id);
-            if (!item) return;
-            if (!item.nilaiAspek) item.nilaiAspek = {};
-            let angka = nilai === '' ? '' : Number(nilai);
-            if (angka !== '' && !isNaN(angka)) angka = Math.min(100, Math.max(0, angka));
-            item.nilaiAspek[kunci] = angka === '' || isNaN(angka) ? '' : angka;
-            if (item.status === 'Antri' && hitungNilaiTasmi(item) !== null) item.status = 'Diuji';
-
-            const labelPred = document.getElementById(`pred_${id}_${kunci}`);
-            if (labelPred) {
-                const pv = (angka !== '' && !isNaN(angka)) ? dapatkanPredikat(angka) : null;
-                labelPred.innerText = pv ? pv.latin : '-';
-                labelPred.className = `text-[10px] font-bold whitespace-nowrap ${pv ? 'text-emerald-700' : 'text-slate-300'}`;
-            }
-            const kotakHasil = document.getElementById(`hasilTasmi_${id}`);
-            const nilaiAkhir = hitungNilaiTasmi(item);
-            if (kotakHasil) {
-                if (nilaiAkhir !== null) {
-                    const p = dapatkanPredikat(nilaiAkhir);
-                    kotakHasil.innerHTML = `<span class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold ${p.badge}">
-                            <span>Nilai Akhir: ${nilaiAkhir}</span><span>•</span>
-                            <span class="font-arab text-base leading-none">${p.arab}</span><span>${p.latin}</span>
-                        </span>`;
-                } else {
-                    kotakHasil.innerHTML = `<span class="inline-block px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-400">Menunggu input nilai aspek...</span>`;
-                }
-            }
-            simpanKeFirebaseTasmiRingan();
-        }
-
-        let timerSimpanTasmi = 0;
-        function simpanKeFirebaseTasmiRingan() {
-            clearTimeout(timerSimpanTasmi);
-            timerSimpanTasmi = setTimeout(() => { simpanKeFirebase(); }, 600);
-        }
-
-        function updateFieldTasmi(id, field, nilai, peran) {
-            const item = dataTasmi.find(t => t.id === id);
-            if (!item) return;
-            item[field] = String(nilai || '').trim();
-            simpanKeFirebase();
-            renderTasmi(peran);
-            window.mutqinToast('✅ Data tasmi\' diperbarui.');
-        }
-
-        function updateJuzLainnyaTasmi(id, nilai, peran) {
-            const item = dataTasmi.find(t => t.id === id);
-            if (!item) return;
-            const teks = String(nilai || '').trim();
-            item.juzLainnya = teks;
-            if (teks) item.juz = teks;
-            simpanKeFirebase();
-            renderTasmi(peran);
-            window.mutqinToast('✅ Juz tasmi\' diperbarui.');
-        }
-
-        function ubahStatusTasmi(id, status, peran) {
-            const item = dataTasmi.find(t => t.id === id);
-            if (!item) return;
-            if (status === 'Selesai' && hitungNilaiTasmi(item) === null) {
-                alert('Isi minimal satu nilai aspek sebelum menandai tasmi\' sebagai Selesai.');
-                renderTasmi(peran);
-                return;
-            }
-            item.status = status;
-            if (status === 'Diuji' && !item.tanggalUji) {
-                item.tanggalUji = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            }
-            if (status === 'Selesai') {
-                item.tanggalUji = item.tanggalUji || new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                const santri = dataSantri.find(s => s.id === item.santriId);
-                if (santri) { item.syahadah = syahadahSiswa(santri); item.halaqah = santri.halaqah; }
-            }
-            simpanKeFirebase();
-            renderTasmi(peran);
-            window.mutqinToast('✅ Status tasmi\' menjadi ' + status + '.');
-        }
-
-        function hapusTasmi(id, peran) {
-            if (!confirm('Hapus data tasmi\' ini dari antrian/arsip?')) return;
-            dataTasmi = dataTasmi.filter(t => t.id !== id);
-            simpanKeFirebase();
-            renderTasmi(peran);
-            renderPencarianTasmi(peran);
-            window.mutqinToast('🗑️ Data tasmi\' dihapus.');
-        }
-
-        function toggleSemuaTasmi(source) {
-            document.querySelectorAll('.chk-tasmi').forEach(cb => cb.checked = source.checked);
-            updateJumlahTerpilihTasmi();
-        }
-
-        function updateJumlahTerpilihTasmi() {
-            const badge = document.getElementById('jumlahTerpilihTasmi');
-            if (badge) badge.innerText = document.querySelectorAll('.chk-tasmi:checked').length;
-        }
-
-        function hapusTasmiTerpilih() {
-            const ids = Array.from(document.querySelectorAll('.chk-tasmi:checked')).map(cb => cb.value);
-            if (!ids.length) return alert('Centang minimal satu data tasmi\' yang ingin dihapus!');
-            if (!confirm(`Hapus ${ids.length} data tasmi' terpilih?`)) return;
-            dataTasmi = dataTasmi.filter(t => !ids.includes(t.id));
-            simpanKeFirebase();
-            renderTasmi('admin');
-            renderPencarianTasmi('admin');
-            alert(`✅ ${ids.length} data tasmi' berhasil dihapus.`);
-        }
-
-        function exportExcelTasmi() {
-            if (!dataTasmi.length) return alert('Belum ada data tasmi\' untuk diexport.');
-            const rows = dataTasmi.map((t, i) => {
-                const nilaiAkhir = hitungNilaiTasmi(t);
-                const p = nilaiAkhir !== null ? dapatkanPredikat(nilaiAkhir) : null;
-                const row = {
-                    "No": i + 1,
-                    "Nama Siswa": t.santriNama,
-                    "Halaqah": t.halaqah,
-                    "Syahadah": t.syahadah,
-                    "Juz": t.juz,
-                    "Status": t.status,
-                    "Tanggal Daftar": t.tanggalDaftar,
-                    "Tanggal Uji": t.tanggalUji || '-',
-                    "Penguji": t.penguji || '-'
-                };
-                ASPEK_TASMI.forEach(a => { row[a.label] = (t.nilaiAspek || {})[a.key] === undefined ? '' : (t.nilaiAspek || {})[a.key]; });
-                row["Nilai Akhir"] = nilaiAkhir === null ? '' : nilaiAkhir;
-                row["Predikat"] = p ? p.latin : '';
-                row["Keterangan"] = p ? p.keterangan : '';
-                row["Catatan"] = t.catatan || '-';
-                return row;
-            });
-            const ws = XLSX.utils.json_to_sheet(rows);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Tasmi");
-            XLSX.writeFile(wb, "Rekap_Tasmi_MUTQIN.xlsx");
-        }
-
-        function exportPDFTasmi() {
-            if (!dataTasmi.length) return alert('Belum ada data tasmi\' untuk dicetak.');
-            document.getElementById('pdfTasmiTanggal').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-
-            document.getElementById('tbodyPdfTasmi').innerHTML = dataTasmi.map((t, i) => {
-                const nilaiAkhir = hitungNilaiTasmi(t);
-                const p = nilaiAkhir !== null ? dapatkanPredikat(nilaiAkhir) : null;
-                return `
-                    <tr>
-                        <td style="text-align:center;">${i + 1}</td>
-                        <td><strong>${escapeHtmlMutqin(t.santriNama)}</strong></td>
-                        <td>${escapeHtmlMutqin(t.syahadah || '-')}</td>
-                        <td>${escapeHtmlMutqin(t.halaqah || '-')}</td>
-                        <td>${escapeHtmlMutqin(t.juz || '-')}</td>
-                        <td>${escapeHtmlMutqin(t.tanggalUji || t.tanggalDaftar || '-')}</td>
-                        <td>${escapeHtmlMutqin(t.penguji || '-')}</td>
-                        <td style="text-align:center;"><strong>${nilaiAkhir === null ? '-' : nilaiAkhir}</strong></td>
-                        <td>${p ? `${p.latin}<br><small>${escapeHtmlMutqin(t.status)}</small>` : escapeHtmlMutqin(t.status)}</td>
-                    </tr>
-                `;
-            }).join('');
-
-            document.getElementById('pdfTasmiRincian').innerHTML = `
-                <h3 style="font-size: 10pt; margin: 0 0 6px 0; color: #065f46;">Rincian Nilai Aspek &amp; Kriteria Predikat</h3>
-                <table class="pdf-table" style="font-size: 8pt;">
-                    <thead>
-                        <tr>
-                            <th>Nama Siswa</th>
-                            ${ASPEK_TASMI.map(a => `<th style="text-align:center;">${a.label}</th>`).join('')}
-                            <th style="text-align:center;">Nilai Akhir</th>
-                            <th>Catatan Penguji</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${dataTasmi.map(t => {
-                            const nilaiAkhir = hitungNilaiTasmi(t);
-                            return `<tr>
-                                <td><strong>${escapeHtmlMutqin(t.santriNama)}</strong></td>
-                                ${ASPEK_TASMI.map(a => { const v = (t.nilaiAspek || {})[a.key]; return `<td style="text-align:center;">${v === '' || v === undefined ? '-' : escapeHtmlMutqin(v)}</td>`; }).join('')}
-                                <td style="text-align:center;"><strong>${nilaiAkhir === null ? '-' : nilaiAkhir}</strong></td>
-                                <td>${escapeHtmlMutqin(t.catatan || '-')}</td>
-                            </tr>`;
-                        }).join('')}
-                    </tbody>
-                </table>
-                <p style="font-size: 7.5pt; color: #444; margin-top: 8px;">Kriteria: 95–100 Mumtaz (Sangat Istimewa) • 90–94 Jayyid Jiddan (Sangat Baik) • 80–89 Jayyid (Baik) • 75–79 Maqbul (Cukup) • 60–74 Naqis (Perlu Belajar &amp; Mengulang) • &lt;60 Mardud (Perlu Mengulang Kembali).</p>
-            `;
-
-            const element = document.getElementById('pdfTasmiContainer');
-            element.style.display = 'block';
-            html2pdf().set({
-                margin: 8,
-                filename: 'Berita_Acara_Tasmi_MUTQIN.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             }).from(element).save().then(() => {
                 element.style.display = 'none';
             }).catch(() => {
