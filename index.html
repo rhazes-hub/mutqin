@@ -417,9 +417,9 @@
                         <thead>
                             <tr class="bg-emerald-50 text-emerald-900 border-b border-slate-200">
                                 <th class="p-2.5 text-center w-12">NO</th>
-                                <th class="p-2.5 w-1/3">NAMA SISWA</th>
-                                <th class="p-2.5 w-1/3">SURAT</th>
-                                <th class="p-2.5 w-1/4">NAIK / MENETAP</th>
+                                <th class="p-2.5 w-1/4">NAMA SISWA</th>
+                                <th class="p-2.5 w-1/2">DAFTAR SURAT & NILAI ANGKA (Bisa Tambah / Kurangi Surat)</th>
+                                <th class="p-2.5 w-1/5">NAIK / MENETAP</th>
                                 <th class="p-2.5 text-center w-12">Aksi</th>
                             </tr>
                         </thead>
@@ -429,7 +429,7 @@
 
                 <div class="flex flex-wrap justify-between items-center gap-2">
                     <button type="button" onclick="tambahBarisUjianKenaikan()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-3.5 py-2 rounded-xl text-xs">+ Tambah Baris Siswa</button>
-                    <span class="text-[11px] text-slate-500 italic">* Data lembar ujian otomatis tersimpan untuk sesi Anda dan siap dicetak ke PDF.</span>
+                    <span class="text-[11px] text-slate-500 italic">* Setiap siswa dapat diisi 11–12 surat (atau ditambah/dikurangi) beserta nilai angkanya, lalu siap dicetak ke PDF.</span>
                 </div>
             </div>
 
@@ -763,31 +763,32 @@
         </div>
 
         <!-- WADAH RENDERING PDF LEMBAR UJIAN KENAIKAN -->
-        <div id="pdfUjianContainer" style="display: none; background: #fff; padding: 24px 32px; color: #000; font-family: 'Times New Roman', Times, serif;">
-            <div style="font-size: 12pt; font-weight: bold; margin-bottom: 12px;">
+        <div id="pdfUjianContainer" style="display: none; background: #fff; padding: 20px 26px; color: #000; font-family: 'Times New Roman', Times, serif;">
+            <div style="font-size: 12pt; font-weight: bold; margin-bottom: 10px;">
                 Guru Pengampu : <span id="pdfUjianPengampuText"></span>
             </div>
-            <table style="width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 16px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 10.5pt; margin-bottom: 14px;">
                 <thead>
                     <tr>
-                        <th style="border: 1px solid #000; padding: 6px 8px; width: 8%; text-align: center; background-color: #f8fafc;">NO</th>
-                        <th style="border: 1px solid #000; padding: 6px 10px; width: 38%; text-align: center; background-color: #f8fafc;">NAMA</th>
-                        <th style="border: 1px solid #000; padding: 6px 10px; width: 32%; text-align: center; background-color: #f8fafc;">SURAT</th>
-                        <th style="border: 1px solid #000; padding: 6px 10px; width: 22%; text-align: center; background-color: #f8fafc;">Naik / Menetap</th>
+                        <th style="border: 1px solid #000; padding: 6px 6px; width: 6%; text-align: center; background-color: #f8fafc;">NO</th>
+                        <th style="border: 1px solid #000; padding: 6px 8px; width: 28%; text-align: center; background-color: #f8fafc;">NAMA</th>
+                        <th style="border: 1px solid #000; padding: 6px 8px; width: 38%; text-align: center; background-color: #f8fafc;">SURAT</th>
+                        <th style="border: 1px solid #000; padding: 6px 6px; width: 11%; text-align: center; background-color: #f8fafc;">NILAI</th>
+                        <th style="border: 1px solid #000; padding: 6px 8px; width: 17%; text-align: center; background-color: #f8fafc;">Naik / Menetap</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyPdfUjian"></tbody>
             </table>
-            <div style="font-size: 11.5pt; font-weight: bold; margin-bottom: 18px;">
+            <div style="font-size: 11.5pt; font-weight: bold; margin-bottom: 16px;">
                 Level : <span id="pdfUjianLevelText"></span>
             </div>
-            <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 20px; font-size: 11pt;">
+            <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 18px; font-size: 11pt;">
                 <div style="width: 45%; text-align: center;">
-                    <p style="margin: 0 0 60px 0;">Mengetahui,<br>Guru Pengampu</p>
+                    <p style="margin: 0 0 55px 0;">Mengetahui,<br>Guru Pengampu</p>
                     <p style="margin: 0; font-weight: bold; text-decoration: underline;" id="pdfUjianTtdPengampu"></p>
                 </div>
                 <div style="width: 45%; text-align: center;">
-                    <p style="margin: 0 0 60px 0;"><span id="pdfUjianTempatTglText"></span><br>Penguji,</p>
+                    <p style="margin: 0 0 55px 0;"><span id="pdfUjianTempatTglText"></span><br>Penguji,</p>
                     <p style="margin: 0; font-weight: bold;" id="pdfUjianTtdPenguji">( ........................................ )</p>
                 </div>
             </div>
@@ -2052,6 +2053,32 @@
         // =========================================================================
         // 8E. LEMBAR PENILAIAN UJIAN KENAIKAN & EXPORT PDF (GURU)
         // =========================================================================
+        function buatDaftarSuratDefaultUjian(jumlah = 11) {
+            return Array.from({ length: jumlah }, () => ({ surat: '', nilai: '' }));
+        }
+
+        function normalisasiBarisUjian(rawBaris) {
+            return (rawBaris || []).map(item => {
+                if (Array.isArray(item.daftarSurat) && item.daftarSurat.length > 0) {
+                    return {
+                        nama: item.nama || '',
+                        daftarSurat: item.daftarSurat.map(s => ({
+                            surat: s.surat || '',
+                            nilai: s.nilai !== undefined ? s.nilai : ''
+                        })),
+                        status: item.status || ''
+                    };
+                }
+                const list = buatDaftarSuratDefaultUjian(11);
+                if (item.surat) list[0].surat = item.surat;
+                return {
+                    nama: item.nama || '',
+                    daftarSurat: list,
+                    status: item.status || ''
+                };
+            });
+        }
+
         function inisialisasiUjianKenaikanGuru() {
             if (!currentUser || currentUser.role !== 'guru') return;
             const guru = currentUser.data;
@@ -2065,7 +2092,7 @@
                     document.getElementById('ujianLevel').value = parsed.level || guru.halaqah;
                     document.getElementById('ujianTempatTanggal').value = parsed.tempatTanggal || 'Kotagajah, ';
                     document.getElementById('ujianNamaPenguji').value = parsed.penguji || '';
-                    barisUjianKenaikan = parsed.baris || [];
+                    barisUjianKenaikan = normalisasiBarisUjian(parsed.baris);
                 } catch (e) {
                     muatSiswaKeLembarUjian(true);
                 }
@@ -2090,13 +2117,17 @@
             const santriBimbingan = dataSantri.filter(s => s.halaqah === guru.halaqah);
             barisUjianKenaikan = santriBimbingan.map(s => ({
                 nama: s.nama,
-                surat: '',
+                daftarSurat: buatDaftarSuratDefaultUjian(11),
                 status: ''
             }));
 
-            // Pastikan minimal ada 14 baris seperti format lembar ujian standar
-            while (barisUjianKenaikan.length < 14) {
-                barisUjianKenaikan.push({ nama: '', surat: '', status: '' });
+            // Jika belum ada siswa terdaftar di halaqah, sediakan 1 baris siap isi dengan 11 kolom surat
+            if (barisUjianKenaikan.length === 0) {
+                barisUjianKenaikan.push({
+                    nama: '',
+                    daftarSurat: buatDaftarSuratDefaultUjian(11),
+                    status: ''
+                });
             }
 
             simpanDraftUjianGuru();
@@ -2122,8 +2153,54 @@
             }
         }
 
+        function updateSuratUjianSiswa(siswaIdx, suratIdx, field, val) {
+            if (barisUjianKenaikan[siswaIdx] && barisUjianKenaikan[siswaIdx].daftarSurat[suratIdx]) {
+                barisUjianKenaikan[siswaIdx].daftarSurat[suratIdx][field] = val;
+                simpanDraftUjianGuru();
+                hitungRataUjianDom(siswaIdx);
+            }
+        }
+
+        function hitungRataUjianSiswa(daftarSurat) {
+            const angkaValid = (daftarSurat || [])
+                .map(s => s.nilai !== '' && !isNaN(Number(s.nilai)) ? Number(s.nilai) : null)
+                .filter(v => v !== null);
+            if (!angkaValid.length) return null;
+            const total = angkaValid.reduce((a, b) => a + b, 0);
+            return (total / angkaValid.length).toFixed(1);
+        }
+
+        function hitungRataUjianDom(siswaIdx) {
+            const el = document.getElementById(`rataUjianSiswa_${siswaIdx}`);
+            if (!el || !barisUjianKenaikan[siswaIdx]) return;
+            const rata = hitungRataUjianSiswa(barisUjianKenaikan[siswaIdx].daftarSurat);
+            el.innerText = rata !== null ? `Rata-rata: ${rata}` : 'Rata-rata: -';
+        }
+
+        function tambahSuratPadaSiswaUjian(siswaIdx) {
+            if (!barisUjianKenaikan[siswaIdx]) return;
+            barisUjianKenaikan[siswaIdx].daftarSurat.push({ surat: '', nilai: '' });
+            simpanDraftUjianGuru();
+            renderTabelUjianKenaikan();
+        }
+
+        function hapusSuratPadaSiswaUjian(siswaIdx, suratIdx) {
+            if (!barisUjianKenaikan[siswaIdx]) return;
+            if (barisUjianKenaikan[siswaIdx].daftarSurat.length <= 1) {
+                barisUjianKenaikan[siswaIdx].daftarSurat[0] = { surat: '', nilai: '' };
+            } else {
+                barisUjianKenaikan[siswaIdx].daftarSurat.splice(suratIdx, 1);
+            }
+            simpanDraftUjianGuru();
+            renderTabelUjianKenaikan();
+        }
+
         function tambahBarisUjianKenaikan() {
-            barisUjianKenaikan.push({ nama: '', surat: '', status: '' });
+            barisUjianKenaikan.push({
+                nama: '',
+                daftarSurat: buatDaftarSuratDefaultUjian(11),
+                status: ''
+            });
             simpanDraftUjianGuru();
             renderTabelUjianKenaikan();
         }
@@ -2137,27 +2214,45 @@
         function renderTabelUjianKenaikan() {
             const tbody = document.getElementById('tbodyUjianKenaikan');
             if (!tbody) return;
-            tbody.innerHTML = barisUjianKenaikan.map((row, idx) => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-2 text-center font-bold text-slate-600">${idx + 1}</td>
-                    <td class="p-1.5">
-                        <input type="text" value="${(row.nama || '').replace(/"/g, '&quot;')}" oninput="updateBarisUjian(${idx}, 'nama', this.value)" placeholder="Nama Siswa..." class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-semibold">
-                    </td>
-                    <td class="p-1.5">
-                        <input type="text" value="${(row.surat || '').replace(/"/g, '&quot;')}" oninput="updateBarisUjian(${idx}, 'surat', this.value)" placeholder="Contoh: An-Naba' - Al-Infithar" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white">
-                    </td>
-                    <td class="p-1.5">
-                        <select onchange="updateBarisUjian(${idx}, 'status', this.value)" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-semibold">
-                            <option value="" ${row.status === '' ? 'selected' : ''}>-- Pilih / Kosongkan --</option>
-                            <option value="Naik" ${row.status === 'Naik' ? 'selected' : ''}>Naik</option>
-                            <option value="Menetap" ${row.status === 'Menetap' ? 'selected' : ''}>Menetap</option>
-                        </select>
-                    </td>
-                    <td class="p-1.5 text-center">
-                        <button type="button" onclick="hapusBarisUjianKenaikan(${idx})" title="Hapus Baris" class="text-rose-500 hover:text-rose-700 font-bold text-sm">&times;</button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = barisUjianKenaikan.map((row, idx) => {
+                const listSurat = Array.isArray(row.daftarSurat) && row.daftarSurat.length ? row.daftarSurat : buatDaftarSuratDefaultUjian(11);
+                const rataAwal = hitungRataUjianSiswa(listSurat);
+                return `
+                    <tr class="hover:bg-slate-50 align-top">
+                        <td class="p-2.5 text-center font-bold text-slate-700">${idx + 1}</td>
+                        <td class="p-2">
+                            <input type="text" value="${(row.nama || '').replace(/"/g, '&quot;')}" oninput="updateBarisUjian(${idx}, 'nama', this.value)" placeholder="Nama Siswa..." class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-bold text-slate-800">
+                            <div class="mt-1.5 flex items-center justify-between text-[11px] text-slate-500">
+                                <span>Total: <strong>${listSurat.length}</strong> surat</span>
+                                <span id="rataUjianSiswa_${idx}" class="font-bold text-emerald-700">${rataAwal !== null ? 'Rata-rata: ' + rataAwal : 'Rata-rata: -'}</span>
+                            </div>
+                        </td>
+                        <td class="p-2">
+                            <div class="space-y-1.5">
+                                ${listSurat.map((itemSurat, sIdx) => `
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-[10px] font-bold text-slate-400 w-5 text-right">${sIdx + 1}.</span>
+                                        <input type="text" value="${(itemSurat.surat || '').replace(/"/g, '&quot;')}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'surat', this.value)" placeholder="Nama Surat ke-${sIdx + 1}..." class="flex-grow border border-slate-300 rounded-lg px-2 py-1 text-xs bg-white">
+                                        <input type="number" min="0" max="100" value="${itemSurat.nilai !== undefined && itemSurat.nilai !== '' ? itemSurat.nilai : ''}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'nilai', this.value)" placeholder="Nilai" class="w-20 border border-slate-300 rounded-lg px-2 py-1 text-xs text-center font-bold bg-white">
+                                        <button type="button" onclick="hapusSuratPadaSiswaUjian(${idx}, ${sIdx})" title="Kurangi Surat Ini" class="px-1.5 py-0.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs border border-rose-200">−</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button type="button" onclick="tambahSuratPadaSiswaUjian(${idx})" class="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-lg transition">+ Tambah Surat</button>
+                        </td>
+                        <td class="p-2">
+                            <select onchange="updateBarisUjian(${idx}, 'status', this.value)" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-bold ${row.status === 'Naik' ? 'text-emerald-700' : row.status === 'Menetap' ? 'text-amber-700' : 'text-slate-700'}">
+                                <option value="" ${row.status === '' ? 'selected' : ''}>-- Pilih / Kosongkan --</option>
+                                <option value="Naik" ${row.status === 'Naik' ? 'selected' : ''}>Naik</option>
+                                <option value="Menetap" ${row.status === 'Menetap' ? 'selected' : ''}>Menetap</option>
+                            </select>
+                        </td>
+                        <td class="p-2 text-center">
+                            <button type="button" onclick="hapusBarisUjianKenaikan(${idx})" title="Hapus Baris Siswa" class="text-rose-500 hover:text-rose-700 font-bold text-base">&times;</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function exportPDFUjianKenaikan() {
@@ -2172,22 +2267,56 @@
             document.getElementById('pdfUjianTtdPengampu').innerText = pengampu || '( ........................................ )';
             document.getElementById('pdfUjianTtdPenguji').innerText = penguji || '( ........................................ )';
 
-            const rowsToPrint = barisUjianKenaikan.length ? barisUjianKenaikan : Array.from({ length: 14 }, () => ({ nama: '', surat: '', status: '' }));
-            document.getElementById('tbodyPdfUjian').innerHTML = rowsToPrint.map((r, i) => `
-                <tr>
-                    <td style="border: 1px solid #000; padding: 7px 6px; text-align: center;">${i + 1}</td>
-                    <td style="border: 1px solid #000; padding: 7px 10px; font-weight: bold;">${r.nama || '&nbsp;'}</td>
-                    <td style="border: 1px solid #000; padding: 7px 10px;">${r.surat || '&nbsp;'}</td>
-                    <td style="border: 1px solid #000; padding: 7px 10px; text-align: center; font-weight: bold;">${r.status || '&nbsp;'}</td>
-                </tr>
-            `).join('');
+            const rowsToPrint = barisUjianKenaikan.length
+                ? barisUjianKenaikan
+                : [{ nama: '', daftarSurat: buatDaftarSuratDefaultUjian(11), status: '' }];
+
+            let htmlRows = '';
+            rowsToPrint.forEach((r, i) => {
+                const listSurat = Array.isArray(r.daftarSurat) && r.daftarSurat.length
+                    ? r.daftarSurat
+                    : buatDaftarSuratDefaultUjian(11);
+                const spanCount = listSurat.length;
+                const rataNilai = hitungRataUjianSiswa(listSurat);
+                const statusTeks = r.status || '&nbsp;';
+                const ketAkhirHtml = rataNilai !== null
+                    ? `${statusTeks}<br><span style="font-size: 8.5pt; font-weight: normal;">(Rata-rata: ${rataNilai})</span>`
+                    : statusTeks;
+
+                listSurat.forEach((itemSurat, sIdx) => {
+                    const nomorSurat = `${sIdx + 1}. `;
+                    const isiSurat = itemSurat.surat ? `${nomorSurat}${itemSurat.surat}` : `${nomorSurat}&nbsp;`;
+                    const isiNilai = (itemSurat.nilai !== undefined && itemSurat.nilai !== '') ? itemSurat.nilai : '&nbsp;';
+
+                    if (sIdx === 0) {
+                        htmlRows += `
+                            <tr style="break-inside: avoid;">
+                                <td rowspan="${spanCount}" style="border: 1px solid #000; padding: 5px 4px; text-align: center; vertical-align: top; font-weight: bold;">${i + 1}</td>
+                                <td rowspan="${spanCount}" style="border: 1px solid #000; padding: 5px 8px; vertical-align: top; font-weight: bold;">${r.nama || '&nbsp;'}</td>
+                                <td style="border: 1px solid #000; padding: 3.5px 8px;">${isiSurat}</td>
+                                <td style="border: 1px solid #000; padding: 3.5px 6px; text-align: center; font-weight: bold;">${isiNilai}</td>
+                                <td rowspan="${spanCount}" style="border: 1px solid #000; padding: 5px 8px; text-align: center; vertical-align: middle; font-weight: bold;">${ketAkhirHtml}</td>
+                            </tr>
+                        `;
+                    } else {
+                        htmlRows += `
+                            <tr style="break-inside: avoid;">
+                                <td style="border: 1px solid #000; padding: 3.5px 8px;">${isiSurat}</td>
+                                <td style="border: 1px solid #000; padding: 3.5px 6px; text-align: center; font-weight: bold;">${isiNilai}</td>
+                            </tr>
+                        `;
+                    }
+                });
+            });
+
+            document.getElementById('tbodyPdfUjian').innerHTML = htmlRows;
 
             const element = document.getElementById('pdfUjianContainer');
             element.style.display = 'block';
 
             const namaFileLevel = (level || 'Halaqah').replace(/[^a-zA-Z0-9]/g, '_');
             html2pdf().set({
-                margin: 12,
+                margin: 10,
                 filename: `Penilaian_Ujian_Kenaikan_${namaFileLevel}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
