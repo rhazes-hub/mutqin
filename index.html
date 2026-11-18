@@ -39,6 +39,18 @@
             background-color: #f0fdf4;
             font-weight: bold;
         }
+        /* Scrollbar bertema MUTQIN */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #ecfdf5; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #059669; border-radius: 8px; border: 2px solid #ecfdf5; }
+        ::-webkit-scrollbar-thumb:hover { background: #047857; }
+        * { scrollbar-color: #059669 #ecfdf5; scrollbar-width: thin; }
+        /* Proteksi tampilan aplikasi */
+        body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        input, textarea, select, [contenteditable] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+        img { pointer-events: none; }
+        @media print { body { display: none !important; } }
+        #mutqinToast { transition: opacity .25s ease, transform .25s ease; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
@@ -55,7 +67,7 @@
             </div>
             <div id="navUser" class="text-xs sm:text-sm bg-emerald-800 px-3.5 py-1.5 rounded-full border border-emerald-600 hidden flex items-center gap-3">
                 <span id="labelUser" class="font-semibold"></span>
-                <button onclick="keluar()" class="bg-red-500 hover:bg-red-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full transition">Keluar</button>
+                <button onclick="keluar()" class="bg-red-500 hover:bg-red-600 text-white font-bold px-3 py-1 rounded-full text-xs transition">Keluar</button>
             </div>
         </div>
     </header>
@@ -378,16 +390,16 @@
                 <div id="guruKelompokContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
-            <!-- TAB GURU 5: LEMBAR UJIAN KENAIKAN -->
-            <div id="panelGuruUjian" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <!-- TAB GURU 5: LEMBAR UJIAN KENAIKAN (RESPONSIF HP / TABLET / LAPTOP) -->
+            <div id="panelGuruUjian" class="hidden bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 sm:space-y-5">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="font-bold text-slate-800 text-base">📜 Lembar Penilaian Ujian Kenaikan</h3>
                         <p class="text-xs text-slate-500">Isi daftar siswa, surat yang diujikan, dan hasil (Naik / Menetap), lalu cetak / download PDF untuk ditandatangani pengampu & penguji.</p>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" onclick="muatSiswaKeLembarUjian()" class="bg-slate-700 hover:bg-slate-800 text-white font-semibold px-3.5 py-2 rounded-xl text-xs">🔄 Isi Otomatis Siswa Saya</button>
-                        <button type="button" onclick="exportPDFUjianKenaikan()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-sm">📄 Download / Cetak PDF</button>
+                    <div class="grid grid-cols-1 sm:flex sm:flex-wrap gap-2 w-full sm:w-auto">
+                        <button type="button" onclick="muatSiswaKeLembarUjian()" class="bg-slate-700 hover:bg-slate-800 text-white font-semibold px-3.5 py-2.5 rounded-xl text-xs">🔄 Isi Otomatis Siswa Saya</button>
+                        <button type="button" onclick="exportPDFUjianKenaikan()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow-sm">📄 Download / Cetak PDF</button>
                     </div>
                 </div>
 
@@ -411,24 +423,21 @@
                     </div>
                 </div>
 
-                <!-- TABEL INPUT PENILAIAN UJIAN KENAIKAN -->
-                <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-emerald-50 text-emerald-900 border-b border-slate-200">
-                                <th class="p-2.5 text-center w-12">NO</th>
-                                <th class="p-2.5 w-1/4">NAMA SISWA</th>
-                                <th class="p-2.5 w-1/2">DAFTAR SURAT & NILAI ANGKA (Bisa Tambah / Kurangi Surat)</th>
-                                <th class="p-2.5 w-1/5">NAIK / MENETAP</th>
-                                <th class="p-2.5 text-center w-12">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyUjianKenaikan" class="divide-y divide-slate-200"></tbody>
-                    </table>
+                <!-- RINGKASAN & PENCARIAN LEMBAR UJIAN -->
+                <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+                    <div class="flex flex-wrap gap-2 text-[11px] font-bold">
+                        <span class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-2.5 py-1.5 rounded-lg">👥 Siswa: <span id="ujianStatSiswa">0</span></span>
+                        <span class="bg-blue-50 border border-blue-200 text-blue-800 px-2.5 py-1.5 rounded-lg">✅ Naik: <span id="ujianStatNaik">0</span></span>
+                        <span class="bg-amber-50 border border-amber-200 text-amber-800 px-2.5 py-1.5 rounded-lg">⏸️ Menetap: <span id="ujianStatMenetap">0</span></span>
+                    </div>
+                    <input type="text" id="ujianCariSiswa" oninput="renderTabelUjianKenaikan()" placeholder="🔍 Cari nama siswa di lembar ujian..." class="border border-slate-300 rounded-xl px-3 py-2 text-xs bg-white focus:ring-2 focus:ring-emerald-500 outline-none flex-grow sm:max-w-xs sm:ml-auto">
                 </div>
 
-                <div class="flex flex-wrap justify-between items-center gap-2">
-                    <button type="button" onclick="tambahBarisUjianKenaikan()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-3.5 py-2 rounded-xl text-xs">+ Tambah Baris Siswa</button>
+                <!-- DAFTAR KARTU PENILAIAN UJIAN (NYAMAN DI HP, TABLET & LAPTOP) -->
+                <div id="listUjianKenaikan" class="space-y-3"></div>
+
+                <div class="flex flex-col sm:flex-row flex-wrap justify-between items-stretch sm:items-center gap-2">
+                    <button type="button" onclick="tambahBarisUjianKenaikan()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-3.5 py-2.5 rounded-xl text-xs">+ Tambah Baris Siswa</button>
                     <span class="text-[11px] text-slate-500 italic">* Setiap siswa dapat diisi 11–12 surat (atau ditambah/dikurangi) beserta nilai angkanya, lalu siap dicetak ke PDF.</span>
                 </div>
             </div>
@@ -562,12 +571,16 @@
                     <h3 class="font-bold text-slate-800 text-sm">Tambah Kelompok Halaqah Baru</h3>
                     <div class="flex flex-col sm:flex-row gap-3">
                         <input type="text" id="adminInputHalaqah" placeholder="Contoh: Halaqah Abu Bakar, Halaqah Kelas 4A..." class="border border-slate-300 rounded-xl p-2.5 text-sm flex-grow bg-white">
+                        <input type="text" id="adminInputRuangHalaqah" placeholder="Ruang (Contoh: Ruang 1 / Aula Utara)" class="border border-slate-300 rounded-xl p-2.5 text-sm bg-white sm:w-64">
                         <button onclick="adminTambahHalaqah()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm">+ Tambah Halaqah</button>
                     </div>
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <h3 class="font-bold text-slate-800 text-sm">Daftar Kelompok Halaqah Aktif</h3>
-                    <div id="adminListHalaqah" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <h3 class="font-bold text-slate-800 text-sm">Daftar Kelompok Halaqah Aktif</h3>
+                        <span class="text-[11px] text-slate-500">✏️ Nomor kelompok & ruang dapat diedit langsung di sini (tersimpan real-time).</span>
+                    </div>
+                    <div id="adminListHalaqah" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
                 </div>
             </div>
 
@@ -637,12 +650,33 @@
                         <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm">+ Simpan Siswa</button>
                     </form>
                 </div>
+
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <h3 class="font-bold text-slate-800 text-sm">Daftar Seluruh Siswa</h3>
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Daftar Seluruh Siswa</h3>
+                            <p class="text-[11px] text-slate-500">Gunakan pencarian & filter halaqah, lalu centang beberapa siswa untuk menghapus sekaligus.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 items-center w-full lg:w-auto">
+                            <input type="text" id="adminCariSantri" oninput="renderTabelAdminSantri()" placeholder="🔍 Cari nama siswa..." class="border border-slate-300 rounded-lg p-2 text-xs bg-white focus:ring-2 focus:ring-emerald-500 outline-none flex-grow sm:flex-grow-0 sm:w-48">
+                            <select id="adminFilterSantriHalaqah" onchange="renderTabelAdminSantri()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white">
+                                <option value="SEMUA">-- Semua Halaqah --</option>
+                            </select>
+                            <select id="adminUrutSantri" onchange="renderTabelAdminSantri()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white">
+                                <option value="nama">Urut: Nama (A-Z)</option>
+                                <option value="halaqah">Urut: Halaqah</option>
+                                <option value="baru">Urut: Terbaru</option>
+                            </select>
+                            <button onclick="hapusSantriTerpilihAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white font-semibold px-3 py-2 rounded-lg text-xs">🗑️ Hapus Terpilih (<span id="jumlahTerpilihSantri">0</span>)</button>
+                        </div>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-600 border-b">
+                                    <th class="p-2.5 text-center w-10">
+                                        <input type="checkbox" id="checkAllSantri" onchange="toggleSemuaSantri(this)" title="Pilih Semua Siswa Tampil" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                                    </th>
                                     <th class="p-2.5">No</th>
                                     <th class="p-2.5">Nama Siswa</th>
                                     <th class="p-2.5">Halaqah</th>
@@ -653,6 +687,7 @@
                             <tbody id="tbodyAdminSantri" class="divide-y divide-slate-100"></tbody>
                         </table>
                     </div>
+                    <p class="text-[11px] text-slate-500">Menampilkan <strong id="infoJumlahSantriTampil">0</strong> dari <strong id="infoJumlahSantriTotal">0</strong> siswa terdaftar.</p>
                 </div>
             </div>
 
@@ -754,8 +789,8 @@
         </div>
 
         <!-- WADAH RENDERING PDF PEMBAGIAN KELOMPOK (LANDSCAPE) -->
-        <div id="pdfKelompokContainer" style="display: none; background: #fff; padding: 12px; color: #000; font-family: sans-serif;">
-            <div style="text-align: center; border-bottom: 2px solid #065f46; padding-bottom: 6px; margin-bottom: 12px;">
+        <div id="pdfKelompokContainer" style="display: none; background: #fff; padding: 10px; color: #000; font-family: sans-serif;">
+            <div style="text-align: center; border-bottom: 2px solid #065f46; padding-bottom: 6px; margin-bottom: 10px;">
                 <h2 style="font-size: 13pt; font-weight: bold; margin: 0; color: #065f46;">MUTQIN - DAFTAR PEMBAGIAN KELOMPOK TAHFIDZ</h2>
                 <p style="font-size: 8.5pt; margin: 3px 0 0 0; color: #444;">Dicetak pada: <span id="pdfKelompokTanggal"></span></p>
             </div>
@@ -815,11 +850,71 @@
         </div>
     </div>
 
+    <!-- NOTIFIKASI PROTEKSI / INFORMASI SINGKAT -->
+    <div id="mutqinToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[999] bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-lg border border-emerald-500 opacity-0 pointer-events-none translate-y-2"></div>
+
     <footer class="text-center text-[11px] text-slate-400 py-4 border-t border-slate-200 bg-white mt-auto">
         MUTQIN — Manajemen Unggul Tahfidz Qur'an Terintegrasi &copy; 2026
     </footer>
 
     <script>
+        // =========================================================================
+        // 0. LAPISAN PENGAMAN TAMPILAN (BLOKIR AKSES KODE HTML DARI PENGGUNA)
+        // =========================================================================
+        (function aktifkanProteksiMutqin() {
+            let waktuToast = 0;
+            window.mutqinToast = function (pesan) {
+                const box = document.getElementById('mutqinToast');
+                if (!box) return;
+                box.innerText = pesan;
+                box.style.opacity = '1';
+                box.style.transform = 'translate(-50%, 0)';
+                clearTimeout(waktuToast);
+                waktuToast = setTimeout(() => {
+                    box.style.opacity = '0';
+                    box.style.transform = 'translate(-50%, 8px)';
+                }, 2200);
+            };
+
+            function blokir(e, pesan) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (pesan) window.mutqinToast(pesan);
+                return false;
+            }
+
+            // Klik kanan / menu konteks
+            document.addEventListener('contextmenu', e => blokir(e, '🔒 Menu klik kanan dinonaktifkan pada aplikasi MUTQIN.'), true);
+            // Drag & drop elemen / gambar keluar halaman
+            document.addEventListener('dragstart', e => blokir(e), true);
+            document.addEventListener('drop', e => {
+                if (e.target && e.target.type === 'file') return;
+                blokir(e);
+            }, true);
+            // Seleksi & salin teks di luar kolom isian
+            document.addEventListener('selectstart', e => {
+                const t = e.target;
+                if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+                return blokir(e);
+            }, true);
+            document.addEventListener('copy', e => {
+                const t = e.target;
+                if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+                return blokir(e, '🔒 Penyalinan konten aplikasi tidak diizinkan.');
+            }, true);
+            // Shortcut developer tools / view-source / save / print
+            document.addEventListener('keydown', function (e) {
+                const k = (e.key || '').toLowerCase();
+                const kombinasiDevTools = e.ctrlKey && e.shiftKey && ['i', 'j', 'c', 'k'].includes(k);
+                const kombinasiLain = e.ctrlKey && ['u', 's', 'p'].includes(k);
+                if (k === 'f12' || kombinasiDevTools || kombinasiLain) {
+                    return blokir(e, '🔒 Akses kode sumber & inspect dinonaktifkan.');
+                }
+            }, true);
+            // Blokir cetak langsung dari browser (cetak resmi lewat tombol PDF aplikasi)
+            window.addEventListener('beforeprint', () => window.mutqinToast('🔒 Gunakan tombol Cetak / PDF di dalam aplikasi.'));
+        })();
+
         // =========================================================================
         // 1. KONFIGURASI FIREBASE REALTIME DATABASE (LINK RESMI ANDA)
         // =========================================================================
@@ -831,33 +926,44 @@
         const db = firebase.database();
 
         // =========================================================================
-        // 2. DAFTAR LENGKAP 114 SURAH AL-QUR'AN
+        // 2. DAFTAR LENGKAP 114 SURAH AL-QUR'AN (TANPA NOMOR SURAT)
         // =========================================================================
         const DAFTAR_114_SURAH = [
-            "1. Al-Fatihah", "2. Al-Baqarah", "3. Ali 'Imran", "4. An-Nisa'", "5. Al-Ma'idah",
-            "6. Al-An'am", "7. Al-A'raf", "8. Al-Anfal", "9. At-Taubah", "10. Yunus",
-            "11. Hud", "12. Yusuf", "13. Ar-Ra'd", "14. Ibrahim", "15. Al-Hijr",
-            "16. An-Nahl", "17. Al-Isra'", "18. Al-Kahf", "19. Maryam", "20. Taha",
-            "21. Al-Anbiya'", "22. Al-Hajj", "23. Al-Mu'minun", "24. An-Nur", "25. Al-Furqan",
-            "26. Asy-Syu'ara'", "27. An-Naml", "28. Al-Qasas", "29. Al-'Ankabut", "30. Ar-Rum",
-            "31. Luqman", "32. As-Sajdah", "33. Al-Ahzab", "34. Saba'", "35. Fatir",
-            "36. Yasin", "37. As-Saffat", "38. Sad", "39. Az-Zumar", "40. Ghafir",
-            "41. Fussilat", "42. Asy-Syura", "43. Az-Zukhruf", "44. Ad-Dukhan", "45. Al-Jasiyah",
-            "46. Al-Ahqaf", "47. Muhammad", "48. Al-Fath", "49. Al-Hujurat", "50. Qaf",
-            "51. Az-Zariyat", "52. At-Tur", "53. An-Najm", "54. Al-Qamar", "55. Ar-Rahman",
-            "56. Al-Waqi'ah", "57. Al-Hadid", "58. Al-Mujadilah", "59. Al-Hasyr", "60. Al-Mumtahanah",
-            "61. As-Saff", "62. Al-Jumu'ah", "63. Al-Munafiqun", "64. At-Taghabun", "65. At-Talaq",
-            "66. At-Tahrim", "67. Al-Mulk", "68. Al-Qalam", "69. Al-Haqqah", "70. Al-Ma'arij",
-            "71. Nuh", "72. Al-Jinn", "73. Al-Muzzammil", "74. Al-Muddassir", "75. Al-Qiyamah",
-            "76. Al-Insan", "77. Al-Mursalat", "78. An-Naba'", "79. An-Nazi'at", "80. 'Abasa",
-            "81. At-Takwir", "82. Al-Infitar", "83. Al-Mutaffifin", "84. Al-Insyiqaq", "85. Al-Buruj",
-            "86. At-Tariq", "87. Al-A'la", "88. Al-Ghasyiyah", "89. Al-Fajr", "90. Al-Balad",
-            "91. Asy-Syams", "92. Al-Lail", "93. Ad-Duha", "94. Asy-Syarh", "95. At-Tin",
-            "96. Al-'Alaq", "97. Al-Qadr", "98. Al-Bayyinah", "99. Az-Zalzalah", "100. Al-'Adiyat",
-            "101. Al-Qari'ah", "102. At-Takasur", "103. Al-'Asr", "104. Al-Humazah", "105. Al-Fil",
-            "106. Quraisy", "107. Al-Ma'un", "108. Al-Kausar", "109. Al-Kafirun", "110. An-Nasr",
-            "111. Al-Lahab", "112. Al-Ikhlas", "113. Al-Falaq", "114. An-Nas"
+            "Al-Fatihah", "Al-Baqarah", "Ali 'Imran", "An-Nisa'", "Al-Ma'idah",
+            "Al-An'am", "Al-A'raf", "Al-Anfal", "At-Taubah", "Yunus",
+            "Hud", "Yusuf", "Ar-Ra'd", "Ibrahim", "Al-Hijr",
+            "An-Nahl", "Al-Isra'", "Al-Kahf", "Maryam", "Taha",
+            "Al-Anbiya'", "Al-Hajj", "Al-Mu'minun", "An-Nur", "Al-Furqan",
+            "Asy-Syu'ara'", "An-Naml", "Al-Qasas", "Al-'Ankabut", "Ar-Rum",
+            "Luqman", "As-Sajdah", "Al-Ahzab", "Saba'", "Fatir",
+            "Yasin", "As-Saffat", "Sad", "Az-Zumar", "Ghafir",
+            "Fussilat", "Asy-Syura", "Az-Zukhruf", "Ad-Dukhan", "Al-Jasiyah",
+            "Al-Ahqaf", "Muhammad", "Al-Fath", "Al-Hujurat", "Qaf",
+            "Az-Zariyat", "At-Tur", "An-Najm", "Al-Qamar", "Ar-Rahman",
+            "Al-Waqi'ah", "Al-Hadid", "Al-Mujadilah", "Al-Hasyr", "Al-Mumtahanah",
+            "As-Saff", "Al-Jumu'ah", "Al-Munafiqun", "At-Taghabun", "At-Talaq",
+            "At-Tahrim", "Al-Mulk", "Al-Qalam", "Al-Haqqah", "Al-Ma'arij",
+            "Nuh", "Al-Jinn", "Al-Muzzammil", "Al-Muddassir", "Al-Qiyamah",
+            "Al-Insan", "Al-Mursalat", "An-Naba'", "An-Nazi'at", "'Abasa",
+            "At-Takwir", "Al-Infitar", "Al-Mutaffifin", "Al-Insyiqaq", "Al-Buruj",
+            "At-Tariq", "Al-A'la", "Al-Ghasyiyah", "Al-Fajr", "Al-Balad",
+            "Asy-Syams", "Al-Lail", "Ad-Duha", "Asy-Syarh", "At-Tin",
+            "Al-'Alaq", "Al-Qadr", "Al-Bayyinah", "Az-Zalzalah", "Al-'Adiyat",
+            "Al-Qari'ah", "At-Takasur", "Al-'Asr", "Al-Humazah", "Al-Fil",
+            "Quraisy", "Al-Ma'un", "Al-Kausar", "Al-Kafirun", "An-Nasr",
+            "Al-Lahab", "Al-Ikhlas", "Al-Falaq", "An-Nas"
         ];
+
+        // Membersihkan nomor surah pada data lama (mis. "78. An-Naba'" -> "An-Naba'")
+        function bersihNomorSurah(teks) {
+            return String(teks === undefined || teks === null ? '' : teks).replace(/^\s*\d{1,3}\s*[.)]\s*/, '').trim();
+        }
+
+        function escapeHtmlMutqin(teks) {
+            return String(teks === undefined || teks === null ? '' : teks)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
 
         const TEMPLATE_CATATAN_SETORAN = "Alhamdulillah tetap semangat setoran dan jangan lupa murojaah di rumah ya.";
 
@@ -865,6 +971,7 @@
         // 3. STATE APLIKASI & SINKRONISASI REALTIME DATABASE
         // =========================================================================
         let dataHalaqah = [];
+        let dataInfoHalaqah = {}; // { "Nama Halaqah": { nomor: 1, ruang: "Ruang 1" } }
         let dataGuru = [];
         let dataSantri = [];
         let dataSetoran = [];
@@ -878,7 +985,7 @@
         window.onload = function() {
             const selectSurah = document.getElementById('setoranSurah');
             if (selectSurah) {
-                selectSurah.innerHTML = DAFTAR_114_SURAH.map(s => `<option value="${s}">${s}</option>`).join('');
+                selectSurah.innerHTML = DAFTAR_114_SURAH.map(namaSurah => `<option value="${namaSurah}">${namaSurah}</option>`).join('');
             }
         };
 
@@ -899,14 +1006,19 @@
             const val = snapshot.val();
             if (val) {
                 dataHalaqah = val.halaqah || ['Halaqah Juz 30', 'Halaqah Juz 29'];
+                dataInfoHalaqah = val.info_halaqah || {};
                 dataGuru = val.guru || [];
                 dataSantri = val.santri || [];
-                dataSetoran = val.setoran || [];
+                dataSetoran = (val.setoran || []).map(st => ({ ...st, surah: bersihNomorSurah(st.surah) }));
                 dataPengumuman = val.pengumuman || [];
                 passwordAdmin = val.password_admin || '@123456';
             } else {
                 // Data awal otomatis agar aplikasi siap uji coba
                 dataHalaqah = ['Halaqah Abu Bakar', 'Halaqah Umar Bin Khattab'];
+                dataInfoHalaqah = {
+                    'Halaqah Abu Bakar': { nomor: 1, ruang: 'Ruang 1' },
+                    'Halaqah Umar Bin Khattab': { nomor: 2, ruang: 'Ruang 2' }
+                };
                 dataGuru = [
                     { id: 'g1', nama: 'Ustadz Abdullah', halaqah: 'Halaqah Abu Bakar', pin: '123456' }
                 ];
@@ -934,6 +1046,7 @@
             sinkronkanPembagianKelompokRealtime();
             db.ref('mutqin_data').set({
                 halaqah: dataHalaqah,
+                info_halaqah: dataInfoHalaqah,
                 guru: dataGuru,
                 santri: dataSantri,
                 setoran: dataSetoran,
@@ -961,7 +1074,7 @@
             const selHalaqah = document.getElementById('loginHalaqahSiswa');
             if (selHalaqah) {
                 const cur = selHalaqah.value;
-                selHalaqah.innerHTML = dataHalaqah.map(h => `<option value="${h}">${h}</option>`).join('');
+                selHalaqah.innerHTML = dataHalaqah.map(h => `<option value="${escapeHtmlMutqin(h)}">${escapeHtmlMutqin(h)}</option>`).join('');
                 if (cur && dataHalaqah.includes(cur)) selHalaqah.value = cur;
                 updateDropdownSiswaLogin();
             }
@@ -971,7 +1084,7 @@
             if (selGuru) {
                 const curG = selGuru.value;
                 selGuru.innerHTML = dataGuru.length
-                    ? dataGuru.map(g => `<option value="${g.id}">${g.nama} (${g.halaqah})</option>`).join('')
+                    ? dataGuru.map(g => `<option value="${g.id}">${escapeHtmlMutqin(g.nama)} (${escapeHtmlMutqin(g.halaqah)})</option>`).join('')
                     : `<option value="">-- Belum ada akun guru --</option>`;
                 if (curG) selGuru.value = curG;
             }
@@ -982,7 +1095,7 @@
             const selSantri = document.getElementById('loginNamaSiswa');
             const filtered = dataSantri.filter(s => s.halaqah === halaqah);
             selSantri.innerHTML = filtered.length
-                ? filtered.map(s => `<option value="${s.id}">${s.nama}</option>`).join('')
+                ? filtered.map(s => `<option value="${s.id}">${escapeHtmlMutqin(s.nama)}</option>`).join('')
                 : `<option value="">-- Belum ada siswa di halaqah ini --</option>`;
         }
 
@@ -1158,7 +1271,7 @@
             // Populate dropdown santri di form input setoran
             const selSantri = document.getElementById('setoranSiswaId');
             selSantri.innerHTML = santriBimbingan.length
-                ? santriBimbingan.map(s => `<option value="${s.id}">${s.nama}</option>`).join('')
+                ? santriBimbingan.map(s => `<option value="${s.id}">${escapeHtmlMutqin(s.nama)}</option>`).join('')
                 : `<option value="">-- Daftarkan siswa dulu di tab Siswa Bimbingan --</option>`;
 
             // Render daftar santri di tab Kelola Santri
@@ -1167,8 +1280,8 @@
                 ? santriBimbingan.map(s => `
                     <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center text-xs">
                         <div>
-                            <strong class="text-slate-800 text-sm block">${s.nama}</strong>
-                            <span class="text-slate-500">PIN Akses: <code class="bg-white px-1.5 py-0.5 rounded border font-bold text-emerald-700">${s.pin}</code></span>
+                            <strong class="text-slate-800 text-sm block">${escapeHtmlMutqin(s.nama)}</strong>
+                            <span class="text-slate-500">PIN Akses: <code class="bg-white px-1.5 py-0.5 rounded border font-bold text-emerald-700">${escapeHtmlMutqin(s.pin)}</code></span>
                         </div>
                         <div class="flex items-center gap-2">
                             <button onclick="bukaModalEditSiswa('${s.id}')" class="text-blue-600 font-bold hover:underline">Edit</button>
@@ -1187,14 +1300,14 @@
                 ? setoranHalaqah.map(st => `
                     <tr class="hover:bg-slate-50">
                         <td class="p-3 text-slate-500 whitespace-nowrap">${st.tanggal}</td>
-                        <td class="p-3 font-bold text-slate-800">${st.santriNama}</td>
+                        <td class="p-3 font-bold text-slate-800">${escapeHtmlMutqin(st.santriNama)}</td>
                         <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${st.jenis === 'Ziyadah' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">${st.jenis}</span></td>
-                        <td class="p-3 font-semibold text-slate-700">${st.surah} : Ayat ${st.ayatDari}-${st.ayatSampai}</td>
+                        <td class="p-3 font-semibold text-slate-700">${bersihNomorSurah(st.surah)} : Ayat ${st.ayatDari}-${st.ayatSampai}</td>
                         <td class="p-3 min-w-[200px]">
                             <div class="font-black text-slate-800 mb-1">Nilai: ${st.nilai}</div>
                             ${formatBadgePredikatHtml(st.nilai)}
                         </td>
-                        <td class="p-3 text-slate-600 italic">${st.catatan || '-'}</td>
+                        <td class="p-3 text-slate-600 italic">${escapeHtmlMutqin(st.catatan || '-')}</td>
                         <td class="p-3 text-center">
                             ${st.validasi_ortu
                                 ? `<span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-[11px]">✅ Sudah Divalidasi</span>`
@@ -1218,7 +1331,7 @@
             if (!santri) return alert('Pilih siswa terlebih dahulu!');
 
             const jenis = document.getElementById('setoranJenis').value;
-            const surah = document.getElementById('setoranSurah').value;
+            const surah = bersihNomorSurah(document.getElementById('setoranSurah').value);
             const ayatDari = document.getElementById('setoranAyatDari').value;
             const ayatSampai = document.getElementById('setoranAyatSampai').value;
             const nilai = Number(document.getElementById('setoranNilai').value);
@@ -1306,7 +1419,7 @@
 
             const container = document.getElementById('listSetoranSiswa');
             if (!riwayat.length) {
-                container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6 bg-slate-50 rounded-xl">Belum ada riwayat setoran hafalan untuk ananda ${santri.nama}.</p>`;
+                container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6 bg-slate-50 rounded-xl">Belum ada riwayat setoran hafalan untuk ananda ${escapeHtmlMutqin(santri.nama)}.</p>`;
                 return;
             }
 
@@ -1326,7 +1439,7 @@
                                         </span>`;
                             })()}
                         </div>
-                        <h4 class="text-base font-black text-slate-800">${st.surah} — Ayat ${st.ayatDari} s/d ${st.ayatSampai}</h4>
+                        <h4 class="text-base font-black text-slate-800">${bersihNomorSurah(st.surah)} — Ayat ${st.ayatDari} s/d ${st.ayatSampai}</h4>
                         ${(() => {
                             const p = dapatkanPredikat(st.nilai);
                             return `<div class="text-xs px-3 py-2 rounded-xl border ${p.warna} font-medium">
@@ -1334,7 +1447,7 @@
                                     </div>`;
                         })()}
                         <p class="text-xs text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100">
-                            <strong class="text-emerald-700">Catatan Ustadz/Ustadzah:</strong> "${st.catatan || TEMPLATE_CATATAN_SETORAN}"
+                            <strong class="text-emerald-700">Catatan Ustadz/Ustadzah:</strong> "${escapeHtmlMutqin(st.catatan || TEMPLATE_CATATAN_SETORAN)}"
                         </p>
                     </div>
 
@@ -1372,6 +1485,7 @@
             document.getElementById('panelAdmin' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
             document.getElementById('tabAdminBtn' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition";
             if (tab === 'kelompok') renderTabelPembagianKelompok('adminKelompokContainer', document.getElementById('adminCariKelompok')?.value || '');
+            if (tab === 'santri') renderTabelAdminSantri();
             if (tab === 'pengumuman') renderPengumumanAdmin();
         }
 
@@ -1385,7 +1499,7 @@
             document.getElementById('adminStatSetoran').innerText = dataSetoran.length;
 
             // Populate dropdown halaqah di admin
-            const opsiHalaqah = dataHalaqah.map(h => `<option value="${h}">${h}</option>`).join('');
+            const opsiHalaqah = dataHalaqah.map(h => `<option value="${escapeHtmlMutqin(h)}">${escapeHtmlMutqin(h)}</option>`).join('');
             document.getElementById('adminHalaqahGuru').innerHTML = opsiHalaqah;
             document.getElementById('adminHalaqahSantri').innerHTML = opsiHalaqah;
 
@@ -1394,43 +1508,106 @@
             filterSel.innerHTML = `<option value="SEMUA">-- Semua Halaqah --</option>` + opsiHalaqah;
             if (curFilter) filterSel.value = curFilter;
 
-            // Render List Halaqah
-            document.getElementById('adminListHalaqah').innerHTML = dataHalaqah.map(h => `
-                <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center text-xs">
-                    <strong class="text-slate-800 text-sm">${h}</strong>
-                    <button onclick="adminHapusHalaqah('${h}')" class="text-red-500 font-bold hover:underline">Hapus</button>
-                </div>
-            `).join('');
+            const filterSantriSel = document.getElementById('adminFilterSantriHalaqah');
+            if (filterSantriSel) {
+                const curFilterSantri = filterSantriSel.value;
+                filterSantriSel.innerHTML = `<option value="SEMUA">-- Semua Halaqah --</option>` + opsiHalaqah;
+                if (curFilterSantri) filterSantriSel.value = curFilterSantri;
+            }
+
+            // Render List Halaqah (nomor kelompok & ruang bisa diedit)
+            renderDaftarHalaqahAdmin();
 
             // Render List Guru
             document.getElementById('adminListGuru').innerHTML = dataGuru.map(g => `
                 <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 flex justify-between items-center text-xs">
                     <div>
-                        <strong class="text-slate-800 text-sm block">${g.nama}</strong>
-                        <span class="text-emerald-700 font-semibold">${g.halaqah}</span> | 
-                        <span class="text-slate-500">Password: <code class="bg-white px-1.5 py-0.5 rounded border font-bold">${g.pin}</code></span>
+                        <strong class="text-slate-800 text-sm block">${escapeHtmlMutqin(g.nama)}</strong>
+                        <span class="text-emerald-700 font-semibold">${escapeHtmlMutqin(g.halaqah)}</span> | 
+                        <span class="text-slate-500">Password: <code class="bg-white px-1.5 py-0.5 rounded border font-bold">${escapeHtmlMutqin(g.pin)}</code></span>
                     </div>
                     <button onclick="adminHapusGuru('${g.id}')" class="text-red-500 font-bold hover:underline">Hapus</button>
                 </div>
             `).join('');
 
-            // Render Tabel Santri
-            document.getElementById('tbodyAdminSantri').innerHTML = dataSantri.map((s, idx) => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-2.5">${idx + 1}</td>
-                    <td class="p-2.5 font-bold text-slate-800">${s.nama}</td>
-                    <td class="p-2.5">${s.halaqah}</td>
-                    <td class="p-2.5"><code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-emerald-700">${s.pin}</code></td>
-                    <td class="p-2.5 text-center space-x-2">
-                        <button onclick="bukaModalEditSiswa('${s.id}')" class="text-blue-600 font-semibold hover:underline">Edit</button>
-                        <button onclick="hapusSantri('${s.id}')" class="text-red-500 font-semibold hover:underline">Hapus</button>
-                    </td>
-                </tr>
-            `).join('');
+            // Render Tabel Santri (dengan filter, pencarian & ceklis massal)
+            renderTabelAdminSantri();
 
             renderAdminMonitoring();
             renderTabelPembagianKelompok('adminKelompokContainer', document.getElementById('adminCariKelompok')?.value || '');
             renderPengumumanAdmin();
+        }
+
+        // ---- DATA SISWA: FILTER, CARI NAMA, CEKLIS & HAPUS MASSAL ----
+        function daftarSantriTerfilterAdmin() {
+            const kata = (document.getElementById('adminCariSantri')?.value || '').trim().toLowerCase();
+            const halaqah = document.getElementById('adminFilterSantriHalaqah')?.value || 'SEMUA';
+            const urut = document.getElementById('adminUrutSantri')?.value || 'nama';
+
+            let hasil = dataSantri.filter(s => {
+                const cocokNama = !kata || (s.nama || '').toLowerCase().includes(kata) || String(s.pin || '').toLowerCase().includes(kata);
+                const cocokHalaqah = halaqah === 'SEMUA' || s.halaqah === halaqah;
+                return cocokNama && cocokHalaqah;
+            });
+
+            if (urut === 'nama') hasil = hasil.slice().sort((a, b) => (a.nama || '').localeCompare(b.nama || '', 'id'));
+            else if (urut === 'halaqah') hasil = hasil.slice().sort((a, b) => (a.halaqah || '').localeCompare(b.halaqah || '', 'id') || (a.nama || '').localeCompare(b.nama || '', 'id'));
+            else hasil = hasil.slice().reverse();
+
+            return hasil;
+        }
+
+        function renderTabelAdminSantri() {
+            const tbody = document.getElementById('tbodyAdminSantri');
+            if (!tbody) return;
+            const daftar = daftarSantriTerfilterAdmin();
+            const checkAll = document.getElementById('checkAllSantri');
+            if (checkAll) checkAll.checked = false;
+
+            tbody.innerHTML = daftar.length
+                ? daftar.map((s, idx) => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 text-center">
+                            <input type="checkbox" value="${s.id}" onchange="updateJumlahTerpilihSantri()" class="chk-santri rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                        </td>
+                        <td class="p-2.5">${idx + 1}</td>
+                        <td class="p-2.5 font-bold text-slate-800">${escapeHtmlMutqin(s.nama)}</td>
+                        <td class="p-2.5">${escapeHtmlMutqin(s.halaqah)}</td>
+                        <td class="p-2.5"><code class="bg-slate-100 px-2 py-0.5 rounded font-bold text-emerald-700">${escapeHtmlMutqin(s.pin)}</code></td>
+                        <td class="p-2.5 text-center space-x-2 whitespace-nowrap">
+                            <button onclick="bukaModalEditSiswa('${s.id}')" class="text-blue-600 font-semibold hover:underline">Edit</button>
+                            <button onclick="hapusSantri('${s.id}')" class="text-red-500 font-semibold hover:underline">Hapus</button>
+                        </td>
+                    </tr>
+                `).join('')
+                : `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Tidak ada siswa yang cocok dengan pencarian / filter.</td></tr>`;
+
+            const infoTampil = document.getElementById('infoJumlahSantriTampil');
+            const infoTotal = document.getElementById('infoJumlahSantriTotal');
+            if (infoTampil) infoTampil.innerText = daftar.length;
+            if (infoTotal) infoTotal.innerText = dataSantri.length;
+            updateJumlahTerpilihSantri();
+        }
+
+        function toggleSemuaSantri(source) {
+            document.querySelectorAll('.chk-santri').forEach(cb => cb.checked = source.checked);
+            updateJumlahTerpilihSantri();
+        }
+
+        function updateJumlahTerpilihSantri() {
+            const badge = document.getElementById('jumlahTerpilihSantri');
+            if (badge) badge.innerText = document.querySelectorAll('.chk-santri:checked').length;
+        }
+
+        function hapusSantriTerpilihAdmin() {
+            const terpilih = Array.from(document.querySelectorAll('.chk-santri:checked')).map(cb => cb.value);
+            if (!terpilih.length) return alert('Centang minimal satu siswa yang ingin dihapus!');
+            if (confirm(`Yakin ingin menghapus ${terpilih.length} data siswa terpilih?`)) {
+                dataSantri = dataSantri.filter(s => !terpilih.includes(s.id));
+                simpanKeFirebase();
+                renderTabelAdminSantri();
+                alert(`✅ ${terpilih.length} data siswa berhasil dihapus.`);
+            }
         }
 
         function renderAdminMonitoring() {
@@ -1452,11 +1629,11 @@
                             <input type="checkbox" value="${st.id}" onchange="updateJumlahTerpilihMonitoring()" class="chk-monitoring rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
                         </td>
                         <td class="p-3 text-slate-500 whitespace-nowrap">${st.tanggal}</td>
-                        <td class="p-3 font-semibold text-emerald-700">${st.halaqah}</td>
-                        <td class="p-3 font-bold text-slate-800">${st.santriNama}</td>
-                        <td class="p-3 text-slate-600">${st.guruNama}</td>
+                        <td class="p-3 font-semibold text-emerald-700">${escapeHtmlMutqin(st.halaqah)}</td>
+                        <td class="p-3 font-bold text-slate-800">${escapeHtmlMutqin(st.santriNama)}</td>
+                        <td class="p-3 text-slate-600">${escapeHtmlMutqin(st.guruNama)}</td>
                         <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${st.jenis === 'Ziyadah' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}">${st.jenis}</span></td>
-                        <td class="p-3 font-semibold">${st.surah} : ${st.ayatDari}-${st.ayatSampai}</td>
+                        <td class="p-3 font-semibold">${bersihNomorSurah(st.surah)} : ${st.ayatDari}-${st.ayatSampai}</td>
                         <td class="p-3 min-w-[200px]">
                             <div class="font-black text-slate-800 mb-1">Nilai: ${st.nilai}</div>
                             ${formatBadgePredikatHtml(st.nilai)}
@@ -1498,18 +1675,84 @@
             }
         }
 
+        // ---- KELOMPOK HALAQAH: NOMOR KELOMPOK & RUANG BISA DIEDIT ----
+        function infoHalaqah(nama, urutanDefault) {
+            const info = dataInfoHalaqah[nama] || {};
+            const nomor = (info.nomor !== undefined && info.nomor !== null && info.nomor !== '') ? Number(info.nomor) : (urutanDefault + 1);
+            return { nomor: isNaN(nomor) ? urutanDefault + 1 : nomor, ruang: info.ruang || '' };
+        }
+
+        function renderDaftarHalaqahAdmin() {
+            const wadah = document.getElementById('adminListHalaqah');
+            if (!wadah) return;
+            wadah.innerHTML = dataHalaqah.length
+                ? dataHalaqah.map((h, idx) => {
+                    const info = infoHalaqah(h, idx);
+                    const jumlahSiswa = dataSantri.filter(s => s.halaqah === h).length;
+                    const namaGuru = dataGuru.filter(g => g.halaqah === h).map(g => g.nama).join(', ') || 'Belum ditentukan';
+                    return `
+                        <div class="p-3.5 border border-slate-200 rounded-xl bg-slate-50 space-y-2.5">
+                            <div class="flex justify-between items-start gap-2">
+                                <div class="min-w-0">
+                                    <strong class="text-slate-800 text-sm block truncate">${escapeHtmlMutqin(h)}</strong>
+                                    <span class="text-[11px] text-slate-500">${jumlahSiswa} siswa • ${escapeHtmlMutqin(namaGuru)}</span>
+                                </div>
+                                <button onclick="adminHapusHalaqah('${encodeURIComponent(h)}')" class="text-red-500 font-bold hover:underline text-xs flex-shrink-0">Hapus</button>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Kelompok Ke</label>
+                                    <input type="number" min="1" value="${info.nomor}" onchange="adminUbahNomorHalaqah('${encodeURIComponent(h)}', this.value)" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white font-bold text-emerald-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Ruang / Tempat</label>
+                                    <input type="text" value="${escapeHtmlMutqin(info.ruang)}" onchange="adminUbahRuangHalaqah('${encodeURIComponent(h)}', this.value)" placeholder="Contoh: Ruang 1 / Aula Utara" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')
+                : `<p class="text-xs text-slate-400 italic col-span-full">Belum ada kelompok halaqah terdaftar.</p>`;
+        }
+
+        function adminUbahNomorHalaqah(namaEncoded, nilai) {
+            const nama = decodeURIComponent(namaEncoded);
+            const angka = parseInt(nilai, 10);
+            if (!dataInfoHalaqah[nama]) dataInfoHalaqah[nama] = {};
+            dataInfoHalaqah[nama].nomor = isNaN(angka) || angka < 1 ? 1 : angka;
+            simpanKeFirebase();
+            renderDaftarHalaqahAdmin();
+            window.mutqinToast('✅ Nomor kelompok diperbarui.');
+        }
+
+        function adminUbahRuangHalaqah(namaEncoded, nilai) {
+            const nama = decodeURIComponent(namaEncoded);
+            if (!dataInfoHalaqah[nama]) dataInfoHalaqah[nama] = {};
+            dataInfoHalaqah[nama].ruang = String(nilai || '').trim();
+            simpanKeFirebase();
+            renderDaftarHalaqahAdmin();
+            window.mutqinToast('✅ Ruang kelompok diperbarui.');
+        }
+
         function adminTambahHalaqah() {
             const val = document.getElementById('adminInputHalaqah').value.trim();
+            const ruang = document.getElementById('adminInputRuangHalaqah').value.trim();
             if (val && !dataHalaqah.includes(val)) {
                 dataHalaqah.push(val);
+                dataInfoHalaqah[val] = { nomor: dataHalaqah.length, ruang: ruang };
                 simpanKeFirebase();
                 document.getElementById('adminInputHalaqah').value = '';
+                document.getElementById('adminInputRuangHalaqah').value = '';
+            } else if (val) {
+                alert('Nama kelompok halaqah tersebut sudah ada.');
             }
         }
 
-        function adminHapusHalaqah(nama) {
+        function adminHapusHalaqah(namaEncoded) {
+            const nama = decodeURIComponent(namaEncoded);
             if (confirm(`Hapus ${nama}?`)) {
                 dataHalaqah = dataHalaqah.filter(h => h !== nama);
+                delete dataInfoHalaqah[nama];
                 simpanKeFirebase();
             }
         }
@@ -1704,7 +1947,7 @@
 
             const selHalaqah = document.getElementById('editSiswaHalaqah');
             const semuaHalaqah = Array.from(new Set([...dataHalaqah, s.halaqah]));
-            selHalaqah.innerHTML = semuaHalaqah.map(h => `<option value="${h}">${h}</option>`).join('');
+            selHalaqah.innerHTML = semuaHalaqah.map(h => `<option value="${escapeHtmlMutqin(h)}">${escapeHtmlMutqin(h)}</option>`).join('');
             selHalaqah.value = s.halaqah;
 
             document.getElementById('modalEditSiswa').classList.remove('hidden');
@@ -1748,19 +1991,23 @@
                 ...dataSantri.map(s => s.halaqah)
             ]));
 
-            return semuaHalaqah.map((h, idx) => {
+            const daftar = semuaHalaqah.map((h, idx) => {
                 const hBersih = h.split('(')[0].trim();
                 const guruList = dataGuru.filter(g => g.halaqah === h || g.halaqah.toLowerCase() === hBersih.toLowerCase()).map(g => g.nama);
                 const guruText = guruList.length ? guruList.join(', ') : 'Belum ditentukan';
                 const siswaDiHalaqah = dataSantri.filter(s => s.halaqah === h || s.halaqah.toLowerCase() === hBersih.toLowerCase());
+                const info = infoHalaqah(h, idx);
                 return {
-                    nomor: idx + 1,
+                    nomor: info.nomor,
+                    ruang: info.ruang,
                     halaqahAsli: h,
                     halaqahBersih: hBersih,
                     guruText: guruText,
                     siswaList: siswaDiHalaqah
                 };
             });
+
+            return daftar.sort((a, b) => a.nomor - b.nomor || a.halaqahBersih.localeCompare(b.halaqahBersih, 'id'));
         }
 
         function renderTabelPembagianKelompok(containerId, keyword = '') {
@@ -1771,7 +2018,7 @@
             const daftarKelompok = dapatkanDataKelompokLengkap();
 
             const cardsHtml = daftarKelompok.map(kel => {
-                const matchHeader = kel.halaqahAsli.toLowerCase().includes(q) || kel.guruText.toLowerCase().includes(q);
+                const matchHeader = kel.halaqahAsli.toLowerCase().includes(q) || kel.guruText.toLowerCase().includes(q) || (kel.ruang || '').toLowerCase().includes(q);
                 const siswaTampil = matchHeader
                     ? kel.siswaList
                     : kel.siswaList.filter(s => s.nama.toLowerCase().includes(q));
@@ -1781,11 +2028,12 @@
                 return `
                     <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-sm flex flex-col relative group">
                         <div class="bg-slate-200 px-3 py-2 text-center border-b border-slate-300 relative">
-                            <div class="font-black text-slate-800 text-xs uppercase tracking-wide">${kel.halaqahBersih}</div>
+                            <div class="font-black text-slate-800 text-xs uppercase tracking-wide">${escapeHtmlMutqin(kel.halaqahBersih)}</div>
                             <div class="text-[10px] text-slate-600 font-semibold">Kelompok ${kel.nomor} • ${kel.siswaList.length} Siswa</div>
                         </div>
                         <div class="bg-emerald-50 px-3 py-2 border-b border-slate-300 text-[11px] space-y-0.5">
-                            <div><span class="font-bold text-slate-600">GURU :</span> <strong class="text-emerald-800">${kel.guruText}</strong></div>
+                            <div><span class="font-bold text-slate-600">GURU :</span> <strong class="text-emerald-800">${escapeHtmlMutqin(kel.guruText)}</strong></div>
+                            <div><span class="font-bold text-slate-600">RUANG :</span> <strong class="text-slate-700">${escapeHtmlMutqin(kel.ruang || '-')}</strong></div>
                         </div>
                         <div class="overflow-x-auto flex-grow">
                             <table class="w-full text-left text-[11px] border-collapse">
@@ -1800,7 +2048,7 @@
                                         ? siswaTampil.map((s, i) => `
                                             <tr class="hover:bg-slate-50">
                                                 <td class="py-1.5 px-2.5 border-r border-slate-200 text-center text-slate-500 font-medium">${i + 1}</td>
-                                                <td class="py-1.5 px-2.5 font-semibold text-slate-800">${s.nama}</td>
+                                                <td class="py-1.5 px-2.5 font-semibold text-slate-800">${escapeHtmlMutqin(s.nama)}</td>
                                             </tr>
                                         `).join('')
                                         : `<tr><td colspan="2" class="py-3 px-2.5 text-center text-slate-400 italic">Belum ada siswa di kelompok ini</td></tr>`
@@ -1821,47 +2069,63 @@
 
             document.getElementById('pdfKelompokTanggal').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-            // Bagi setiap halaman berisi maksimal 4 kelompok dalam grid landscape agar rapi dan menyesuaikan jumlah lembar
-            const kelompokPerHalaman = 4;
+            // Setiap halaman landscape berisi 6 kelompok: 3 di baris atas, 3 di baris bawah
+            const kelompokPerHalaman = 6;
             const halamanList = [];
             for (let i = 0; i < daftarKelompok.length; i += kelompokPerHalaman) {
                 halamanList.push(daftarKelompok.slice(i, i + kelompokPerHalaman));
             }
 
-            const contentHtml = halamanList.map((grupHalaman, pageIdx) => `
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: start; ${pageIdx < halamanList.length - 1 ? 'page-break-after: always; margin-bottom: 16px;' : ''}">
-                    ${grupHalaman.map(kel => `
-                        <div style="border: 1px solid #334155; border-radius: 6px; overflow: hidden; break-inside: avoid;">
-                            <div style="background-color: #e2e8f0; padding: 6px 8px; text-align: center; border-bottom: 1px solid #334155;">
-                                <div style="font-weight: bold; font-size: 9pt; text-transform: uppercase; color: #0f172a;">${kel.halaqahBersih}</div>
-                                <div style="font-size: 7.5pt; color: #475569;">Kelompok ${kel.nomor} (${kel.siswaList.length} Siswa)</div>
-                            </div>
-                            <div style="background-color: #ecfdf5; padding: 5px 8px; border-bottom: 1px solid #334155; font-size: 8pt;">
-                                <strong>GURU :</strong> <span style="color: #065f46; font-weight: bold;">${kel.guruText}</span>
-                            </div>
-                            <table style="width: 100%; border-collapse: collapse; font-size: 8pt;">
-                                <thead>
-                                    <tr style="background-color: #f1f5f9; border-bottom: 1px solid #cbd5e1;">
-                                        <th style="padding: 4px 5px; border-right: 1px solid #cbd5e1; width: 26px; text-align: center;">No</th>
-                                        <th style="padding: 4px 6px; text-align: left;">Nama Siswa</th>
+            const kartuKelompokPdf = (kel, tinggiKotak) => `
+                <div style="border: 1px solid #334155; border-radius: 5px; overflow: hidden; height: ${tinggiKotak}mm; box-sizing: border-box; display: flex; flex-direction: column;">
+                    <div style="background-color: #e2e8f0; padding: 3px 6px; text-align: center; border-bottom: 1px solid #334155;">
+                        <div style="font-weight: bold; font-size: 8pt; text-transform: uppercase; color: #0f172a; line-height: 1.15;">${escapeHtmlMutqin(kel.halaqahBersih)}</div>
+                        <div style="font-size: 6.5pt; color: #475569;">Kelompok ${kel.nomor} • ${kel.siswaList.length} Siswa</div>
+                    </div>
+                    <div style="background-color: #ecfdf5; padding: 2.5px 6px; border-bottom: 1px solid #334155; font-size: 6.8pt; line-height: 1.25;">
+                        <div><strong>GURU :</strong> <span style="color: #065f46; font-weight: bold;">${escapeHtmlMutqin(kel.guruText)}</span></div>
+                        <div><strong>RUANG :</strong> <span style="color: #334155; font-weight: bold;">${escapeHtmlMutqin(kel.ruang || '-')}</span></div>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 6.8pt; table-layout: fixed;">
+                        <thead>
+                            <tr style="background-color: #f1f5f9; border-bottom: 1px solid #cbd5e1;">
+                                <th style="padding: 2px 4px; border-right: 1px solid #cbd5e1; width: 20px; text-align: center;">No</th>
+                                <th style="padding: 2px 5px; text-align: left;">Nama Siswa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${kel.siswaList.length
+                                ? kel.siswaList.map((s, i) => `
+                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                        <td style="padding: 1.6px 4px; border-right: 1px solid #e2e8f0; text-align: center;">${i + 1}</td>
+                                        <td style="padding: 1.6px 5px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">${escapeHtmlMutqin(s.nama)}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    ${kel.siswaList.length
-                                        ? kel.siswaList.map((s, i) => `
-                                            <tr style="border-bottom: 1px solid #e2e8f0;">
-                                                <td style="padding: 3.5px 5px; border-right: 1px solid #e2e8f0; text-align: center;">${i + 1}</td>
-                                                <td style="padding: 3.5px 6px; font-weight: 600;">${s.nama}</td>
-                                            </tr>
-                                        `).join('')
-                                        : `<tr><td colspan="2" style="padding: 8px; text-align: center; color: #64748b; font-style: italic;">Belum ada siswa</td></tr>`
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    `).join('')}
+                                `).join('')
+                                : `<tr><td colspan="2" style="padding: 5px; text-align: center; color: #64748b; font-style: italic;">Belum ada siswa</td></tr>`
+                            }
+                        </tbody>
+                    </table>
                 </div>
-            `).join('');
+            `;
+
+            const contentHtml = halamanList.map((grupHalaman, pageIdx) => {
+                const barisAtas = grupHalaman.slice(0, 3);
+                const barisBawah = grupHalaman.slice(3, 6);
+                const gridBaris = (daftarBaris) => `
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; align-items: start;">
+                        ${daftarBaris.map(kel => kartuKelompokPdf(kel, 82)).join('')}
+                        ${Array.from({ length: Math.max(0, 3 - daftarBaris.length) }, () => '<div></div>').join('')}
+                    </div>
+                `;
+                return `
+                    <div style="${pageIdx < halamanList.length - 1 ? 'page-break-after: always;' : ''} padding-bottom: 2px;">
+                        ${gridBaris(barisAtas)}
+                        <div style="height: 6px;"></div>
+                        ${barisBawah.length ? gridBaris(barisBawah) : ''}
+                        <div style="text-align: right; font-size: 6.5pt; color: #64748b; margin-top: 4px;">Halaman ${pageIdx + 1} dari ${halamanList.length} • MUTQIN</div>
+                    </div>
+                `;
+            }).join('');
 
             document.getElementById('pdfKelompokContent').innerHTML = contentHtml;
 
@@ -1869,12 +2133,15 @@
             element.style.display = 'block';
 
             html2pdf().set({
-                margin: 8,
+                margin: 6,
                 filename: `Pembagian_Kelompok_Tahfidz_MUTQIN.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                pagebreak: { mode: ['css', 'legacy'] }
             }).from(element).save().then(() => {
+                element.style.display = 'none';
+            }).catch(() => {
                 element.style.display = 'none';
             });
         }
@@ -1882,15 +2149,14 @@
         function exportExcelPembagianKelompok() {
             const rows = [];
             let no = 1;
-            const semuaHalaqah = Array.from(new Set([...dataHalaqah, ...dataGuru.map(g => g.halaqah), ...dataSantri.map(s => s.halaqah)]));
-            semuaHalaqah.forEach(h => {
-                const guruText = dataGuru.filter(g => g.halaqah === h).map(g => g.nama).join(', ') || '-';
-                const siswaList = dataSantri.filter(s => s.halaqah === h);
-                if (siswaList.length === 0) {
-                    rows.push({ "No": no++, "Kelompok Halaqah": h, "Guru Pembimbing": guruText, "Nama Siswa": "(Belum ada siswa)" });
+            dapatkanDataKelompokLengkap().forEach(kel => {
+                const h = kel.halaqahAsli;
+                const guruText = kel.guruText;
+                if (kel.siswaList.length === 0) {
+                    rows.push({ "No": no++, "Kelompok Ke": kel.nomor, "Kelompok Halaqah": h, "Ruang": kel.ruang || '-', "Guru Pembimbing": guruText, "Nama Siswa": "(Belum ada siswa)" });
                 } else {
-                    siswaList.forEach(s => {
-                        rows.push({ "No": no++, "Kelompok Halaqah": h, "Guru Pembimbing": guruText, "Nama Siswa": s.nama });
+                    kel.siswaList.forEach(s => {
+                        rows.push({ "No": no++, "Kelompok Ke": kel.nomor, "Kelompok Halaqah": h, "Ruang": kel.ruang || '-', "Guru Pembimbing": guruText, "Nama Siswa": s.nama });
                     });
                 }
             });
@@ -1972,12 +2238,12 @@
                     <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col sm:flex-row justify-between items-start gap-3">
                         <div class="space-y-1">
                             <div class="flex flex-wrap items-center gap-2">
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-emerald-100 text-emerald-800'}">${p.pembuatNama}</span>
-                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">${labelTargetPengumuman(p)}</span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-emerald-100 text-emerald-800'}">${escapeHtmlMutqin(p.pembuatNama)}</span>
+                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">${escapeHtmlMutqin(labelTargetPengumuman(p))}</span>
                                 <span class="text-[11px] text-slate-400">📅 ${p.tanggal}</span>
                             </div>
-                            <h4 class="font-bold text-slate-800 text-sm">${p.judul}</h4>
-                            <p class="text-xs text-slate-600 whitespace-pre-line">${p.isi}</p>
+                            <h4 class="font-bold text-slate-800 text-sm">${escapeHtmlMutqin(p.judul)}</h4>
+                            <p class="text-xs text-slate-600 whitespace-pre-line">${escapeHtmlMutqin(p.isi)}</p>
                         </div>
                         <button onclick="hapusPengumuman('${p.id}')" class="text-red-500 hover:underline text-xs font-bold flex-shrink-0">Hapus</button>
                     </div>
@@ -2000,12 +2266,12 @@
                     <div class="p-4 rounded-xl border ${p.pembuatRole === 'admin' ? 'border-purple-200 bg-purple-50/40' : 'border-emerald-200 bg-emerald-50/40'} flex flex-col sm:flex-row justify-between items-start gap-3">
                         <div class="space-y-1">
                             <div class="flex flex-wrap items-center gap-2">
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-purple-600 text-white' : 'bg-emerald-600 text-white'}">${p.pembuatNama}</span>
-                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700">${labelTargetPengumuman(p)}</span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-purple-600 text-white' : 'bg-emerald-600 text-white'}">${escapeHtmlMutqin(p.pembuatNama)}</span>
+                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700">${escapeHtmlMutqin(labelTargetPengumuman(p))}</span>
                                 <span class="text-[11px] text-slate-500">📅 ${p.tanggal}</span>
                             </div>
-                            <h4 class="font-bold text-slate-800 text-sm">${p.judul}</h4>
-                            <p class="text-xs text-slate-700 whitespace-pre-line">${p.isi}</p>
+                            <h4 class="font-bold text-slate-800 text-sm">${escapeHtmlMutqin(p.judul)}</h4>
+                            <p class="text-xs text-slate-700 whitespace-pre-line">${escapeHtmlMutqin(p.isi)}</p>
                         </div>
                         ${p.pembuatRole === 'guru' && p.pembuatId === guru.id
                             ? `<button onclick="hapusPengumuman('${p.id}')" class="text-red-500 hover:underline text-xs font-bold flex-shrink-0">Hapus</button>`
@@ -2030,11 +2296,11 @@
                 ? daftar.map(p => `
                     <div class="p-3.5 rounded-xl border ${p.pembuatRole === 'admin' ? 'border-amber-200 bg-amber-50/50' : 'border-emerald-200 bg-emerald-50/50'} space-y-1">
                         <div class="flex flex-wrap items-center justify-between gap-2">
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-amber-600 text-white' : 'bg-emerald-600 text-white'}">Dari: ${p.pembuatNama}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-amber-600 text-white' : 'bg-emerald-600 text-white'}">Dari: ${escapeHtmlMutqin(p.pembuatNama)}</span>
                             <span class="text-[10px] text-slate-500">📅 ${p.tanggal}</span>
                         </div>
-                        <h4 class="font-bold text-slate-800 text-sm">${p.judul}</h4>
-                        <p class="text-xs text-slate-700 whitespace-pre-line">${p.isi}</p>
+                        <h4 class="font-bold text-slate-800 text-sm">${escapeHtmlMutqin(p.judul)}</h4>
+                        <p class="text-xs text-slate-700 whitespace-pre-line">${escapeHtmlMutqin(p.isi)}</p>
                     </div>
                 `).join('')
                 : `<p class="text-xs text-slate-400 italic text-center py-3">Belum ada pengumuman terbaru.</p>`;
@@ -2052,15 +2318,15 @@
                 if (Array.isArray(item.daftarSurat) && item.daftarSurat.length > 0) {
                     return {
                         nama: item.nama || '',
-                        daftarSurat: item.daftarSurat.map(s => ({
-                            surat: s.surat || '',
-                            nilai: s.nilai !== undefined ? s.nilai : ''
+                        daftarSurat: item.daftarSurat.map(itemSurat => ({
+                            surat: bersihNomorSurah(itemSurat.surat),
+                            nilai: itemSurat.nilai !== undefined ? itemSurat.nilai : ''
                         })),
                         status: item.status || ''
                     };
                 }
                 const list = buatDaftarSuratDefaultUjian(11);
-                if (item.surat) list[0].surat = item.surat;
+                if (item.surat) list[0].surat = bersihNomorSurah(item.surat);
                 return {
                     nama: item.nama || '',
                     daftarSurat: list,
@@ -2140,12 +2406,13 @@
             if (barisUjianKenaikan[idx]) {
                 barisUjianKenaikan[idx][field] = val;
                 simpanDraftUjianGuru();
+                updateStatistikUjian();
             }
         }
 
         function updateSuratUjianSiswa(siswaIdx, suratIdx, field, val) {
             if (barisUjianKenaikan[siswaIdx] && barisUjianKenaikan[siswaIdx].daftarSurat[suratIdx]) {
-                barisUjianKenaikan[siswaIdx].daftarSurat[suratIdx][field] = val;
+                barisUjianKenaikan[siswaIdx].daftarSurat[suratIdx][field] = field === 'surat' ? val : val;
                 simpanDraftUjianGuru();
                 hitungRataUjianDom(siswaIdx);
             }
@@ -2201,49 +2468,92 @@
             renderTabelUjianKenaikan();
         }
 
+        function updateStatistikUjian() {
+            const elSiswa = document.getElementById('ujianStatSiswa');
+            if (!elSiswa) return;
+            elSiswa.innerText = barisUjianKenaikan.length;
+            document.getElementById('ujianStatNaik').innerText = barisUjianKenaikan.filter(r => r.status === 'Naik').length;
+            document.getElementById('ujianStatMenetap').innerText = barisUjianKenaikan.filter(r => r.status === 'Menetap').length;
+        }
+
+        // Tampilan kartu responsif: 1 kolom di HP, 2 di tablet, 3 di laptop
         function renderTabelUjianKenaikan() {
-            const tbody = document.getElementById('tbodyUjianKenaikan');
-            if (!tbody) return;
-            tbody.innerHTML = barisUjianKenaikan.map((row, idx) => {
+            const wadah = document.getElementById('listUjianKenaikan');
+            if (!wadah) return;
+            updateStatistikUjian();
+
+            const kataKunci = (document.getElementById('ujianCariSiswa')?.value || '').trim().toLowerCase();
+            const daftarTampil = barisUjianKenaikan
+                .map((row, idx) => ({ row: row, idx: idx }))
+                .filter(item => !kataKunci || (item.row.nama || '').toLowerCase().includes(kataKunci));
+
+            if (!daftarTampil.length) {
+                wadah.innerHTML = `<div class="text-center text-xs text-slate-400 italic py-8 bg-slate-50 border border-dashed border-slate-300 rounded-xl">${barisUjianKenaikan.length ? 'Nama siswa yang dicari tidak ditemukan pada lembar ujian.' : 'Belum ada baris siswa. Tekan "Isi Otomatis Siswa Saya" atau "+ Tambah Baris Siswa".'}</div>`;
+                return;
+            }
+
+            wadah.innerHTML = daftarTampil.map(item => {
+                const idx = item.idx;
+                const row = item.row;
                 const listSurat = Array.isArray(row.daftarSurat) && row.daftarSurat.length ? row.daftarSurat : buatDaftarSuratDefaultUjian(11);
                 const rataAwal = hitungRataUjianSiswa(listSurat);
+                const warnaStatus = row.status === 'Naik'
+                    ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
+                    : row.status === 'Menetap'
+                        ? 'border-amber-300 bg-amber-50 text-amber-700'
+                        : 'border-slate-300 bg-white text-slate-600';
+
                 return `
-                    <tr class="hover:bg-slate-50 align-top">
-                        <td class="p-2.5 text-center font-bold text-slate-700">${idx + 1}</td>
-                        <td class="p-2">
-                            <input type="text" value="${(row.nama || '').replace(/"/g, '&quot;')}" oninput="updateBarisUjian(${idx}, 'nama', this.value)" placeholder="Nama Siswa..." class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-bold text-slate-800">
-                            <div class="mt-1.5 flex items-center justify-between text-[11px] text-slate-500">
-                                <span>Total: <strong>${listSurat.length}</strong> surat</span>
-                                <span id="rataUjianSiswa_${idx}" class="font-bold text-emerald-700">${rataAwal !== null ? 'Rata-rata: ' + rataAwal : 'Rata-rata: -'}</span>
+                    <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+                        <!-- KEPALA KARTU SISWA -->
+                        <div class="bg-slate-50 border-b border-slate-200 p-3 flex flex-col lg:flex-row lg:items-end gap-2.5">
+                            <div class="flex items-center gap-2.5 flex-grow min-w-0">
+                                <span class="w-8 h-8 flex-shrink-0 rounded-xl bg-emerald-600 text-white font-black text-xs flex items-center justify-center">${idx + 1}</span>
+                                <div class="flex-grow min-w-0">
+                                    <label class="block text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-0.5">Nama Siswa</label>
+                                    <input type="text" value="${escapeHtmlMutqin(row.nama)}" oninput="updateBarisUjian(${idx}, 'nama', this.value)" placeholder="Ketik nama siswa..." class="w-full border border-slate-300 rounded-lg px-2.5 py-2 text-sm bg-white font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                </div>
                             </div>
-                        </td>
-                        <td class="p-2">
-                            <div class="space-y-1.5">
+                            <div class="grid grid-cols-2 sm:flex sm:items-end gap-2 lg:flex-shrink-0">
+                                <div class="col-span-2 sm:w-44">
+                                    <label class="block text-[10px] font-bold uppercase tracking-wide text-slate-500 mb-0.5">Hasil Ujian</label>
+                                    <select onchange="updateBarisUjian(${idx}, 'status', this.value); renderTabelUjianKenaikan()" class="w-full border rounded-lg px-2.5 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500 ${warnaStatus}">
+                                        <option value="" ${row.status === '' ? 'selected' : ''}>-- Pilih / Kosongkan --</option>
+                                        <option value="Naik" ${row.status === 'Naik' ? 'selected' : ''}>Naik</option>
+                                        <option value="Menetap" ${row.status === 'Menetap' ? 'selected' : ''}>Menetap</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center gap-2 sm:pb-1">
+                                    <span class="text-[11px] text-slate-500 whitespace-nowrap">Total: <strong class="text-slate-700">${listSurat.length}</strong> surat</span>
+                                </div>
+                                <div class="flex items-center justify-end gap-2 sm:pb-0.5">
+                                    <span id="rataUjianSiswa_${idx}" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-lg whitespace-nowrap">${rataAwal !== null ? 'Rata-rata: ' + rataAwal : 'Rata-rata: -'}</span>
+                                    <button type="button" onclick="hapusBarisUjianKenaikan(${idx})" title="Hapus Baris Siswa" class="w-8 h-8 flex-shrink-0 rounded-lg bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold text-base leading-none">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DAFTAR SURAT & NILAI (GRID RESPONSIF) -->
+                        <div class="p-3">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-[10px] font-bold uppercase tracking-wide text-slate-500">Daftar Surat &amp; Nilai Angka</span>
+                                <button type="button" onclick="tambahSuratPadaSiswaUjian(${idx})" class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1.5 rounded-lg transition">+ Tambah Surat</button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
                                 ${listSurat.map((itemSurat, sIdx) => `
-                                    <div class="flex items-center gap-1.5 relative">
-                                        <span class="text-[10px] font-bold text-slate-400 w-5 text-right">${sIdx + 1}.</span>
-                                        <div class="flex-grow relative">
-                                            <input type="text" value="${(itemSurat.surat || '').replace(/"/g, '&quot;')}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'surat', this.value); tampilkanDropdownSurahUjian(this, ${idx}, ${sIdx})" onfocus="tampilkanDropdownSurahUjian(this, ${idx}, ${sIdx})" placeholder="Ketik atau pilih surat ke-${sIdx + 1}..." class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs bg-white">
+                                    <div class="flex items-center gap-1.5 bg-slate-50/70 border border-slate-200 rounded-xl p-1.5">
+                                        <span class="text-[10px] font-bold text-slate-400 w-5 text-right flex-shrink-0">${sIdx + 1}.</span>
+                                        <div class="flex-grow relative min-w-0">
+                                            <input type="text" value="${escapeHtmlMutqin(itemSurat.surat)}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'surat', this.value); tampilkanDropdownSurahUjian(this, ${idx}, ${sIdx})" onfocus="tampilkanDropdownSurahUjian(this, ${idx}, ${sIdx})" placeholder="Ketik / pilih nama surat..." autocomplete="off" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
                                             <div id="dropdownSurahUjian_${idx}_${sIdx}" class="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg z-30 max-h-48 overflow-y-auto hidden"></div>
                                         </div>
-                                        <input type="number" min="0" max="100" value="${itemSurat.nilai !== undefined && itemSurat.nilai !== '' ? itemSurat.nilai : ''}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'nilai', this.value)" placeholder="Nilai" class="w-20 border border-slate-300 rounded-lg px-2 py-1 text-xs text-center font-bold bg-white">
-                                        <button type="button" onclick="hapusSuratPadaSiswaUjian(${idx}, ${sIdx})" title="Kurangi Surat Ini" class="px-1.5 py-0.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs border border-rose-200">−</button>
+                                        <input type="number" min="0" max="100" inputmode="numeric" value="${itemSurat.nilai !== undefined && itemSurat.nilai !== '' ? itemSurat.nilai : ''}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'nilai', this.value)" placeholder="Nilai" class="w-16 flex-shrink-0 border border-slate-300 rounded-lg px-1.5 py-1.5 text-xs text-center font-bold bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                                        <button type="button" onclick="hapusSuratPadaSiswaUjian(${idx}, ${sIdx})" title="Kurangi Surat Ini" class="w-7 h-7 flex-shrink-0 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-sm border border-rose-200 leading-none">−</button>
                                     </div>
                                 `).join('')}
                             </div>
-                            <button type="button" onclick="tambahSuratPadaSiswaUjian(${idx})" class="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-lg transition">+ Tambah Surat</button>
-                        </td>
-                        <td class="p-2">
-                            <select onchange="updateBarisUjian(${idx}, 'status', this.value)" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-bold ${row.status === 'Naik' ? 'text-emerald-700' : row.status === 'Menetap' ? 'text-amber-700' : 'text-slate-700'}">
-                                <option value="" ${row.status === '' ? 'selected' : ''}>-- Pilih / Kosongkan --</option>
-                                <option value="Naik" ${row.status === 'Naik' ? 'selected' : ''}>Naik</option>
-                                <option value="Menetap" ${row.status === 'Menetap' ? 'selected' : ''}>Menetap</option>
-                            </select>
-                        </td>
-                        <td class="p-2 text-center">
-                            <button type="button" onclick="hapusBarisUjianKenaikan(${idx})" title="Hapus Baris Siswa" class="text-rose-500 hover:text-rose-700 font-bold text-base">&times;</button>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                 `;
             }).join('');
         }
@@ -2253,18 +2563,18 @@
             const dropdown = document.getElementById(dropdownId);
             if (!dropdown) return;
 
-            const keyword = inputEl.value.toLowerCase().trim();
+            const keyword = bersihNomorSurah(inputEl.value).toLowerCase().trim();
             const hasilFilter = keyword === ''
                 ? DAFTAR_114_SURAH
-                : DAFTAR_114_SURAH.filter(s => s.toLowerCase().includes(keyword));
+                : DAFTAR_114_SURAH.filter(namaSurah => namaSurah.toLowerCase().includes(keyword));
 
             if (!hasilFilter.length) {
                 dropdown.classList.add('hidden');
                 return;
             }
 
-            dropdown.innerHTML = hasilFilter.map(s => `
-                <div onclick="pilihSurahUjian(${siswaIdx}, ${suratIdx}, '${s.replace(/'/g, "\\'")}')" class="px-3 py-1.5 text-xs hover:bg-emerald-50 hover:text-emerald-800 cursor-pointer border-b border-slate-100 last:border-b-0">${s}</div>
+            dropdown.innerHTML = hasilFilter.map(namaSurah => `
+                <div onmousedown="event.preventDefault(); pilihSurahUjian(${siswaIdx}, ${suratIdx}, this.getAttribute('data-surah'))" ontouchstart="event.preventDefault(); pilihSurahUjian(${siswaIdx}, ${suratIdx}, this.getAttribute('data-surah'))" data-surah="${escapeHtmlMutqin(namaSurah)}" class="px-3 py-2 text-xs hover:bg-emerald-50 hover:text-emerald-800 cursor-pointer border-b border-slate-100 last:border-b-0">${namaSurah}</div>
             `).join('');
 
             dropdown.classList.remove('hidden');
@@ -2274,13 +2584,17 @@
                 if (!inputEl.contains(e.target) && !dropdown.contains(e.target)) {
                     dropdown.classList.add('hidden');
                     document.removeEventListener('click', closeDropdown);
+                    document.removeEventListener('touchstart', closeDropdown);
                 }
             };
-            setTimeout(() => document.addEventListener('click', closeDropdown), 0);
+            setTimeout(() => {
+                document.addEventListener('click', closeDropdown);
+                document.addEventListener('touchstart', closeDropdown);
+            }, 0);
         }
 
         function pilihSurahUjian(siswaIdx, suratIdx, namaSurah) {
-            updateSuratUjianSiswa(siswaIdx, suratIdx, 'surat', namaSurah);
+            updateSuratUjianSiswa(siswaIdx, suratIdx, 'surat', bersihNomorSurah(namaSurah));
             renderTabelUjianKenaikan();
         }
 
@@ -2314,12 +2628,13 @@
             const tabelEl = document.getElementById('tabelPdfUjian');
             if (tabelEl) tabelEl.style.fontSize = fontSize;
 
-            // Header Landscape menyamping: NO | NAMA | SURAT & NILAI (1 .. maxSurat) | RATA2 | NAIK / MENETAP
+            // Header kolom cukup nama surat (tanpa nomor surat)
             let headerKolomSurat = '';
             for (let s = 0; s < maxSurat; s++) {
-                // Ambil nama surat jika sudah diisi pada baris pertama sebagai label ringkas, atau nomor surat
-                const contohSurat = rowsToPrint.find(r => r.daftarSurat && r.daftarSurat[s] && r.daftarSurat[s].surat)?.daftarSurat[s]?.surat || '';
-                const labelHeader = contohSurat ? `${s + 1}<br><span style="font-size: 6.5pt; font-weight: normal; word-break: break-word;">${contohSurat}</span>` : `${s + 1}`;
+                const contohSurat = bersihNomorSurah(rowsToPrint.find(r => r.daftarSurat && r.daftarSurat[s] && r.daftarSurat[s].surat)?.daftarSurat[s]?.surat || '');
+                const labelHeader = contohSurat
+                    ? `<span style="font-size: 6.5pt; font-weight: bold; word-break: break-word;">${escapeHtmlMutqin(contohSurat)}</span>`
+                    : '&nbsp;';
                 headerKolomSurat += `<th style="border: 1px solid #000; padding: ${cellPad}; text-align: center; background-color: #f8fafc; vertical-align: middle;">${labelHeader}</th>`;
             }
 
@@ -2341,7 +2656,7 @@
                 if (idx === 0) return false;
                 const list0 = rowsToPrint[0].daftarSurat || [];
                 const listCur = r.daftarSurat || [];
-                return listCur.some((it, sIdx) => (it.surat || '').trim() !== (list0[sIdx]?.surat || '').trim() && (it.surat || '').trim() !== '');
+                return listCur.some((it, sIdx) => bersihNomorSurah(it.surat) !== bersihNomorSurah(list0[sIdx]?.surat) && bersihNomorSurah(it.surat) !== '');
             });
 
             const htmlRows = rowsToPrint.map((r, i) => {
@@ -2353,9 +2668,10 @@
                 for (let s = 0; s < maxSurat; s++) {
                     const item = listSurat[s] || { surat: '', nilai: '' };
                     const nilaiStr = (item.nilai !== undefined && item.nilai !== '') ? item.nilai : '';
+                    const namaSuratBersih = bersihNomorSurah(item.surat);
                     let isiSel = '&nbsp;';
-                    if (suratBerbedaPerSiswa && item.surat) {
-                        isiSel = `<div style="font-size: 6.5pt; line-height: 1.1; word-break: break-word;">${item.surat}</div>${nilaiStr !== '' ? `<div style="font-weight: bold; margin-top: 1px;">${nilaiStr}</div>` : ''}`;
+                    if (suratBerbedaPerSiswa && namaSuratBersih) {
+                        isiSel = `<div style="font-size: 6.5pt; line-height: 1.1; word-break: break-word;">${escapeHtmlMutqin(namaSuratBersih)}</div>${nilaiStr !== '' ? `<div style="font-weight: bold; margin-top: 1px;">${nilaiStr}</div>` : ''}`;
                     } else if (nilaiStr !== '') {
                         isiSel = `<strong>${nilaiStr}</strong>`;
                     }
@@ -2365,7 +2681,7 @@
                 return `
                     <tr style="break-inside: avoid;">
                         <td style="border: 1px solid #000; padding: ${cellPad}; text-align: center; font-weight: bold;">${i + 1}</td>
-                        <td style="border: 1px solid #000; padding: ${cellPad}; font-weight: bold; word-break: break-word;">${r.nama || '&nbsp;'}</td>
+                        <td style="border: 1px solid #000; padding: ${cellPad}; font-weight: bold; word-break: break-word;">${escapeHtmlMutqin(r.nama) || '&nbsp;'}</td>
                         ${selSuratHtml}
                         <td style="border: 1px solid #000; padding: ${cellPad}; text-align: center; font-weight: bold;">${rataNilai !== null ? rataNilai : '&nbsp;'}</td>
                         <td style="border: 1px solid #000; padding: ${cellPad}; text-align: center; font-weight: bold;">${statusTeks}</td>
@@ -2388,6 +2704,8 @@
                 pagebreak: { mode: ['avoid-all'] }
             }).from(element).save().then(() => {
                 element.style.display = 'none';
+            }).catch(() => {
+                element.style.display = 'none';
             });
         }
 
@@ -2406,7 +2724,7 @@
                 "Nama Siswa": st.santriNama,
                 "Guru Pembimbing": st.guruNama,
                 "Jenis Setoran": st.jenis,
-                "Surah": st.surah,
+                "Surah": bersihNomorSurah(st.surah),
                 "Dari Ayat": st.ayatDari,
                 "Sampai Ayat": st.ayatSampai,
                 "Nilai": st.nilai,
@@ -2434,10 +2752,10 @@
                     <tr>
                         <td style="text-align: center;">${i + 1}</td>
                         <td>${st.tanggal}</td>
-                        <td><strong>${st.santriNama}</strong></td>
-                        <td>${st.halaqah}</td>
+                        <td><strong>${escapeHtmlMutqin(st.santriNama)}</strong></td>
+                        <td>${escapeHtmlMutqin(st.halaqah)}</td>
                         <td>${st.jenis}</td>
-                        <td>${st.surah} (${st.ayatDari}-${st.ayatSampai})</td>
+                        <td>${bersihNomorSurah(st.surah)} (${st.ayatDari}-${st.ayatSampai})</td>
                         <td style="text-align: center;"><strong>${st.nilai}</strong><br><small>${st.predikat}</small></td>
                         <td style="text-align: center;">${st.validasi_ortu ? 'Tervalidasi' : 'Belum'}</td>
                     </tr>
@@ -2454,6 +2772,8 @@
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             }).from(element).save().then(() => {
+                element.style.display = 'none';
+            }).catch(() => {
                 element.style.display = 'none';
             });
         }
