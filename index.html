@@ -200,6 +200,15 @@
                 </div>
             </div>
 
+            <!-- PAPAN PENGUMUMAN UNTUK SISWA & ORANG TUA -->
+            <div id="papanPengumumanSiswa" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                <div class="flex items-center justify-between border-b pb-2.5">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">📢 Papan Pengumuman & Informasi</h3>
+                    <span class="text-[10px] font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Admin & Pembimbing</span>
+                </div>
+                <div id="listPengumumanSiswa" class="space-y-2.5"></div>
+            </div>
+
             <!-- RIWAYAT SETORAN & TOMBOL VALIDASI ORANG TUA -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <div class="border-b pb-3">
@@ -227,6 +236,8 @@
                 <button onclick="switchTabGuru('riwayat')" id="tabGuruBtnRiwayat" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📊 Rekap & Status Validasi</button>
                 <button onclick="switchTabGuru('santri')" id="tabGuruBtnSantri" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🎓 Siswa Bimbingan Saya</button>
                 <button onclick="switchTabGuru('kelompok')" id="tabGuruBtnKelompok" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📋 Pembagian Kelompok</button>
+                <button onclick="switchTabGuru('ujian')" id="tabGuruBtnUjian" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📜 Ujian Kenaikan</button>
+                <button onclick="switchTabGuru('pengumuman')" id="tabGuruBtnPengumuman" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📢 Pengumuman</button>
             </nav>
 
             <!-- TAB GURU 1: INPUT SETORAN HARIAN -->
@@ -359,9 +370,102 @@
                         </div>
                         <p class="text-xs text-slate-500">Daftar seluruh siswa beserta kelompok halaqah dan guru pembimbingnya (sinkron otomatis secara real-time).</p>
                     </div>
-                    <input type="text" id="guruCariKelompok" oninput="renderTabelPembagianKelompok('guruKelompokContainer', this.value)" placeholder="🔍 Cari siswa / guru / halaqah..." class="border border-slate-300 rounded-xl p-2 text-xs bg-white w-full sm:w-64">
+                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                        <input type="text" id="guruCariKelompok" oninput="renderTabelPembagianKelompok('guruKelompokContainer', this.value)" placeholder="🔍 Cari siswa / guru / halaqah..." class="border border-slate-300 rounded-xl p-2 text-xs bg-white flex-grow sm:w-64">
+                        <button onclick="exportPDFPembagianKelompok()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-xl text-xs">📄 Cetak / PDF Landscape</button>
+                    </div>
                 </div>
                 <div id="guruKelompokContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <!-- TAB GURU 5: LEMBAR UJIAN KENAIKAN -->
+            <div id="panelGuruUjian" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">📜 Lembar Penilaian Ujian Kenaikan</h3>
+                        <p class="text-xs text-slate-500">Isi daftar siswa, surat yang diujikan, dan hasil (Naik / Menetap), lalu cetak / download PDF untuk ditandatangani pengampu & penguji.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="muatSiswaKeLembarUjian()" class="bg-slate-700 hover:bg-slate-800 text-white font-semibold px-3.5 py-2 rounded-xl text-xs">🔄 Isi Otomatis Siswa Saya</button>
+                        <button type="button" onclick="exportPDFUjianKenaikan()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-sm">📄 Download / Cetak PDF</button>
+                    </div>
+                </div>
+
+                <!-- PENGATURAN KOP & TANDA TANGAN LEMBAR UJIAN -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Guru Pengampu</label>
+                        <input type="text" id="ujianGuruPengampu" oninput="simpanDraftUjianGuru()" placeholder="Nama Guru Pengampu" class="w-full border border-slate-300 rounded-xl p-2 text-xs bg-white font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Level / Kelompok Halaqah</label>
+                        <input type="text" id="ujianLevel" oninput="simpanDraftUjianGuru()" placeholder="Contoh: Syahadah / Juz 30" class="w-full border border-slate-300 rounded-xl p-2 text-xs bg-white font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Tempat & Tanggal Ujian</label>
+                        <input type="text" id="ujianTempatTanggal" oninput="simpanDraftUjianGuru()" placeholder="Contoh: Kotagajah, 18 Nov 2026" class="w-full border border-slate-300 rounded-xl p-2 text-xs bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Penguji (Opsional)</label>
+                        <input type="text" id="ujianNamaPenguji" oninput="simpanDraftUjianGuru()" placeholder="Kosongkan jika ditulis tangan" class="w-full border border-slate-300 rounded-xl p-2 text-xs bg-white">
+                    </div>
+                </div>
+
+                <!-- TABEL INPUT PENILAIAN UJIAN KENAIKAN -->
+                <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-emerald-50 text-emerald-900 border-b border-slate-200">
+                                <th class="p-2.5 text-center w-12">NO</th>
+                                <th class="p-2.5 w-1/3">NAMA SISWA</th>
+                                <th class="p-2.5 w-1/3">SURAT</th>
+                                <th class="p-2.5 w-1/4">NAIK / MENETAP</th>
+                                <th class="p-2.5 text-center w-12">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyUjianKenaikan" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <button type="button" onclick="tambahBarisUjianKenaikan()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-3.5 py-2 rounded-xl text-xs">+ Tambah Baris Siswa</button>
+                    <span class="text-[11px] text-slate-500 italic">* Data lembar ujian otomatis tersimpan untuk sesi Anda dan siap dicetak ke PDF.</span>
+                </div>
+            </div>
+
+            <!-- TAB GURU 6: PENGUMUMAN UNTUK SISWA -->
+            <div id="panelGuruPengumuman" class="hidden space-y-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">📢 Buat Pengumuman untuk Siswa</h3>
+                        <p class="text-xs text-slate-500">Pengumuman yang Anda kirim akan langsung tampil di halaman akun siswa & orang tua.</p>
+                    </div>
+                    <form id="formGuruTambahPengumuman" class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Pengumuman</label>
+                                <input type="text" id="guruJudulPengumuman" required placeholder="Contoh: Jadwal Ujian Kenaikan Juz 30" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Sasaran Siswa</label>
+                                <select id="guruTargetPengumuman" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-semibold text-emerald-800">
+                                    <option value="halaqah">Siswa Halaqah Saya</option>
+                                    <option value="siswa">Seluruh Siswa</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Isi Pengumuman</label>
+                            <textarea id="guruIsiPengumuman" rows="3" required placeholder="Tulis informasi penting untuk siswa dan orang tua..." class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white"></textarea>
+                        </div>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm">📣 Terbitkan Pengumuman</button>
+                    </form>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm">Daftar Pengumuman Aktif (Dari Admin & Guru)</h3>
+                    <div id="listPengumumanGuru" class="space-y-3"></div>
+                </div>
             </div>
         </div>
 
@@ -408,6 +512,7 @@
                 <button onclick="switchTabAdmin('guru')" id="tabAdminBtnGuru" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">👤 Akun Guru</button>
                 <button onclick="switchTabAdmin('santri')" id="tabAdminBtnSantri" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🎓 Data Siswa</button>
                 <button onclick="switchTabAdmin('kelompok')" id="tabAdminBtnKelompok" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📋 Pembagian Kelompok</button>
+                <button onclick="switchTabAdmin('pengumuman')" id="tabAdminBtnPengumuman" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">📢 Pengumuman</button>
                 <button onclick="switchTabAdmin('akun')" id="tabAdminBtnAkun" class="px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition">🔒 Keamanan Admin</button>
             </nav>
 
@@ -561,14 +666,51 @@
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span> Real-Time
                             </span>
                         </div>
-                        <p class="text-xs text-slate-500">Ringkasan pembagian seluruh siswa berdasarkan kelompok halaqah dan guru pembimbing (otomatis terbarui saat data diubah/dihapus).</p>
+                        <p class="text-xs text-slate-500">Ringkasan pembagian seluruh siswa berdasarkan kelompok halaqah dan guru pembimbing (otomatis terbarui secara real-time).</p>
                     </div>
                     <div class="flex flex-wrap gap-2 w-full sm:w-auto">
                         <input type="text" id="adminCariKelompok" oninput="renderTabelPembagianKelompok('adminKelompokContainer', this.value)" placeholder="🔍 Cari siswa / guru / halaqah..." class="border border-slate-300 rounded-xl p-2 text-xs bg-white flex-grow sm:w-64">
                         <button onclick="exportExcelPembagianKelompok()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-2 rounded-xl text-xs">📊 Export Kelompok</button>
+                        <button onclick="exportPDFPembagianKelompok()" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-2 rounded-xl text-xs">📄 Cetak / PDF Landscape</button>
                     </div>
                 </div>
                 <div id="adminKelompokContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <!-- TAB ADMIN 4C: PENGUMUMAN UNTUK GURU & SISWA -->
+            <div id="panelAdminPengumuman" class="hidden space-y-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">📢 Kelola Pengumuman Sistem</h3>
+                        <p class="text-xs text-slate-500">Buat pengumuman resmi untuk Guru Pembimbing, Siswa/Orang Tua, atau keduanya.</p>
+                    </div>
+                    <form id="formAdminTambahPengumuman" class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Judul Pengumuman</label>
+                                <input type="text" id="adminJudulPengumuman" required placeholder="Contoh: Libur Nasional & Jadwal Tasmi' Akbar" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Ditujukan Kepada</label>
+                                <select id="adminTargetPengumuman" class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white font-semibold text-emerald-800">
+                                    <option value="semua">Semua (Guru & Siswa)</option>
+                                    <option value="guru">Khusus Guru Pembimbing</option>
+                                    <option value="siswa">Khusus Siswa & Orang Tua</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Isi Pengumuman</label>
+                            <textarea id="adminIsiPengumuman" rows="3" required placeholder="Tuliskan isi pengumuman secara lengkap..." class="w-full border border-slate-300 rounded-xl p-2.5 text-sm bg-white"></textarea>
+                        </div>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-sm">📣 Publikasikan Pengumuman</button>
+                    </form>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm">Daftar Semua Pengumuman</h3>
+                    <div id="listPengumumanAdmin" class="space-y-3"></div>
+                </div>
             </div>
 
             <!-- TAB ADMIN 5: KEAMANAN AKUN ADMIN -->
@@ -609,6 +751,46 @@
                 </thead>
                 <tbody id="tbodyPdfRekap"></tbody>
             </table>
+        </div>
+
+        <!-- WADAH RENDERING PDF PEMBAGIAN KELOMPOK (LANDSCAPE) -->
+        <div id="pdfKelompokContainer" style="display: none; background: #fff; padding: 12px; color: #000; font-family: sans-serif;">
+            <div style="text-align: center; border-bottom: 2px solid #065f46; padding-bottom: 6px; margin-bottom: 12px;">
+                <h2 style="font-size: 13pt; font-weight: bold; margin: 0; color: #065f46;">MUTQIN - DAFTAR PEMBAGIAN KELOMPOK TAHFIDZ</h2>
+                <p style="font-size: 8.5pt; margin: 3px 0 0 0; color: #444;">Dicetak pada: <span id="pdfKelompokTanggal"></span></p>
+            </div>
+            <div id="pdfKelompokContent"></div>
+        </div>
+
+        <!-- WADAH RENDERING PDF LEMBAR UJIAN KENAIKAN -->
+        <div id="pdfUjianContainer" style="display: none; background: #fff; padding: 24px 32px; color: #000; font-family: 'Times New Roman', Times, serif;">
+            <div style="font-size: 12pt; font-weight: bold; margin-bottom: 12px;">
+                Guru Pengampu : <span id="pdfUjianPengampuText"></span>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 16px;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #000; padding: 6px 8px; width: 8%; text-align: center; background-color: #f8fafc;">NO</th>
+                        <th style="border: 1px solid #000; padding: 6px 10px; width: 38%; text-align: center; background-color: #f8fafc;">NAMA</th>
+                        <th style="border: 1px solid #000; padding: 6px 10px; width: 32%; text-align: center; background-color: #f8fafc;">SURAT</th>
+                        <th style="border: 1px solid #000; padding: 6px 10px; width: 22%; text-align: center; background-color: #f8fafc;">Naik / Menetap</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyPdfUjian"></tbody>
+            </table>
+            <div style="font-size: 11.5pt; font-weight: bold; margin-bottom: 18px;">
+                Level : <span id="pdfUjianLevelText"></span>
+            </div>
+            <div style="width: 100%; display: flex; justify-content: space-between; margin-top: 20px; font-size: 11pt;">
+                <div style="width: 45%; text-align: center;">
+                    <p style="margin: 0 0 60px 0;">Mengetahui,<br>Guru Pengampu</p>
+                    <p style="margin: 0; font-weight: bold; text-decoration: underline;" id="pdfUjianTtdPengampu"></p>
+                </div>
+                <div style="width: 45%; text-align: center;">
+                    <p style="margin: 0 0 60px 0;"><span id="pdfUjianTempatTglText"></span><br>Penguji,</p>
+                    <p style="margin: 0; font-weight: bold;" id="pdfUjianTtdPenguji">( ........................................ )</p>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -695,9 +877,11 @@
         let dataGuru = [];
         let dataSantri = [];
         let dataSetoran = [];
+        let dataPengumuman = [];
         let passwordAdmin = '@123456'; // Default sesuai permintaan Anda
 
         let currentUser = null; // { role: 'admin' | 'guru' | 'siswa', data: ... }
+        let barisUjianKenaikan = []; // State baris lembar ujian kenaikan
 
         // Muat dropdown 114 surah saat startup
         window.onload = function() {
@@ -727,6 +911,7 @@
                 dataGuru = val.guru || [];
                 dataSantri = val.santri || [];
                 dataSetoran = val.setoran || [];
+                dataPengumuman = val.pengumuman || [];
                 passwordAdmin = val.password_admin || '@123456';
             } else {
                 // Data awal otomatis agar aplikasi siap uji coba
@@ -738,6 +923,7 @@
                     { id: 's1', nama: 'Ahmad Zaki', halaqah: 'Halaqah Abu Bakar', pin: '12345' }
                 ];
                 dataSetoran = [];
+                dataPengumuman = [];
                 passwordAdmin = '@123456';
                 simpanKeFirebase();
             }
@@ -760,6 +946,7 @@
                 guru: dataGuru,
                 santri: dataSantri,
                 setoran: dataSetoran,
+                pengumuman: dataPengumuman,
                 password_admin: passwordAdmin
             });
         }
@@ -828,6 +1015,7 @@
                 if (guru.pin === pin) {
                     currentUser = { role: 'guru', data: guru };
                     tampilkanView('viewGuru', `${guru.nama} (${guru.halaqah})`);
+                    inisialisasiUjianKenaikanGuru();
                     renderSemuaGuru();
                 } else {
                     alert('Password / PIN Guru salah!');
@@ -957,13 +1145,15 @@
         // 6. PANEL GURU PEMBIMBING (FASE B)
         // =========================================================================
         function switchTabGuru(tab) {
-            ['panelGuruInput', 'panelGuruRiwayat', 'panelGuruSantri', 'panelGuruKelompok'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            ['tabGuruBtnInput', 'tabGuruBtnRiwayat', 'tabGuruBtnSantri', 'tabGuruBtnKelompok'].forEach(id => {
+            ['panelGuruInput', 'panelGuruRiwayat', 'panelGuruSantri', 'panelGuruKelompok', 'panelGuruUjian', 'panelGuruPengumuman'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['tabGuruBtnInput', 'tabGuruBtnRiwayat', 'tabGuruBtnSantri', 'tabGuruBtnKelompok', 'tabGuruBtnUjian', 'tabGuruBtnPengumuman'].forEach(id => {
                 document.getElementById(id).className = "px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition";
             });
             document.getElementById('panelGuru' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
             document.getElementById('tabGuruBtn' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition";
             if (tab === 'kelompok') renderTabelPembagianKelompok('guruKelompokContainer', document.getElementById('guruCariKelompok')?.value || '');
+            if (tab === 'ujian') renderTabelUjianKenaikan();
+            if (tab === 'pengumuman') renderPengumumanGuru();
         }
 
         function renderSemuaGuru() {
@@ -998,6 +1188,7 @@
                 : `<p class="text-xs text-slate-400 italic">Belum ada siswa di kelompok halaqah ini.</p>`;
 
             renderTabelPembagianKelompok('guruKelompokContainer', document.getElementById('guruCariKelompok')?.value || '');
+            renderPengumumanGuru();
             // Render tabel riwayat setoran halaqah guru ini
             const setoranHalaqah = dataSetoran.filter(st => st.halaqah === guru.halaqah);
             const tbody = document.getElementById('tbodySetoranGuru');
@@ -1114,6 +1305,8 @@
             document.getElementById('profilSiswaHalaqah').innerText = santri.halaqah;
             document.getElementById('profilSiswaGuru').innerText = guruObj ? guruObj.nama : '-';
 
+            renderPengumumanSiswa();
+
             const riwayat = dataSetoran.filter(st => st.santriId === santri.id);
             const belumValidasi = riwayat.filter(st => !st.validasi_ortu).length;
 
@@ -1181,13 +1374,14 @@
         // 8. PANEL ADMINISTRATOR (FASE A & D)
         // =========================================================================
         function switchTabAdmin(tab) {
-            ['panelAdminMonitoring', 'panelAdminHalaqah', 'panelAdminGuru', 'panelAdminSantri', 'panelAdminKelompok', 'panelAdminAkun'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            ['tabAdminBtnMonitoring', 'tabAdminBtnHalaqah', 'tabAdminBtnGuru', 'tabAdminBtnSantri', 'tabAdminBtnKelompok', 'tabAdminBtnAkun'].forEach(id => {
+            ['panelAdminMonitoring', 'panelAdminHalaqah', 'panelAdminGuru', 'panelAdminSantri', 'panelAdminKelompok', 'panelAdminPengumuman', 'panelAdminAkun'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['tabAdminBtnMonitoring', 'tabAdminBtnHalaqah', 'tabAdminBtnGuru', 'tabAdminBtnSantri', 'tabAdminBtnKelompok', 'tabAdminBtnPengumuman', 'tabAdminBtnAkun'].forEach(id => {
                 document.getElementById(id).className = "px-4 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-50 text-xs sm:text-sm whitespace-nowrap transition";
             });
             document.getElementById('panelAdmin' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
             document.getElementById('tabAdminBtn' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "px-4 py-2 rounded-xl font-bold text-emerald-700 bg-emerald-50 text-xs sm:text-sm whitespace-nowrap transition";
             if (tab === 'kelompok') renderTabelPembagianKelompok('adminKelompokContainer', document.getElementById('adminCariKelompok')?.value || '');
+            if (tab === 'pengumuman') renderPengumumanAdmin();
         }
 
         function renderSemuaAdmin() {
@@ -1245,6 +1439,7 @@
 
             renderAdminMonitoring();
             renderTabelPembagianKelompok('adminKelompokContainer', document.getElementById('adminCariKelompok')?.value || '');
+            renderPengumumanAdmin();
         }
 
         function renderAdminMonitoring() {
@@ -1554,43 +1749,52 @@
             }
         };
 
-        function renderTabelPembagianKelompok(containerId, keyword = '') {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const q = keyword.trim().toLowerCase();
-
-            // Saring nama halaqah murni yang tidak tercampur teks guru di dalamnya (seperti "SYAHADAH 3 (ABI ANTO)")
+        function dapatkanDataKelompokLengkap() {
             const halaqahMurni = dataHalaqah.filter(h => !h.toUpperCase().includes('(') || h.trim() === 'SYAHADAH 3');
-
             const semuaHalaqah = Array.from(new Set([
                 ...halaqahMurni,
                 ...dataGuru.map(g => g.halaqah),
                 ...dataSantri.map(s => s.halaqah)
             ]));
 
-            const cardsHtml = semuaHalaqah.map((h, idx) => {
-                // Bersihkan nama halaqah jika tidak sengaja mengandung teks guru di database lama
+            return semuaHalaqah.map((h, idx) => {
                 const hBersih = h.split('(')[0].trim();
                 const guruList = dataGuru.filter(g => g.halaqah === h || g.halaqah.toLowerCase() === hBersih.toLowerCase()).map(g => g.nama);
                 const guruText = guruList.length ? guruList.join(', ') : 'Belum ditentukan';
                 const siswaDiHalaqah = dataSantri.filter(s => s.halaqah === h || s.halaqah.toLowerCase() === hBersih.toLowerCase());
+                return {
+                    nomor: idx + 1,
+                    halaqahAsli: h,
+                    halaqahBersih: hBersih,
+                    guruText: guruText,
+                    siswaList: siswaDiHalaqah
+                };
+            });
+        }
 
-                const matchHeader = h.toLowerCase().includes(q) || guruText.toLowerCase().includes(q);
+        function renderTabelPembagianKelompok(containerId, keyword = '') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const q = keyword.trim().toLowerCase();
+
+            const daftarKelompok = dapatkanDataKelompokLengkap();
+
+            const cardsHtml = daftarKelompok.map(kel => {
+                const matchHeader = kel.halaqahAsli.toLowerCase().includes(q) || kel.guruText.toLowerCase().includes(q);
                 const siswaTampil = matchHeader
-                    ? siswaDiHalaqah
-                    : siswaDiHalaqah.filter(s => s.nama.toLowerCase().includes(q));
+                    ? kel.siswaList
+                    : kel.siswaList.filter(s => s.nama.toLowerCase().includes(q));
 
                 if (q && !matchHeader && siswaTampil.length === 0) return '';
 
                 return `
                     <div class="border border-slate-300 rounded-xl overflow-hidden bg-white shadow-sm flex flex-col relative group">
                         <div class="bg-slate-200 px-3 py-2 text-center border-b border-slate-300 relative">
-                            <div class="font-black text-slate-800 text-xs uppercase tracking-wide">${hBersih}</div>
-                            <div class="text-[10px] text-slate-600 font-semibold">Kelompok ${idx + 1} • ${siswaDiHalaqah.length} Siswa</div>
-                            <button onclick="adminHapusHalaqah('${h}')" title="Hapus Kelompok Ini" class="absolute top-1.5 right-2 text-rose-500 hover:text-rose-700 text-xs font-bold px-1.5 py-0.5 rounded bg-white/80 shadow-xs">&times;</button>
+                            <div class="font-black text-slate-800 text-xs uppercase tracking-wide">${kel.halaqahBersih}</div>
+                            <div class="text-[10px] text-slate-600 font-semibold">Kelompok ${kel.nomor} • ${kel.siswaList.length} Siswa</div>
                         </div>
                         <div class="bg-emerald-50 px-3 py-2 border-b border-slate-300 text-[11px] space-y-0.5">
-                            <div><span class="font-bold text-slate-600">GURU :</span> <strong class="text-emerald-800">${guruText}</strong></div>
+                            <div><span class="font-bold text-slate-600">GURU :</span> <strong class="text-emerald-800">${kel.guruText}</strong></div>
                         </div>
                         <div class="overflow-x-auto flex-grow">
                             <table class="w-full text-left text-[11px] border-collapse">
@@ -1620,6 +1824,70 @@
             container.innerHTML = cardsHtml || `<div class="col-span-full text-center text-xs text-slate-400 italic py-6">Tidak ditemukan kelompok, guru, atau siswa yang cocok.</div>`;
         }
 
+        function exportPDFPembagianKelompok() {
+            const daftarKelompok = dapatkanDataKelompokLengkap();
+            if (!daftarKelompok.length) return alert('Belum ada data kelompok halaqah untuk dicetak.');
+
+            document.getElementById('pdfKelompokTanggal').innerText = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            // Bagi setiap halaman berisi maksimal 4 kelompok dalam grid landscape agar rapi dan menyesuaikan jumlah lembar
+            const kelompokPerHalaman = 4;
+            const halamanList = [];
+            for (let i = 0; i < daftarKelompok.length; i += kelompokPerHalaman) {
+                halamanList.push(daftarKelompok.slice(i, i + kelompokPerHalaman));
+            }
+
+            const contentHtml = halamanList.map((grupHalaman, pageIdx) => `
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: start; ${pageIdx < halamanList.length - 1 ? 'page-break-after: always; margin-bottom: 16px;' : ''}">
+                    ${grupHalaman.map(kel => `
+                        <div style="border: 1px solid #334155; border-radius: 6px; overflow: hidden; break-inside: avoid;">
+                            <div style="background-color: #e2e8f0; padding: 6px 8px; text-align: center; border-bottom: 1px solid #334155;">
+                                <div style="font-weight: bold; font-size: 9pt; text-transform: uppercase; color: #0f172a;">${kel.halaqahBersih}</div>
+                                <div style="font-size: 7.5pt; color: #475569;">Kelompok ${kel.nomor} (${kel.siswaList.length} Siswa)</div>
+                            </div>
+                            <div style="background-color: #ecfdf5; padding: 5px 8px; border-bottom: 1px solid #334155; font-size: 8pt;">
+                                <strong>GURU :</strong> <span style="color: #065f46; font-weight: bold;">${kel.guruText}</span>
+                            </div>
+                            <table style="width: 100%; border-collapse: collapse; font-size: 8pt;">
+                                <thead>
+                                    <tr style="background-color: #f1f5f9; border-bottom: 1px solid #cbd5e1;">
+                                        <th style="padding: 4px 5px; border-right: 1px solid #cbd5e1; width: 26px; text-align: center;">No</th>
+                                        <th style="padding: 4px 6px; text-align: left;">Nama Siswa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${kel.siswaList.length
+                                        ? kel.siswaList.map((s, i) => `
+                                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                <td style="padding: 3.5px 5px; border-right: 1px solid #e2e8f0; text-align: center;">${i + 1}</td>
+                                                <td style="padding: 3.5px 6px; font-weight: 600;">${s.nama}</td>
+                                            </tr>
+                                        `).join('')
+                                        : `<tr><td colspan="2" style="padding: 8px; text-align: center; color: #64748b; font-style: italic;">Belum ada siswa</td></tr>`
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+
+            document.getElementById('pdfKelompokContent').innerHTML = contentHtml;
+
+            const element = document.getElementById('pdfKelompokContainer');
+            element.style.display = 'block';
+
+            html2pdf().set({
+                margin: 8,
+                filename: `Pembagian_Kelompok_Tahfidz_MUTQIN.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            }).from(element).save().then(() => {
+                element.style.display = 'none';
+            });
+        }
+
         function exportExcelPembagianKelompok() {
             const rows = [];
             let no = 1;
@@ -1639,6 +1907,294 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Pembagian_Kelompok");
             XLSX.writeFile(wb, "Pembagian_Kelompok_Tahfidz_MUTQIN.xlsx");
+        }
+
+        // =========================================================================
+        // 8D. FITUR PENGUMUMAN (ADMIN & GURU)
+        // =========================================================================
+        document.getElementById('formAdminTambahPengumuman').onsubmit = function(e) {
+            e.preventDefault();
+            const judul = document.getElementById('adminJudulPengumuman').value.trim();
+            const target = document.getElementById('adminTargetPengumuman').value;
+            const isi = document.getElementById('adminIsiPengumuman').value.trim();
+            if (!judul || !isi) return;
+
+            dataPengumuman.unshift({
+                id: 'pgm_' + Date.now(),
+                tanggal: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                pembuatRole: 'admin',
+                pembuatNama: 'Administrator',
+                halaqah: 'SEMUA',
+                target: target, // 'semua' | 'guru' | 'siswa'
+                judul: judul,
+                isi: isi
+            });
+            simpanKeFirebase();
+            this.reset();
+            alert('✅ Pengumuman berhasil dipublikasikan!');
+        };
+
+        document.getElementById('formGuruTambahPengumuman').onsubmit = function(e) {
+            e.preventDefault();
+            if (!currentUser || currentUser.role !== 'guru') return;
+            const guru = currentUser.data;
+            const judul = document.getElementById('guruJudulPengumuman').value.trim();
+            const target = document.getElementById('guruTargetPengumuman').value; // 'halaqah' | 'siswa'
+            const isi = document.getElementById('guruIsiPengumuman').value.trim();
+            if (!judul || !isi) return;
+
+            dataPengumuman.unshift({
+                id: 'pgm_' + Date.now(),
+                tanggal: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                pembuatRole: 'guru',
+                pembuatId: guru.id,
+                pembuatNama: `${guru.nama} (${guru.halaqah})`,
+                halaqah: guru.halaqah,
+                target: target,
+                judul: judul,
+                isi: isi
+            });
+            simpanKeFirebase();
+            this.reset();
+            alert('✅ Pengumuman untuk siswa berhasil diterbitkan!');
+        };
+
+        function hapusPengumuman(id) {
+            if (confirm('Hapus pengumuman ini?')) {
+                dataPengumuman = dataPengumuman.filter(p => p.id !== id);
+                simpanKeFirebase();
+            }
+        }
+
+        function labelTargetPengumuman(p) {
+            if (p.target === 'semua') return 'Untuk Guru & Siswa';
+            if (p.target === 'guru') return 'Khusus Guru Pembimbing';
+            if (p.target === 'halaqah') return `Khusus Siswa ${p.halaqah}`;
+            return 'Untuk Siswa & Orang Tua';
+        }
+
+        function renderPengumumanAdmin() {
+            const container = document.getElementById('listPengumumanAdmin');
+            if (!container) return;
+            container.innerHTML = dataPengumuman.length
+                ? dataPengumuman.map(p => `
+                    <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col sm:flex-row justify-between items-start gap-3">
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-emerald-100 text-emerald-800'}">${p.pembuatNama}</span>
+                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">${labelTargetPengumuman(p)}</span>
+                                <span class="text-[11px] text-slate-400">📅 ${p.tanggal}</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm">${p.judul}</h4>
+                            <p class="text-xs text-slate-600 whitespace-pre-line">${p.isi}</p>
+                        </div>
+                        <button onclick="hapusPengumuman('${p.id}')" class="text-red-500 hover:underline text-xs font-bold flex-shrink-0">Hapus</button>
+                    </div>
+                `).join('')
+                : `<p class="text-xs text-slate-400 italic text-center py-4">Belum ada pengumuman yang diterbitkan.</p>`;
+        }
+
+        function renderPengumumanGuru() {
+            const container = document.getElementById('listPengumumanGuru');
+            if (!container || !currentUser || currentUser.role !== 'guru') return;
+            const guru = currentUser.data;
+
+            const daftar = dataPengumuman.filter(p =>
+                (p.pembuatRole === 'admin' && (p.target === 'semua' || p.target === 'guru')) ||
+                (p.pembuatRole === 'guru' && (p.pembuatId === guru.id || p.halaqah === guru.halaqah))
+            );
+
+            container.innerHTML = daftar.length
+                ? daftar.map(p => `
+                    <div class="p-4 rounded-xl border ${p.pembuatRole === 'admin' ? 'border-purple-200 bg-purple-50/40' : 'border-emerald-200 bg-emerald-50/40'} flex flex-col sm:flex-row justify-between items-start gap-3">
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-purple-600 text-white' : 'bg-emerald-600 text-white'}">${p.pembuatNama}</span>
+                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700">${labelTargetPengumuman(p)}</span>
+                                <span class="text-[11px] text-slate-500">📅 ${p.tanggal}</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm">${p.judul}</h4>
+                            <p class="text-xs text-slate-700 whitespace-pre-line">${p.isi}</p>
+                        </div>
+                        ${p.pembuatRole === 'guru' && p.pembuatId === guru.id
+                            ? `<button onclick="hapusPengumuman('${p.id}')" class="text-red-500 hover:underline text-xs font-bold flex-shrink-0">Hapus</button>`
+                            : ''
+                        }
+                    </div>
+                `).join('')
+                : `<p class="text-xs text-slate-400 italic text-center py-4">Belum ada pengumuman untuk guru maupun siswa.</p>`;
+        }
+
+        function renderPengumumanSiswa() {
+            const container = document.getElementById('listPengumumanSiswa');
+            if (!container || !currentUser || currentUser.role !== 'siswa') return;
+            const santri = currentUser.data;
+
+            const daftar = dataPengumuman.filter(p =>
+                (p.pembuatRole === 'admin' && (p.target === 'semua' || p.target === 'siswa')) ||
+                (p.pembuatRole === 'guru' && (p.target === 'siswa' || p.halaqah === santri.halaqah))
+            );
+
+            container.innerHTML = daftar.length
+                ? daftar.map(p => `
+                    <div class="p-3.5 rounded-xl border ${p.pembuatRole === 'admin' ? 'border-amber-200 bg-amber-50/50' : 'border-emerald-200 bg-emerald-50/50'} space-y-1">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${p.pembuatRole === 'admin' ? 'bg-amber-600 text-white' : 'bg-emerald-600 text-white'}">Dari: ${p.pembuatNama}</span>
+                            <span class="text-[10px] text-slate-500">📅 ${p.tanggal}</span>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-sm">${p.judul}</h4>
+                        <p class="text-xs text-slate-700 whitespace-pre-line">${p.isi}</p>
+                    </div>
+                `).join('')
+                : `<p class="text-xs text-slate-400 italic text-center py-3">Belum ada pengumuman terbaru.</p>`;
+        }
+
+        // =========================================================================
+        // 8E. LEMBAR PENILAIAN UJIAN KENAIKAN & EXPORT PDF (GURU)
+        // =========================================================================
+        function inisialisasiUjianKenaikanGuru() {
+            if (!currentUser || currentUser.role !== 'guru') return;
+            const guru = currentUser.data;
+            const storageKey = 'mutqin_ujian_' + guru.id;
+            const tersimpan = localStorage.getItem(storageKey);
+
+            if (tersimpan) {
+                try {
+                    const parsed = JSON.parse(tersimpan);
+                    document.getElementById('ujianGuruPengampu').value = parsed.pengampu || guru.nama;
+                    document.getElementById('ujianLevel').value = parsed.level || guru.halaqah;
+                    document.getElementById('ujianTempatTanggal').value = parsed.tempatTanggal || 'Kotagajah, ';
+                    document.getElementById('ujianNamaPenguji').value = parsed.penguji || '';
+                    barisUjianKenaikan = parsed.baris || [];
+                } catch (e) {
+                    muatSiswaKeLembarUjian(true);
+                }
+            } else {
+                muatSiswaKeLembarUjian(true);
+            }
+            renderTabelUjianKenaikan();
+        }
+
+        function muatSiswaKeLembarUjian(tanpaKonfirmasi = false) {
+            if (!currentUser || currentUser.role !== 'guru') return;
+            if (!tanpaKonfirmasi && barisUjianKenaikan.length > 0) {
+                if (!confirm('Muat ulang daftar nama siswa bimbingan Anda ke tabel ujian?')) return;
+            }
+            const guru = currentUser.data;
+            document.getElementById('ujianGuruPengampu').value = guru.nama;
+            document.getElementById('ujianLevel').value = guru.halaqah;
+            if (!document.getElementById('ujianTempatTanggal').value) {
+                document.getElementById('ujianTempatTanggal').value = 'Kotagajah, ' + new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+
+            const santriBimbingan = dataSantri.filter(s => s.halaqah === guru.halaqah);
+            barisUjianKenaikan = santriBimbingan.map(s => ({
+                nama: s.nama,
+                surat: '',
+                status: ''
+            }));
+
+            // Pastikan minimal ada 14 baris seperti format lembar ujian standar
+            while (barisUjianKenaikan.length < 14) {
+                barisUjianKenaikan.push({ nama: '', surat: '', status: '' });
+            }
+
+            simpanDraftUjianGuru();
+            renderTabelUjianKenaikan();
+        }
+
+        function simpanDraftUjianGuru() {
+            if (!currentUser || currentUser.role !== 'guru') return;
+            const storageKey = 'mutqin_ujian_' + currentUser.data.id;
+            localStorage.setItem(storageKey, JSON.stringify({
+                pengampu: document.getElementById('ujianGuruPengampu').value,
+                level: document.getElementById('ujianLevel').value,
+                tempatTanggal: document.getElementById('ujianTempatTanggal').value,
+                penguji: document.getElementById('ujianNamaPenguji').value,
+                baris: barisUjianKenaikan
+            }));
+        }
+
+        function updateBarisUjian(idx, field, val) {
+            if (barisUjianKenaikan[idx]) {
+                barisUjianKenaikan[idx][field] = val;
+                simpanDraftUjianGuru();
+            }
+        }
+
+        function tambahBarisUjianKenaikan() {
+            barisUjianKenaikan.push({ nama: '', surat: '', status: '' });
+            simpanDraftUjianGuru();
+            renderTabelUjianKenaikan();
+        }
+
+        function hapusBarisUjianKenaikan(idx) {
+            barisUjianKenaikan.splice(idx, 1);
+            simpanDraftUjianGuru();
+            renderTabelUjianKenaikan();
+        }
+
+        function renderTabelUjianKenaikan() {
+            const tbody = document.getElementById('tbodyUjianKenaikan');
+            if (!tbody) return;
+            tbody.innerHTML = barisUjianKenaikan.map((row, idx) => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-2 text-center font-bold text-slate-600">${idx + 1}</td>
+                    <td class="p-1.5">
+                        <input type="text" value="${(row.nama || '').replace(/"/g, '&quot;')}" oninput="updateBarisUjian(${idx}, 'nama', this.value)" placeholder="Nama Siswa..." class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-semibold">
+                    </td>
+                    <td class="p-1.5">
+                        <input type="text" value="${(row.surat || '').replace(/"/g, '&quot;')}" oninput="updateBarisUjian(${idx}, 'surat', this.value)" placeholder="Contoh: An-Naba' - Al-Infithar" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white">
+                    </td>
+                    <td class="p-1.5">
+                        <select onchange="updateBarisUjian(${idx}, 'status', this.value)" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-semibold">
+                            <option value="" ${row.status === '' ? 'selected' : ''}>-- Pilih / Kosongkan --</option>
+                            <option value="Naik" ${row.status === 'Naik' ? 'selected' : ''}>Naik</option>
+                            <option value="Menetap" ${row.status === 'Menetap' ? 'selected' : ''}>Menetap</option>
+                        </select>
+                    </td>
+                    <td class="p-1.5 text-center">
+                        <button type="button" onclick="hapusBarisUjianKenaikan(${idx})" title="Hapus Baris" class="text-rose-500 hover:text-rose-700 font-bold text-sm">&times;</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function exportPDFUjianKenaikan() {
+            const pengampu = document.getElementById('ujianGuruPengampu').value.trim();
+            const level = document.getElementById('ujianLevel').value.trim();
+            const tempatTanggal = document.getElementById('ujianTempatTanggal').value.trim() || 'Kotagajah,';
+            const penguji = document.getElementById('ujianNamaPenguji').value.trim();
+
+            document.getElementById('pdfUjianPengampuText').innerText = pengampu;
+            document.getElementById('pdfUjianLevelText').innerText = level;
+            document.getElementById('pdfUjianTempatTglText').innerText = tempatTanggal;
+            document.getElementById('pdfUjianTtdPengampu').innerText = pengampu || '( ........................................ )';
+            document.getElementById('pdfUjianTtdPenguji').innerText = penguji || '( ........................................ )';
+
+            const rowsToPrint = barisUjianKenaikan.length ? barisUjianKenaikan : Array.from({ length: 14 }, () => ({ nama: '', surat: '', status: '' }));
+            document.getElementById('tbodyPdfUjian').innerHTML = rowsToPrint.map((r, i) => `
+                <tr>
+                    <td style="border: 1px solid #000; padding: 7px 6px; text-align: center;">${i + 1}</td>
+                    <td style="border: 1px solid #000; padding: 7px 10px; font-weight: bold;">${r.nama || '&nbsp;'}</td>
+                    <td style="border: 1px solid #000; padding: 7px 10px;">${r.surat || '&nbsp;'}</td>
+                    <td style="border: 1px solid #000; padding: 7px 10px; text-align: center; font-weight: bold;">${r.status || '&nbsp;'}</td>
+                </tr>
+            `).join('');
+
+            const element = document.getElementById('pdfUjianContainer');
+            element.style.display = 'block';
+
+            const namaFileLevel = (level || 'Halaqah').replace(/[^a-zA-Z0-9]/g, '_');
+            html2pdf().set({
+                margin: 12,
+                filename: `Penilaian_Ujian_Kenaikan_${namaFileLevel}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).from(element).save().then(() => {
+                element.style.display = 'none';
+            });
         }
 
         // =========================================================================
