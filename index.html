@@ -2220,9 +2220,12 @@
                         <td class="p-2">
                             <div class="space-y-1.5">
                                 ${listSurat.map((itemSurat, sIdx) => `
-                                    <div class="flex items-center gap-1.5">
+                                    <div class="flex items-center gap-1.5 relative">
                                         <span class="text-[10px] font-bold text-slate-400 w-5 text-right">${sIdx + 1}.</span>
-                                        <input type="text" value="${(itemSurat.surat || '').replace(/"/g, '&quot;')}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'surat', this.value)" placeholder="Nama Surat ke-${sIdx + 1}..." class="flex-grow border border-slate-300 rounded-lg px-2 py-1 text-xs bg-white">
+                                        <div class="flex-grow relative">
+                                            <input type="text" value="${(itemSurat.surat || '').replace(/"/g, '&quot;')}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'surat', this.value); tampilkanDropdownSurahUjian(this, ${idx}, ${sIdx})" onfocus="tampilkanDropdownSurahUjian(this, ${idx}, ${sIdx})" placeholder="Ketik atau pilih surat ke-${sIdx + 1}..." class="w-full border border-slate-300 rounded-lg px-2 py-1 text-xs bg-white">
+                                            <div id="dropdownSurahUjian_${idx}_${sIdx}" class="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg z-30 max-h-48 overflow-y-auto hidden"></div>
+                                        </div>
                                         <input type="number" min="0" max="100" value="${itemSurat.nilai !== undefined && itemSurat.nilai !== '' ? itemSurat.nilai : ''}" oninput="updateSuratUjianSiswa(${idx}, ${sIdx}, 'nilai', this.value)" placeholder="Nilai" class="w-20 border border-slate-300 rounded-lg px-2 py-1 text-xs text-center font-bold bg-white">
                                         <button type="button" onclick="hapusSuratPadaSiswaUjian(${idx}, ${sIdx})" title="Kurangi Surat Ini" class="px-1.5 py-0.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs border border-rose-200">−</button>
                                     </div>
@@ -2243,6 +2246,42 @@
                     </tr>
                 `;
             }).join('');
+        }
+
+        function tampilkanDropdownSurahUjian(inputEl, siswaIdx, suratIdx) {
+            const dropdownId = `dropdownSurahUjian_${siswaIdx}_${suratIdx}`;
+            const dropdown = document.getElementById(dropdownId);
+            if (!dropdown) return;
+
+            const keyword = inputEl.value.toLowerCase().trim();
+            const hasilFilter = keyword === ''
+                ? DAFTAR_114_SURAH
+                : DAFTAR_114_SURAH.filter(s => s.toLowerCase().includes(keyword));
+
+            if (!hasilFilter.length) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+
+            dropdown.innerHTML = hasilFilter.map(s => `
+                <div onclick="pilihSurahUjian(${siswaIdx}, ${suratIdx}, '${s.replace(/'/g, "\\'")}')" class="px-3 py-1.5 text-xs hover:bg-emerald-50 hover:text-emerald-800 cursor-pointer border-b border-slate-100 last:border-b-0">${s}</div>
+            `).join('');
+
+            dropdown.classList.remove('hidden');
+
+            // Sembunyikan dropdown saat klik di luar
+            const closeDropdown = (e) => {
+                if (!inputEl.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                    document.removeEventListener('click', closeDropdown);
+                }
+            };
+            setTimeout(() => document.addEventListener('click', closeDropdown), 0);
+        }
+
+        function pilihSurahUjian(siswaIdx, suratIdx, namaSurah) {
+            updateSuratUjianSiswa(siswaIdx, suratIdx, 'surat', namaSurah);
+            renderTabelUjianKenaikan();
         }
 
         function exportPDFUjianKenaikan() {
